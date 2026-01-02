@@ -1,10 +1,10 @@
 package io.github.tiagofar78.grindstone.game.phases;
 
-import org.bukkit.Bukkit;
-
 import io.github.tiagofar78.grindstone.Grindstone;
 import io.github.tiagofar78.grindstone.game.Minigame;
 import io.github.tiagofar78.grindstone.managers.ConfigManager;
+
+import org.bukkit.Bukkit;
 
 public class FinishedPhase extends Phase {
 
@@ -55,4 +55,3 @@ public class FinishedPhase extends Phase {
         }, finishedPhaseDuration * TICKS_PER_SECOND);
     }
 }
-

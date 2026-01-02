@@ -1,13 +1,13 @@
 package io.github.tiagofar78.grindstone.game;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.bukkit.Location;
-
 import io.github.tiagofar78.grindstone.game.phases.DisabledPhase;
 import io.github.tiagofar78.grindstone.game.phases.LoadingPhase;
 import io.github.tiagofar78.grindstone.game.phases.Phase;
+
+import org.bukkit.Location;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public abstract class Minigame {
 
@@ -36,19 +36,19 @@ public abstract class Minigame {
     public List<MinigamePlayer> getPlayersOnLobby() {
         return _playersOnLobby;
     }
-    
+
     public MinigamePlayer getPlayer(String playerName) {
         for (int i = 0; i < _playersOnLobby.size(); i++) {
             if (_playersOnLobby.get(i).getName().equals(playerName)) {
                 return _playersOnLobby.get(i);
             }
         }
-        
+
         return null;
     }
 
     public abstract void addPlayerToGame(String playerName);
-    
+
     public void playerRejoin(String playerName) {
         MinigamePlayer player = getPlayer(playerName);
         addPlayerToGame(playerName);
@@ -57,7 +57,7 @@ public abstract class Minigame {
     }
 
     public abstract void removePlayerFromGame(MinigamePlayer player);
-    
+
     public void playerLeft(String playerName) {
         MinigamePlayer player = getPlayer(playerName);
         removePlayerFromGame(player);
@@ -88,13 +88,13 @@ public abstract class Minigame {
 //  ########################################
 //  #                Phases                #
 //  ########################################
-    
+
     public abstract void load();
-    
+
     public abstract Phase newOngoingPhase();
-    
+
     public abstract void disable();
-    
+
     public Phase getCurrentPhase() {
         return this._phase;
     }
@@ -111,19 +111,19 @@ public abstract class Minigame {
 //  ########################################
 //  #               Messages               #
 //  ########################################
-    
+
     public void sendLoadingMessage() {
         // TODO
     }
-    
+
     public void sendVictoryMessage() {
         // TODO
     }
-    
+
     public void sendPlayerRejoinMessage(String playerName) {
         // TODO send to all players in lobby
     }
-    
+
     public void sendPlayerLeftMessage(String playerName) {
         // TODO send to all players in lobby
     }
