@@ -37,6 +37,8 @@ public class LoadingPhase extends Phase {
     public void start() {
         getGame().sendLoadingMessage();
         getGame().load();
+
+        getGame().startNextPhase();
     }
 
 }

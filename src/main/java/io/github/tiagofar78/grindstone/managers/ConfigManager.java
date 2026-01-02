@@ -12,6 +12,11 @@ public class ConfigManager {
         return instance;
     }
 
+    public static boolean load() {
+        instance = new ConfigManager();
+        return instance != null;
+    }
+
     private int _finishedPhaseDuration;
 
     public ConfigManager() {

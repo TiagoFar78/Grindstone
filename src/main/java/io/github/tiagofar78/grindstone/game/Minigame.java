@@ -15,11 +15,11 @@ public abstract class Minigame {
     private String _mapName;
 
     private List<MinigamePlayer> _playersOnLobby;
-    private List<Team<MinigamePlayer>> _teams;
+    private List<MinigameTeam<MinigamePlayer>> _teams;
 
     private Phase _phase;
 
-    public Minigame(int id, String mapName, Location referenceBlock) {
+    public Minigame(int id, String mapName, Location referenceBlock, List<List<? extends MinigamePlayer>> players) {
         _id = id;
         _mapName = mapName;
 
@@ -47,11 +47,11 @@ public abstract class Minigame {
         return null;
     }
 
-    public abstract void addPlayerToGame(String playerName);
+    public abstract void addPlayerToGame(MinigamePlayer player);
 
     public void playerRejoin(String playerName) {
         MinigamePlayer player = getPlayer(playerName);
-        addPlayerToGame(playerName);
+        addPlayerToGame(player);
         _playersOnLobby.add(player);
         sendPlayerRejoinMessage(playerName);
     }
