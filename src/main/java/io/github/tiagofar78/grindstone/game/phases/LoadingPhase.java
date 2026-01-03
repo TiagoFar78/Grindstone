@@ -10,7 +10,7 @@ public class LoadingPhase extends Phase {
 
     @Override
     public Phase next() {
-        return getGame().newOngoingPhase();
+        return new PreparingPhase(getGame());
     }
 
     @Override

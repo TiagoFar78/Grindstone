@@ -17,16 +17,22 @@ public class ConfigManager {
         return instance != null;
     }
 
-    private int _finishedPhaseDuration;
+    private int preparingPhaseDuration;
+    private int finishedPhaseDuration;
 
     public ConfigManager() {
         YamlConfiguration config = GrindstoneResources.getYamlConfiguration();
 
-        _finishedPhaseDuration = config.getInt("FinishedPhaseDuration");
+        preparingPhaseDuration = config.getInt("PreparingPhaseDuration");
+        finishedPhaseDuration = config.getInt("FinishedPhaseDuration");
+    }
+
+    public int preparingPhaseDuration() {
+        return preparingPhaseDuration;
     }
 
     public int finishedPhaseDuration() {
-        return _finishedPhaseDuration;
+        return finishedPhaseDuration;
     }
 
 }

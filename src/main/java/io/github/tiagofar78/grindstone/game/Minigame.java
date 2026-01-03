@@ -1,46 +1,62 @@
 package io.github.tiagofar78.grindstone.game;
 
+import io.github.tiagofar78.grindstone.game.maps.GameMap;
 import io.github.tiagofar78.grindstone.game.phases.DisabledPhase;
 import io.github.tiagofar78.grindstone.game.phases.LoadingPhase;
 import io.github.tiagofar78.grindstone.game.phases.Phase;
-
-import org.bukkit.Location;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public abstract class Minigame {
 
-    private int _id;
-    private String _mapName;
+    private int id;
+    private GameMap map;
 
-    private List<MinigamePlayer> _playersOnLobby;
-    private List<MinigameTeam<MinigamePlayer>> _teams;
+    private List<MinigamePlayer> playersOnLobby;
+    private List<MinigameTeam<? extends MinigamePlayer>> teams;
 
     private Phase _phase;
 
-    public Minigame(int id, String mapName, Location referenceBlock, List<List<? extends MinigamePlayer>> players) {
-        _id = id;
-        _mapName = mapName;
+    public Minigame(int id, GameMap map, List<List<? extends MinigamePlayer>> players) {
+        this.id = id;
+        this.map = map;
 
-        _playersOnLobby = new ArrayList<>();
-        _teams = new ArrayList<>();
+        playersOnLobby = new ArrayList<>();
+        addToLobby(players);
+        teams = createTeams(players);
 
         startNextPhase(new LoadingPhase(this));
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public GameMap getMap() {
+        return map;
     }
 
 //  #########################################
 //  #                 Lobby                 #
 //  #########################################
 
+    public void addToLobby(List<List<? extends MinigamePlayer>> players) {
+        for (List<? extends MinigamePlayer> parties : players) {
+            for (MinigamePlayer player : parties) {
+                playersOnLobby.add(player);
+            }
+        }
+    }
+
     public List<MinigamePlayer> getPlayersOnLobby() {
-        return _playersOnLobby;
+        return playersOnLobby;
     }
 
     public MinigamePlayer getPlayer(String playerName) {
-        for (int i = 0; i < _playersOnLobby.size(); i++) {
-            if (_playersOnLobby.get(i).getName().equals(playerName)) {
-                return _playersOnLobby.get(i);
+        for (int i = 0; i < playersOnLobby.size(); i++) {
+            if (playersOnLobby.get(i).getName().equals(playerName)) {
+                return playersOnLobby.get(i);
             }
         }
 
@@ -52,7 +68,7 @@ public abstract class Minigame {
     public void playerRejoin(String playerName) {
         MinigamePlayer player = getPlayer(playerName);
         addPlayerToGame(player);
-        _playersOnLobby.add(player);
+        playersOnLobby.add(player);
         sendPlayerRejoinMessage(playerName);
     }
 
@@ -109,6 +125,18 @@ public abstract class Minigame {
     }
 
 //  ########################################
+//  #            Games Specific            #
+//  ########################################
+
+    public abstract List<MinigameTeam<? extends MinigamePlayer>> createTeams(
+            List<List<? extends MinigamePlayer>> players
+    );
+
+    public abstract void resolvePlayerOutcomes();
+
+    public abstract void teleportToPreparingRoom();
+
+//  ########################################
 //  #               Messages               #
 //  ########################################
 
@@ -127,5 +155,7 @@ public abstract class Minigame {
     public void sendPlayerLeftMessage(String playerName) {
         // TODO send to all players in lobby
     }
+
+    public abstract void sendGameExplanationMessage();
 
 }

@@ -42,6 +42,7 @@ public class FinishedPhase extends Phase {
     @Override
     public void start() {
         getGame().sendVictoryMessage();
+        getGame().resolvePlayerOutcomes();
 
         int finishedPhaseDuration = ConfigManager.getInstance().finishedPhaseDuration();
         Bukkit.getScheduler().runTaskLater(Grindstone.getInstance(), new Runnable() {
