@@ -47,6 +47,7 @@ public class PreparingPhase extends Phase {
     }
 
     private static final int TICKS_PER_SECOND = 20;
+    private static final String LIGHT_RED_COLOR = "§c";
 
     private void runTimer(int secondsRemaining) {
         if (getGame().getCurrentPhase() != this) {
@@ -59,7 +60,13 @@ public class PreparingPhase extends Phase {
         }
 
         for (MinigamePlayer player : getGame().getPlayersOnLobby()) {
-            player.getPlayerAdapter().sendTitleMessage(Integer.toString(secondsRemaining), "", 0, 1, 0);
+            player.getPlayerAdapter().sendTitleMessage(
+                    LIGHT_RED_COLOR + Integer.toString(secondsRemaining),
+                    "",
+                    0,
+                    1,
+                    0
+            );
         }
 
         Bukkit.getScheduler().runTaskLater(Grindstone.getInstance(), new Runnable() {

@@ -1,6 +1,5 @@
 package io.github.tiagofar78.grindstone.game;
 
-import io.github.tiagofar78.grindstone.game.maps.GameMap;
 import io.github.tiagofar78.grindstone.game.phases.DisabledPhase;
 import io.github.tiagofar78.grindstone.game.phases.LoadingPhase;
 import io.github.tiagofar78.grindstone.game.phases.Phase;
@@ -10,17 +9,17 @@ import java.util.List;
 
 public abstract class Minigame {
 
-    private int id;
-    private GameMap map;
+    private MinigameMap map;
+    private MinigameSettings settings;
 
     private List<MinigamePlayer> playersOnLobby;
     private List<MinigameTeam<? extends MinigamePlayer>> teams;
 
     private Phase _phase;
 
-    public Minigame(int id, GameMap map, List<List<? extends MinigamePlayer>> players) {
-        this.id = id;
+    public Minigame(MinigameMap map, MinigameSettings settings, List<List<? extends MinigamePlayer>> players) {
         this.map = map;
+        this.settings = settings;
 
         playersOnLobby = new ArrayList<>();
         addToLobby(players);
@@ -29,12 +28,16 @@ public abstract class Minigame {
         startNextPhase(new LoadingPhase(this));
     }
 
-    public int getId() {
-        return id;
+    public MinigameMap getMap() {
+        return map;
     }
 
-    public GameMap getMap() {
-        return map;
+    public MinigameSettings getSettings() {
+        return settings;
+    }
+
+    public List<MinigameTeam<? extends MinigamePlayer>> getTeams() {
+        return teams;
     }
 
 //  #########################################
