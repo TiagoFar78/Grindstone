@@ -17,18 +17,14 @@ public class MatchmakingQueue {
 
     private Queue<MinigameLobby> queue = new LinkedList<>();
 
-    public MatchmakingQueue(MinigameFactory factory, MinigameSettings settings, List<MinigameMap> availableMaps) {
+    protected MatchmakingQueue(MinigameFactory factory, MinigameSettings settings, List<MinigameMap> availableMaps) {
         this.factory = factory;
         this.settings = settings;
         this.availableMaps = availableMaps;
     }
 
-    public void enqueue(List<String> playersNames) {
-        enqueue(playersNames, null);
-    }
-
-    public void enqueue(List<String> playersNames, MinigameMap map) {
-        MinigameLobby lobby = addToEligibleLobby(playersNames, map);
+    protected void enqueue(String party, MinigameMap map) {
+        MinigameLobby lobby = addToEligibleLobby(party, map);
         if (lobby != null) {
             if (lobby.isFull(settings)) {
                 queue.remove(lobby);
@@ -40,7 +36,7 @@ public class MatchmakingQueue {
 
         // TODO maybe check if party has more players than allowed on game
 
-        lobby = new MinigameLobby(playersNames, availableMaps); // Allow the creation of competitive games as well
+        lobby = new MinigameLobby(party.toString(), availableMaps); // Allow the creation of competitive games as well TODO take care of party
         if (lobby.isFull(settings)) {
             Coordinator.createMinigame(factory, settings, lobby.getMap(), lobby.getParties());
         } else {
@@ -48,9 +44,9 @@ public class MatchmakingQueue {
         }
     }
 
-    private MinigameLobby addToEligibleLobby(List<String> playersNames, MinigameMap map) {
+    private MinigameLobby addToEligibleLobby(String party, MinigameMap map) {
         for (MinigameLobby lobby : queue) {
-            if (lobby.add(playersNames, map, settings)) {
+            if (lobby.add(party, map, settings)) {
                 return lobby;
             }
         }

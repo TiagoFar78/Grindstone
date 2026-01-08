@@ -1,6 +1,7 @@
 package io.github.tiagofar78.grindstone.coordinator;
 
 import io.github.tiagofar78.grindstone.Grindstone;
+import io.github.tiagofar78.grindstone.commands.JoinMatchmakingQueue;
 import io.github.tiagofar78.grindstone.game.Minigame;
 import io.github.tiagofar78.grindstone.game.MinigameMap;
 import io.github.tiagofar78.grindstone.game.MinigamePlayer;
@@ -19,7 +20,7 @@ public class Coordinator {
             List<MinigameMap> availableMaps,
             String commandLabel
     ) {
-        if (commandLabel.contains(" ")) {
+        if (commandLabel.contains(" ") || commandLabel.isEmpty()) {
             throw new IllegalArgumentException(
                     "Could not register gamemode with command label \"" + commandLabel + "\". A command cannot contain spaces."
             );
@@ -27,12 +28,33 @@ public class Coordinator {
 
         Grindstone instance = Grindstone.getInstance();
         MatchmakingQueue queue = new MatchmakingQueue(factory, gamemode, availableMaps);
-        instance.getCommand(commandLabel).setExecutor(null); // TODO
+        instance.getCommand(commandLabel).setExecutor(new JoinMatchmakingQueue(queue));
 
         for (MinigameMap map : availableMaps) {
-            instance.getCommand(commandLabel + "_" + map.getName().toLowerCase()).setExecutor(null); // TODO
+            String label = commandLabel + "_" + map.getName().toLowerCase();
+            instance.getCommand(label).setExecutor(new JoinMatchmakingQueue(queue, map));
         }
     }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    private static Map<String, MatchmakingQueue> partyQueue = new HashMap<>();
+
+    public static boolean isInQueue(String party) {
+        return partyQueue.containsKey(party);
+    }
+
+    public static void enqueue(String party, MatchmakingQueue queue, MinigameMap map) {
+        // TODO remove party members from playerMinigame
+        partyQueue.put(party, queue);
+        queue.enqueue(party, map);
+    }
+
+    public static void dequeue(String party) {
+        partyQueue.remove(party);
+    }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     private static Map<String, Minigame> playerMinigame = new HashMap<>();
 

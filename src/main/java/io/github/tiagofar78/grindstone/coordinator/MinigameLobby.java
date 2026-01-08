@@ -12,9 +12,10 @@ public class MinigameLobby {
     private List<List<String>> parties;
     private List<MinigameMap> availableMaps;
 
-    public MinigameLobby(List<String> firstParty, List<MinigameMap> availableMaps) {
+    public MinigameLobby(String firstParty, List<MinigameMap> availableMaps) {
         parties = new ArrayList<>();
-        parties.add(firstParty);
+        List<String> party = new ArrayList<>(); // TODO remove and add first party to parties
+        parties.add(party);
         this.availableMaps = availableMaps;
     }
 
@@ -23,7 +24,7 @@ public class MinigameLobby {
         availableMaps.add(map);
     }
 
-    public boolean add(List<String> firstParty, MinigameMap map, MinigameSettings settings) {
+    public boolean add(String party, MinigameMap map, MinigameSettings settings) { // TODO take care because of parties
         return false; // TODO return true if it is possible, use assign map if it is necessary
     }
 
