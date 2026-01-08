@@ -9,11 +9,10 @@ public class MinigameTeam<T extends MinigamePlayer> {
 
     private String name;
     private Color color;
-    private int maxSize;
 
     private List<T> members;
 
-    public MinigameTeam(String name, Color color, int maxSize) {
+    public MinigameTeam(String name, Color color) {
         this.name = name;
         this.color = color;
         this.members = new ArrayList<>();
@@ -25,10 +24,6 @@ public class MinigameTeam<T extends MinigamePlayer> {
 
     public Color getColor() {
         return color;
-    }
-
-    public int maxSize() {
-        return maxSize;
     }
 
     public List<T> getMembers() {

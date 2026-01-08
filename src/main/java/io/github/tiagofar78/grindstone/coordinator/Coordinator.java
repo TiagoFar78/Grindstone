@@ -1,5 +1,6 @@
 package io.github.tiagofar78.grindstone.coordinator;
 
+import io.github.tiagofar78.grindstone.Grindstone;
 import io.github.tiagofar78.grindstone.game.Minigame;
 import io.github.tiagofar78.grindstone.game.MinigameMap;
 import io.github.tiagofar78.grindstone.game.MinigamePlayer;
@@ -12,27 +13,40 @@ import java.util.Map;
 
 public class Coordinator {
 
-    private static MinigameRegistry minigamesRegistry = new MinigameRegistry();
+    public static void registerGamemode(
+            MinigameFactory factory,
+            MinigameSettings gamemode,
+            List<MinigameMap> availableMaps,
+            String commandLabel
+    ) {
+        if (commandLabel.contains(" ")) {
+            throw new IllegalArgumentException(
+                    "Could not register gamemode with command label \"" + commandLabel + "\". A command cannot contain spaces."
+            );
+        }
 
-    public static MinigameRegistry getRegistry() {
-        return minigamesRegistry;
+        Grindstone instance = Grindstone.getInstance();
+        MatchmakingQueue queue = new MatchmakingQueue(factory, gamemode, availableMaps);
+        instance.getCommand(commandLabel).setExecutor(null); // TODO
+
+        for (MinigameMap map : availableMaps) {
+            instance.getCommand(commandLabel + "_" + map.getName().toLowerCase()).setExecutor(null); // TODO
+        }
     }
 
     private static Map<String, Minigame> playerMinigame = new HashMap<>();
 
-    public static void initMinigame(
-            String minigameId,
-            String gamemodeId,
-            String mapId,
-            List<List<? extends MinigamePlayer>> parties
+    public static void createMinigame(
+            MinigameFactory minigameFactory,
+            MinigameSettings settings,
+            MinigameMap map,
+            List<List<String>> parties
     ) {
-        MinigameSettings settings = minigamesRegistry.GAMEMODES.get(gamemodeId);
-        MinigameMap map = minigamesRegistry.MAPS.get(mapId);
-        Minigame minigame = minigamesRegistry.MINIGAMES.get(minigameId).create(map, settings, parties);
+        Minigame minigame = minigameFactory.create(map, settings, parties);
 
-        for (List<? extends MinigamePlayer> party : parties) {
-            for (MinigamePlayer player : party) {
-                playerMinigame.put(player.getName(), minigame);
+        for (List<String> party : parties) {
+            for (String playerName : party) {
+                playerMinigame.put(playerName, minigame);
             }
         }
     }

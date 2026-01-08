@@ -13,11 +13,13 @@ public abstract class Minigame {
     private MinigameSettings settings;
 
     private List<MinigamePlayer> playersOnLobby;
-    private List<MinigameTeam<? extends MinigamePlayer>> teams;
+    private List<MinigameTeam<MinigamePlayer>> teams;
 
     private Phase _phase;
 
-    public Minigame(MinigameMap map, MinigameSettings settings, List<List<? extends MinigamePlayer>> players) {
+    public Minigame(MinigameMap map, MinigameSettings settings, List<List<String>> playerNames) {
+        List<List<MinigamePlayer>> players = toMinigamePlayer(playerNames);
+
         this.map = map;
         this.settings = settings;
 
@@ -36,7 +38,7 @@ public abstract class Minigame {
         return settings;
     }
 
-    public List<MinigameTeam<? extends MinigamePlayer>> getTeams() {
+    public List<MinigameTeam<MinigamePlayer>> getTeams() {
         return teams;
     }
 
@@ -44,8 +46,8 @@ public abstract class Minigame {
 //  #                 Lobby                 #
 //  #########################################
 
-    public void addToLobby(List<List<? extends MinigamePlayer>> players) {
-        for (List<? extends MinigamePlayer> parties : players) {
+    public void addToLobby(List<List<MinigamePlayer>> players) {
+        for (List<MinigamePlayer> parties : players) {
             for (MinigamePlayer player : parties) {
                 playersOnLobby.add(player);
             }
@@ -131,9 +133,9 @@ public abstract class Minigame {
 //  #            Games Specific            #
 //  ########################################
 
-    public abstract List<MinigameTeam<? extends MinigamePlayer>> createTeams(
-            List<List<? extends MinigamePlayer>> players
-    );
+    public abstract List<List<MinigamePlayer>> toMinigamePlayer(List<List<String>> playerNames);
+
+    public abstract List<MinigameTeam<MinigamePlayer>> createTeams(List<List<MinigamePlayer>> players);
 
     public abstract void resolvePlayerOutcomes();
 
