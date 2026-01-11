@@ -7,6 +7,7 @@ import io.github.tiagofar78.grindstone.game.MinigameMap;
 import io.github.tiagofar78.grindstone.game.MinigamePlayer;
 import io.github.tiagofar78.grindstone.game.MinigameSettings;
 import io.github.tiagofar78.grindstone.game.MinigameTeam;
+import io.github.tiagofar78.grindstone.party.Party;
 
 import java.util.HashMap;
 import java.util.List;
@@ -38,20 +39,20 @@ public class Coordinator {
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    private static Map<String, MatchmakingQueue> partyQueue = new HashMap<>();
+    private static Map<Party, MatchmakingQueue> partyQueue = new HashMap<>();
 
-    public static boolean isInQueue(String party) {
+    public static boolean isInQueue(Party party) {
         return partyQueue.containsKey(party);
     }
 
-    public static void enqueue(String party, MatchmakingQueue queue, MinigameMap map) {
-        // TODO remove party members from playerMinigame
+    public static void enqueue(Party party, MatchmakingQueue queue, MinigameMap map) {
         partyQueue.put(party, queue);
         queue.enqueue(party, map);
     }
 
-    public static void dequeue(String party) {
-        partyQueue.remove(party);
+    public static void dequeue(Party party) {
+        MatchmakingQueue queue = partyQueue.remove(party);
+        queue.dequeue(party);
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -62,19 +63,19 @@ public class Coordinator {
             MinigameFactory minigameFactory,
             MinigameSettings settings,
             MinigameMap map,
-            List<List<String>> parties
+            List<Party> parties
     ) {
         Minigame minigame = minigameFactory.create(map, settings, parties);
 
-        for (List<String> party : parties) {
-            for (String playerName : party) {
+        for (Party party : parties) {
+            for (String playerName : party.getMembers()) {
                 playerMinigame.put(playerName, minigame);
             }
         }
     }
 
     public static void removeGame(Minigame minigame) {
-        for (MinigameTeam<? extends MinigamePlayer> team : minigame.getTeams()) {
+        for (MinigameTeam<MinigamePlayer> team : minigame.getTeams()) {
             for (MinigamePlayer player : team.getMembers()) {
                 playerMinigame.remove(player.getName());
             }

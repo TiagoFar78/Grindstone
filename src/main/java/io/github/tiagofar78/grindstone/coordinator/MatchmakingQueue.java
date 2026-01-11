@@ -2,6 +2,7 @@ package io.github.tiagofar78.grindstone.coordinator;
 
 import io.github.tiagofar78.grindstone.game.MinigameMap;
 import io.github.tiagofar78.grindstone.game.MinigameSettings;
+import io.github.tiagofar78.grindstone.party.Party;
 
 import java.util.LinkedList;
 import java.util.List;

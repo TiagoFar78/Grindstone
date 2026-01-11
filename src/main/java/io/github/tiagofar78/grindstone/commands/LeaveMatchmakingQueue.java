@@ -1,14 +1,13 @@
 package io.github.tiagofar78.grindstone.commands;
 
 import io.github.tiagofar78.grindstone.coordinator.Coordinator;
+import io.github.tiagofar78.grindstone.party.Party;
+import io.github.tiagofar78.grindstone.party.PartyService;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class LeaveMatchmakingQueue implements CommandExecutor {
 
@@ -19,24 +18,22 @@ public class LeaveMatchmakingQueue implements CommandExecutor {
             return true;
         }
 
-        List<String> party = getParty((Player) sender);
-        // TODO check if is party leader
+        String playerName = sender.getName();
+        Party party = PartyService.getParty(playerName);
+        if (!party.isLeader(playerName)) {
+            // TODO send not leader message
+            return true;
+        }
 
-        if (!Coordinator.isInQueue(party.toString())) { // TODO
+        if (!Coordinator.isInQueue(party)) {
             // TODO send not in queue message
             return true;
         }
 
-        Coordinator.dequeue(party.toString()); // TODO
+        Coordinator.dequeue(party);
         // TODO send message to party
 
         return true;
-    }
-
-    private List<String> getParty(Player player) { // TODO
-        List<String> party = new ArrayList<>();
-        party.add(player.getName());
-        return party;
     }
 
 }

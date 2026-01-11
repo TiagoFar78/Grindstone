@@ -3,6 +3,7 @@ package io.github.tiagofar78.grindstone.game;
 import io.github.tiagofar78.grindstone.game.phases.DisabledPhase;
 import io.github.tiagofar78.grindstone.game.phases.LoadingPhase;
 import io.github.tiagofar78.grindstone.game.phases.Phase;
+import io.github.tiagofar78.grindstone.party.Party;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +18,7 @@ public abstract class Minigame {
 
     private Phase _phase;
 
-    public Minigame(MinigameMap map, MinigameSettings settings, List<List<String>> playerNames) {
+    public Minigame(MinigameMap map, MinigameSettings settings, List<Party> playerNames) {
         List<List<MinigamePlayer>> players = toMinigamePlayer(playerNames);
 
         this.map = map;
@@ -133,7 +134,7 @@ public abstract class Minigame {
 //  #            Games Specific            #
 //  ########################################
 
-    public abstract List<List<MinigamePlayer>> toMinigamePlayer(List<List<String>> playerNames);
+    public abstract List<List<MinigamePlayer>> toMinigamePlayer(List<Party> playerNames);
 
     public abstract List<MinigameTeam<MinigamePlayer>> createTeams(List<List<MinigamePlayer>> players);
 
