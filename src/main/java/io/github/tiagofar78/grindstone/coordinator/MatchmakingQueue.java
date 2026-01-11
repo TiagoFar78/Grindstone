@@ -24,30 +24,34 @@ public class MatchmakingQueue {
         this.availableMaps = availableMaps;
     }
 
-    protected void enqueue(String party, MinigameMap map) {
-        MinigameLobby lobby = addToEligibleLobby(party, map);
-        if (lobby != null) {
-            if (lobby.isFull(settings)) {
-                queue.remove(lobby);
-                Coordinator.createMinigame(factory, settings, lobby.getMap(), lobby.getParties());
-            }
-
-            return;
+    protected boolean enqueue(Party party, MinigameMap map) {
+        if (party.size() > settings.maxPartySize()) {
+            return false;
         }
 
-        // TODO maybe check if party has more players than allowed on game
 
-        lobby = new MinigameLobby(party.toString(), availableMaps); // Allow the creation of competitive games as well TODO take care of party
-        if (lobby.isFull(settings)) {
-            Coordinator.createMinigame(factory, settings, lobby.getMap(), lobby.getParties());
-        } else {
-            queue.add(lobby);
+        for (MinigameLobby lobby : queue) {
+            if (lobby.add(party, map)) {
+                return true;
+            }
+        }
+
+        MinigameLobby lobby = new MinigameLobby(factory, settings, availableMaps, party); // TODO Allow the creation of competitive games as well
+        queue.add(lobby);
+
+        return true;
+    }
+
+    protected void dequeue(Party party) {
+        MinigameLobby lobby = remove(party);
+        if (lobby != null && lobby.isEmpty()) {
+            queue.remove(lobby);
         }
     }
 
-    private MinigameLobby addToEligibleLobby(String party, MinigameMap map) {
+    private MinigameLobby remove(Party party) {
         for (MinigameLobby lobby : queue) {
-            if (lobby.add(party, map, settings)) {
+            if (lobby.remove(party)) {
                 return lobby;
             }
         }

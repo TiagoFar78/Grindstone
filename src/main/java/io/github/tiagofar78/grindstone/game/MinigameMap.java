@@ -7,9 +7,8 @@ public abstract class MinigameMap {
     private String name;
     private Location referenceBlock;
 
-    public MinigameMap(String name, Location referenceBlock) {
+    public MinigameMap(String name) {
         this.name = name;
-        this.referenceBlock = referenceBlock;
     }
 
     public String getName() {
@@ -18,6 +17,10 @@ public abstract class MinigameMap {
 
     public Location getReferenceBlock() {
         return referenceBlock;
+    }
+
+    public void setReferenceBlock(Location referenceBlock) {
+        this.referenceBlock = referenceBlock;
     }
 
     public abstract void load();

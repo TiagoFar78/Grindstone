@@ -65,10 +65,12 @@ public class Coordinator {
             MinigameMap map,
             List<Party> parties
     ) {
+        // TODO set referenceBlock of map
         Minigame minigame = minigameFactory.create(map, settings, parties);
 
         for (Party party : parties) {
             for (String playerName : party.getMembers()) {
+                dequeue(party);
                 playerMinigame.put(playerName, minigame);
             }
         }
