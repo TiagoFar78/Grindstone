@@ -16,6 +16,10 @@ public class GrindstoneConfig {
     }
 
     public boolean canQueueAfterDisconnect;
+    public int lobbyQueueMinPlayersCooldown;
+    public int lobbyQueueHalfPlayersCooldown;
+    public int lobbyQueueFullPlayersCooldown;
+    public int gameCountdownAnnouncementsInterval;
     public int preparingPhaseDuration;
     public int finishedPhaseDuration;
 
@@ -23,6 +27,10 @@ public class GrindstoneConfig {
         YamlConfiguration config = GrindstoneResources.getYamlConfiguration();
 
         canQueueAfterDisconnect = config.getBoolean("CanQueueAfterDisconnect");
+        lobbyQueueMinPlayersCooldown = config.getInt("LobbyQueueMinPlayersCooldown");
+        lobbyQueueHalfPlayersCooldown = config.getInt("lobbyQueueHalfPlayersCooldown");
+        lobbyQueueFullPlayersCooldown = config.getInt("LobbyQueueFullPlayersCooldown");
+        gameCountdownAnnouncementsInterval = config.getInt("GameCountdownAnnouncementsInterval");
         preparingPhaseDuration = config.getInt("PreparingPhaseDuration");
         finishedPhaseDuration = config.getInt("FinishedPhaseDuration");
     }

@@ -1,5 +1,6 @@
 package io.github.tiagofar78.grindstone.queue;
 
+import io.github.tiagofar78.grindstone.game.MinigameFactory;
 import io.github.tiagofar78.grindstone.game.MinigameMap;
 import io.github.tiagofar78.grindstone.game.MinigameSettings;
 import io.github.tiagofar78.grindstone.party.Party;

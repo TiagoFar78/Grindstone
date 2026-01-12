@@ -1,3 +1,7 @@
 CanQueueAfterDisconnect: false
+LobbyQueueMinPlayersCooldown: 120
+LobbyQueueHalfPlayersCooldown: 30
+LobbyQueueFullPlayersCooldown: 10
+GameCountdownAnnouncementsInterval: 15
 PreparingPhaseDuration: 5
 FinishedPhaseDuration: 15

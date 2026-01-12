@@ -1,8 +1,6 @@
 package io.github.tiagofar78.grindstone.game;
 
-import io.github.tiagofar78.grindstone.party.Party;
-import io.github.tiagofar78.grindstone.queue.MinigameFactory;
-
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,14 +16,13 @@ public final class GamesManager {
             MinigameFactory minigameFactory,
             MinigameSettings settings,
             MinigameMap map,
-            List<Party> parties
+            List<Collection<String>> parties
     ) {
         // TODO set referenceBlock of map
         Minigame minigame = minigameFactory.create(map, settings, parties);
 
-        for (Party party : parties) {
-            for (String playerName : party.getMembers()) {
-                // TODO dequeue
+        for (Collection<String> party : parties) {
+            for (String playerName : party) {
                 playerMinigame.put(playerName, minigame);
             }
         }

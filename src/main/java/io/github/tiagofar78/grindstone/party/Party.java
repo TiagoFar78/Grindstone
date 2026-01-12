@@ -1,8 +1,11 @@
 package io.github.tiagofar78.grindstone.party;
 
 import java.util.Collection;
+import java.util.UUID;
 
 public interface Party {
+
+    UUID getId();
 
     Collection<String> getMembers();
 

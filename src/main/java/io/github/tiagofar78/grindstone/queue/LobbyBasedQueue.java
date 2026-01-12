@@ -1,5 +1,6 @@
 package io.github.tiagofar78.grindstone.queue;
 
+import io.github.tiagofar78.grindstone.game.MinigameFactory;
 import io.github.tiagofar78.grindstone.game.MinigameMap;
 import io.github.tiagofar78.grindstone.game.MinigameSettings;
 import io.github.tiagofar78.grindstone.party.Party;
@@ -12,7 +13,7 @@ public class LobbyBasedQueue extends MatchmakingQueue {
 
     // TODO Maybe change the priority system to make players with no map preference to be sent to where there are more players
 
-    private Queue<MinigameLobby> queue = new LinkedList<>();
+    private Queue<Lobby> queue = new LinkedList<>();
 
     protected LobbyBasedQueue(MinigameFactory factory, MinigameSettings settings, List<MinigameMap> availableMaps) {
         super(factory, settings, availableMaps);
@@ -20,32 +21,37 @@ public class LobbyBasedQueue extends MatchmakingQueue {
 
     @Override
     public void enqueue(Party party, MinigameMap map) {
-        for (MinigameLobby lobby : queue) {
+        for (Lobby lobby : queue) {
             if (lobby.add(party, map)) {
                 return;
             }
         }
 
-        MinigameLobby lobby = new MinigameLobby(getFactory(), getSettings(), getMaps(), party); // TODO Allow the creation of competitive games as well
+        Lobby lobby = new Lobby(this, getFactory(), getSettings(), getMaps(), party);
         queue.add(lobby);
     }
 
     @Override
     public void dequeue(Party party) {
-        MinigameLobby lobby = remove(party);
+        Lobby lobby = remove(party);
         if (lobby != null && lobby.isEmpty()) {
             queue.remove(lobby);
+            lobby.delete();
         }
     }
 
-    private MinigameLobby remove(Party party) {
-        for (MinigameLobby lobby : queue) {
+    private Lobby remove(Party party) {
+        for (Lobby lobby : queue) {
             if (lobby.remove(party)) {
                 return lobby;
             }
         }
 
         return null;
+    }
+
+    protected void transferedToGame(Lobby lobby) {
+        queue.remove(lobby);
     }
 
 }

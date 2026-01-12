@@ -4,6 +4,7 @@ import io.github.tiagofar78.grindstone.Grindstone;
 import io.github.tiagofar78.grindstone.GrindstoneConfig;
 import io.github.tiagofar78.grindstone.commands.JoinMatchmakingQueue;
 import io.github.tiagofar78.grindstone.game.GamesManager;
+import io.github.tiagofar78.grindstone.game.MinigameFactory;
 import io.github.tiagofar78.grindstone.game.MinigameMap;
 import io.github.tiagofar78.grindstone.game.MinigameSettings;
 import io.github.tiagofar78.grindstone.party.Party;
@@ -97,6 +98,12 @@ public final class QueuesManager {
 
     private static boolean isAny(Function<String, Boolean> f, Collection<String> members) {
         return members.stream().anyMatch(m -> f.apply(m));
+    }
+
+    public static void transferedToGame(List<Party> parties) {
+        for (Party party : parties) {
+            partyQueue.remove(party);
+        }
     }
 
 }

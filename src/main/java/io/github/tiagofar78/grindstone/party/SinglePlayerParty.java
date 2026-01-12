@@ -4,14 +4,19 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
 public class SinglePlayerParty implements Party {
 
-    private int id;
     private String playerName;
 
     public SinglePlayerParty(String playerName) {
         this.playerName = playerName;
+    }
+
+    @Override
+    public UUID getId() {
+        return UUID.fromString(playerName);
     }
 
     @Override
@@ -28,7 +33,7 @@ public class SinglePlayerParty implements Party {
 
     @Override
     public boolean wasCopiedFrom(Party party) {
-        return party instanceof SinglePlayerParty s && this.id == s.id;
+        return party instanceof SinglePlayerParty s && this.getId().equals(s.getId());
     }
 
     @Override
@@ -52,7 +57,7 @@ public class SinglePlayerParty implements Party {
 
     @Override
     public int hashCode() {
-        return Objects.hash(playerName);
+        return Objects.hash(getId());
     }
 
 }
