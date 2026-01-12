@@ -1,9 +1,9 @@
 package io.github.tiagofar78.grindstone.game.phases;
 
 import io.github.tiagofar78.grindstone.Grindstone;
+import io.github.tiagofar78.grindstone.GrindstoneConfig;
 import io.github.tiagofar78.grindstone.game.Minigame;
 import io.github.tiagofar78.grindstone.game.MinigamePlayer;
-import io.github.tiagofar78.grindstone.managers.ConfigManager;
 
 import org.bukkit.Bukkit;
 
@@ -42,7 +42,7 @@ public class PreparingPhase extends Phase {
     public void start() {
         getGame().sendGameExplanationMessage();
 
-        int preparingPhaseDuration = ConfigManager.getInstance().preparingPhaseDuration();
+        int preparingPhaseDuration = GrindstoneConfig.getInstance().preparingPhaseDuration;
         runTimer(preparingPhaseDuration);
     }
 
@@ -60,13 +60,8 @@ public class PreparingPhase extends Phase {
         }
 
         for (MinigamePlayer player : getGame().getPlayersOnLobby()) {
-            player.getPlayerAdapter().sendTitleMessage(
-                    LIGHT_RED_COLOR + Integer.toString(secondsRemaining),
-                    "",
-                    0,
-                    1,
-                    0
-            );
+            String message = LIGHT_RED_COLOR + Integer.toString(secondsRemaining);
+            player.getPlayerAdapter().sendTitleMessage(message, "", 0, 1, 0);
         }
 
         Bukkit.getScheduler().runTaskLater(Grindstone.getInstance(), new Runnable() {

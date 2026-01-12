@@ -1,5 +1,6 @@
-package io.github.tiagofar78.grindstone.coordinator;
+package io.github.tiagofar78.grindstone.queue;
 
+import io.github.tiagofar78.grindstone.game.GamesManager;
 import io.github.tiagofar78.grindstone.game.MinigameMap;
 import io.github.tiagofar78.grindstone.game.MinigameSettings;
 import io.github.tiagofar78.grindstone.party.Party;
@@ -27,7 +28,7 @@ public class MinigameLobby {
         this.settings = settings;
         this.availableMaps = availableMaps;
         parties = new ArrayList<>();
-        parties.add(firstParty);
+        parties.add(firstParty.copy());
     }
 
     private void assignMap(MinigameMap map) {
@@ -53,7 +54,7 @@ public class MinigameLobby {
             assignMap(map);
         }
 
-        parties.add(party);
+        parties.add(party.copy());
         // TODO send new player message
 
         if (isMatchFound()) {
@@ -64,12 +65,24 @@ public class MinigameLobby {
     }
 
     public boolean remove(Party party) {
-        if (parties.remove(party)) {
-            // TODO send left message
-            return true;
+        Party storedParty = findParty(party);
+        if (storedParty == null) {
+            return false;
         }
 
-        return false;
+        parties.remove(storedParty);
+        // TODO send left message
+        return true;
+    }
+
+    private Party findParty(Party current) {
+        for (Party party : parties) {
+            if (party.wasCopiedFrom(current)) {
+                return party;
+            }
+        }
+
+        return null;
     }
 
     public boolean isEmpty() {
@@ -89,7 +102,7 @@ public class MinigameLobby {
         // TODO send match found message
         // TODO 1s scheduler
 
-        Coordinator.createMinigame(factory, settings, getMap(), parties);
+        GamesManager.createMinigame(factory, settings, getMap(), parties);
     }
 
     public MinigameMap getMap() {

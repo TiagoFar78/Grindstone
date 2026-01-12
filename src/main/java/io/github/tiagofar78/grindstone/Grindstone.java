@@ -1,7 +1,6 @@
 package io.github.tiagofar78.grindstone;
 
 import io.github.tiagofar78.grindstone.commands.LeaveMatchmakingQueue;
-import io.github.tiagofar78.grindstone.managers.ConfigManager;
 
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -28,11 +27,7 @@ public class Grindstone extends JavaPlugin {
 
         getCommand(LEAVE_QUEUE_COMMAND_LABEL).setExecutor(new LeaveMatchmakingQueue());
 
-        loadManagers();
-    }
-
-    private void loadManagers() {
-        if (!ConfigManager.load()) {
+        if (!GrindstoneConfig.load()) {
             Bukkit.getLogger().severe("[Grindstone] Could not load config");
             Bukkit.getPluginManager().disablePlugin(this);
         }

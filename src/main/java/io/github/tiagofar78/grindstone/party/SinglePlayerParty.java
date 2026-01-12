@@ -7,6 +7,7 @@ import java.util.Objects;
 
 public class SinglePlayerParty implements Party {
 
+    private int id;
     private String playerName;
 
     public SinglePlayerParty(String playerName) {
@@ -14,15 +15,30 @@ public class SinglePlayerParty implements Party {
     }
 
     @Override
-    public boolean isLeader(String playerName) {
-        return true;
-    }
-
-    @Override
     public Collection<String> getMembers() {
         List<String> members = new ArrayList<>();
         members.add(playerName);
         return members;
+    }
+
+    @Override
+    public Party copy() {
+        return null;
+    }
+
+    @Override
+    public boolean wasCopiedFrom(Party party) {
+        return party instanceof SinglePlayerParty s && this.id == s.id;
+    }
+
+    @Override
+    public boolean canQueueUp(String memberName) {
+        return true;
+    }
+
+    @Override
+    public boolean canStopQueue(String memberName) {
+        return true;
     }
 
     @Override
@@ -38,6 +54,5 @@ public class SinglePlayerParty implements Party {
     public int hashCode() {
         return Objects.hash(playerName);
     }
-
 
 }

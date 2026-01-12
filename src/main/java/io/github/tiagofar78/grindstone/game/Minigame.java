@@ -69,6 +69,10 @@ public abstract class Minigame {
         return null;
     }
 
+    public boolean isInLobby(String playerName) {
+        return getPlayer(playerName) != null;
+    }
+
     public abstract void addPlayerToGame(MinigamePlayer player);
 
     public void playerRejoin(String playerName) {

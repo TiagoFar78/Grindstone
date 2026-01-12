@@ -1,10 +1,9 @@
 package io.github.tiagofar78.grindstone.commands;
 
-import io.github.tiagofar78.grindstone.coordinator.Coordinator;
-import io.github.tiagofar78.grindstone.coordinator.MatchmakingQueue;
 import io.github.tiagofar78.grindstone.game.MinigameMap;
-import io.github.tiagofar78.grindstone.party.Party;
-import io.github.tiagofar78.grindstone.party.PartyService;
+import io.github.tiagofar78.grindstone.queue.EnqueueResult;
+import io.github.tiagofar78.grindstone.queue.MatchmakingQueue;
+import io.github.tiagofar78.grindstone.queue.QueuesManager;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -32,19 +31,9 @@ public class JoinMatchmakingQueue implements CommandExecutor {
             return true;
         }
 
-        String playerName = sender.getName();
-        Party party = PartyService.getParty(playerName);
-        if (!party.isLeader(playerName)) {
-            // TODO send not leader message
-            return true;
-        }
-
-        if (Coordinator.isInQueue(party)) {
-            // TODO Send already in a queue message
-            return true;
-        }
-
-        Coordinator.enqueue(party, queue, map);
+        EnqueueResult result = QueuesManager.enqueue(sender.getName(), queue, map);
+        // TODO send messages based on result
+        // TODO in case of success mention sender name
 
         return true;
     }

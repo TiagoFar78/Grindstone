@@ -1,8 +1,8 @@
 package io.github.tiagofar78.grindstone.game.phases;
 
 import io.github.tiagofar78.grindstone.Grindstone;
+import io.github.tiagofar78.grindstone.GrindstoneConfig;
 import io.github.tiagofar78.grindstone.game.Minigame;
-import io.github.tiagofar78.grindstone.managers.ConfigManager;
 
 import org.bukkit.Bukkit;
 
@@ -44,7 +44,7 @@ public class FinishedPhase extends Phase {
         getGame().sendVictoryMessage();
         getGame().resolvePlayerOutcomes();
 
-        int finishedPhaseDuration = ConfigManager.getInstance().finishedPhaseDuration();
+        int finishedPhaseDuration = GrindstoneConfig.getInstance().finishedPhaseDuration;
         Bukkit.getScheduler().runTaskLater(Grindstone.getInstance(), new Runnable() {
 
             @Override

@@ -4,12 +4,18 @@ import java.util.Collection;
 
 public interface Party {
 
-    boolean isLeader(String playerName);
-
     Collection<String> getMembers();
 
     default int size() {
         return getMembers().size();
     }
+
+    Party copy();
+
+    boolean wasCopiedFrom(Party party);
+
+    boolean canQueueUp(String memberName);
+
+    boolean canStopQueue(String memberName);
 
 }

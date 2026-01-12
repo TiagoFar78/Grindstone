@@ -1,2 +1,3 @@
+CanQueueAfterDisconnect: false
 PreparingPhaseDuration: 5
 FinishedPhaseDuration: 15

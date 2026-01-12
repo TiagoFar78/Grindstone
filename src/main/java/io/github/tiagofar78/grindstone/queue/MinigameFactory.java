@@ -1,4 +1,4 @@
-package io.github.tiagofar78.grindstone.coordinator;
+package io.github.tiagofar78.grindstone.queue;
 
 import io.github.tiagofar78.grindstone.game.Minigame;
 import io.github.tiagofar78.grindstone.game.MinigameMap;
