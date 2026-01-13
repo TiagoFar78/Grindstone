@@ -87,6 +87,10 @@ public final class QueuesManager {
             return DequeueResult.NOT_ALLOWED_BY_PARTY;
         }
 
+        return dequeue(party);
+    }
+
+    public static DequeueResult dequeue(Party party) {
         if (!isInQueue(party)) {
             return DequeueResult.NOT_IN_QUEUE;
         }

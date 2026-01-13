@@ -1,6 +1,7 @@
 package io.github.tiagofar78.grindstone;
 
 import io.github.tiagofar78.grindstone.commands.LeaveMatchmakingQueue;
+import io.github.tiagofar78.grindstone.party.PartyService;
 
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -31,6 +32,8 @@ public class Grindstone extends JavaPlugin {
             Bukkit.getLogger().severe("[Grindstone] Could not load config");
             Bukkit.getPluginManager().disablePlugin(this);
         }
+
+        PartyService.registerFallbackProviderListener();
     }
 
 }

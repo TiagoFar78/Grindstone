@@ -1,6 +1,13 @@
 package io.github.tiagofar78.grindstone.party;
 
+import io.github.tiagofar78.grindstone.Grindstone;
+import io.github.tiagofar78.grindstone.queue.QueuesManager;
+
+import java.util.function.Consumer;
+
 public final class PartyService {
+
+    private static final Consumer<Party> partySizeChangeListener = party -> QueuesManager.dequeue(party);
 
     private static PartyProvider provider;
 
@@ -9,6 +16,7 @@ public final class PartyService {
 
     public static void registerProvider(PartyProvider partyProvider) {
         provider = partyProvider;
+        provider.registerPartySizeChangeEventListener(partySizeChangeListener);
     }
 
     public static Party getParty(String playerName) {
@@ -17,6 +25,12 @@ public final class PartyService {
         }
 
         return provider.getParty(playerName);
+    }
+
+    public static void registerFallbackProviderListener() {
+        SinglePlayerPartyListener.registerPartySizeChangeEventListener(partySizeChangeListener);
+        Grindstone grindstone = Grindstone.getInstance();
+        grindstone.getServer().getPluginManager().registerEvents(new SinglePlayerPartyListener(), grindstone);
     }
 
 }
