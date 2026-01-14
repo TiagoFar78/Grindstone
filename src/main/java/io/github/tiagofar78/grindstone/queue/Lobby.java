@@ -1,12 +1,12 @@
 package io.github.tiagofar78.grindstone.queue;
 
 import io.github.tiagofar78.grindstone.GrindstoneConfig;
+import io.github.tiagofar78.grindstone.bukkit.Scheduler;
 import io.github.tiagofar78.grindstone.game.GamesManager;
 import io.github.tiagofar78.grindstone.game.MinigameFactory;
 import io.github.tiagofar78.grindstone.game.MinigameMap;
 import io.github.tiagofar78.grindstone.game.MinigameSettings;
 import io.github.tiagofar78.grindstone.party.Party;
-import io.github.tiagofar78.grindstone.util.Scheduler;
 import io.github.tiagofar78.grindstone.util.TeamLayoutSolver;
 
 import org.bukkit.scheduler.BukkitTask;

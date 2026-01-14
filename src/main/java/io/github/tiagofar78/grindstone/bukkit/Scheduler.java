@@ -1,4 +1,4 @@
-package io.github.tiagofar78.grindstone.util;
+package io.github.tiagofar78.grindstone.bukkit;
 
 import io.github.tiagofar78.grindstone.Grindstone;
 

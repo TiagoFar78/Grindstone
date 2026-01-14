@@ -29,8 +29,7 @@ public final class PartyService {
 
     public static void registerFallbackProviderListener() {
         SinglePlayerPartyListener.registerPartySizeChangeEventListener(partySizeChangeListener);
-        Grindstone grindstone = Grindstone.getInstance();
-        grindstone.getServer().getPluginManager().registerEvents(new SinglePlayerPartyListener(), grindstone);
+        Grindstone.getInstance().registerListener(new SinglePlayerPartyListener());
     }
 
 }

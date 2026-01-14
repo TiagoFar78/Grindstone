@@ -2,17 +2,23 @@ package io.github.tiagofar78.grindstone;
 
 import org.bukkit.configuration.file.YamlConfiguration;
 
+import java.io.File;
+
 public class GrindstoneConfig {
+
+    private static YamlConfiguration getYamlConfiguration() {
+        File configFile = new File(Grindstone.getInstance().getDataFolder(), "config.yml");
+        return YamlConfiguration.loadConfiguration(configFile);
+    }
+
+    public static void load() {
+        instance = new GrindstoneConfig();
+    }
 
     private static GrindstoneConfig instance;
 
     public static GrindstoneConfig getInstance() {
         return instance;
-    }
-
-    public static boolean load() {
-        instance = new GrindstoneConfig();
-        return instance != null;
     }
 
     public boolean canQueueAfterDisconnect;
@@ -24,7 +30,7 @@ public class GrindstoneConfig {
     public int finishedPhaseDuration;
 
     private GrindstoneConfig() {
-        YamlConfiguration config = GrindstoneResources.getYamlConfiguration();
+        YamlConfiguration config = getYamlConfiguration();
 
         canQueueAfterDisconnect = config.getBoolean("CanQueueAfterDisconnect");
         lobbyQueueMinPlayersCooldown = config.getInt("LobbyQueueMinPlayersCooldown");

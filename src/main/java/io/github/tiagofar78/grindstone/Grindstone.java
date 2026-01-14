@@ -4,6 +4,8 @@ import io.github.tiagofar78.grindstone.commands.LeaveMatchmakingQueue;
 import io.github.tiagofar78.grindstone.party.PartyService;
 
 import org.bukkit.Bukkit;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
@@ -26,14 +28,19 @@ public class Grindstone extends JavaPlugin {
 
         instance = (Grindstone) Bukkit.getServer().getPluginManager().getPlugin("TF_Grindstone");
 
-        getCommand(LEAVE_QUEUE_COMMAND_LABEL).setExecutor(new LeaveMatchmakingQueue());
+        registerCommand(LEAVE_QUEUE_COMMAND_LABEL, new LeaveMatchmakingQueue());
 
-        if (!GrindstoneConfig.load()) {
-            Bukkit.getLogger().severe("[Grindstone] Could not load config");
-            Bukkit.getPluginManager().disablePlugin(this);
-        }
+        GrindstoneConfig.load();
 
         PartyService.registerFallbackProviderListener();
+    }
+
+    public void registerListener(Listener listener) {
+        getServer().getPluginManager().registerEvents(listener, instance);
+    }
+
+    public void registerCommand(String label, CommandExecutor executor) {
+        getCommand(label).setExecutor(executor);
     }
 
 }

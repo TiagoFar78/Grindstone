@@ -39,11 +39,11 @@ public final class QueuesManager {
         }
 
         Grindstone instance = Grindstone.getInstance();
-        instance.getCommand(commandLabel).setExecutor(new JoinMatchmakingQueue(queue));
+        instance.registerCommand(commandLabel, new JoinMatchmakingQueue(queue));
 
         for (MinigameMap map : availableMaps) {
             String label = commandLabel + "_" + map.getName().toLowerCase();
-            instance.getCommand(label).setExecutor(new JoinMatchmakingQueue(queue, map));
+            instance.registerCommand(label, new JoinMatchmakingQueue(queue, map));
         }
     }
 
