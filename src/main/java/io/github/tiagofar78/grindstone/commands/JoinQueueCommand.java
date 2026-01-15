@@ -10,16 +10,16 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class JoinMatchmakingQueue implements CommandExecutor {
+public class JoinQueueCommand implements CommandExecutor {
 
     private MatchmakingQueue queue;
     private MinigameMap map;
 
-    public JoinMatchmakingQueue(MatchmakingQueue queue) {
+    public JoinQueueCommand(MatchmakingQueue queue) {
         this(queue, null);
     }
 
-    public JoinMatchmakingQueue(MatchmakingQueue queue, MinigameMap map) {
+    public JoinQueueCommand(MatchmakingQueue queue, MinigameMap map) {
         this.queue = queue;
         this.map = map;
     }

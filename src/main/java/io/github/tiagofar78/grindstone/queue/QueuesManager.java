@@ -2,7 +2,7 @@ package io.github.tiagofar78.grindstone.queue;
 
 import io.github.tiagofar78.grindstone.Grindstone;
 import io.github.tiagofar78.grindstone.GrindstoneConfig;
-import io.github.tiagofar78.grindstone.commands.JoinMatchmakingQueue;
+import io.github.tiagofar78.grindstone.commands.JoinQueueCommand;
 import io.github.tiagofar78.grindstone.game.GamesManager;
 import io.github.tiagofar78.grindstone.game.MinigameFactory;
 import io.github.tiagofar78.grindstone.game.MinigameMap;
@@ -38,12 +38,11 @@ public final class QueuesManager {
             );
         }
 
-        Grindstone instance = Grindstone.getInstance();
-        instance.registerCommand(commandLabel, new JoinMatchmakingQueue(queue));
+        Grindstone.registerCommand(commandLabel, new JoinQueueCommand(queue));
 
         for (MinigameMap map : availableMaps) {
             String label = commandLabel + "_" + map.getName().toLowerCase();
-            instance.registerCommand(label, new JoinMatchmakingQueue(queue, map));
+            Grindstone.registerCommand(label, new JoinQueueCommand(queue, map));
         }
     }
 
