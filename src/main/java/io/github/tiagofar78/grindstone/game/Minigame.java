@@ -94,19 +94,6 @@ public abstract class Minigame {
 //  #              Admin zone              #
 //  ########################################
 
-    /**
-     * @return 0 if successful<br>
-     *         -1 if already started ongoing phase
-     */
-    public int forceStart() {
-        if (_phase.hasGameStarted()) {
-            return -1;
-        }
-
-        startNextPhase(newOngoingPhase());
-        return 0;
-    }
-
     public void forceStop() {
         startNextPhase(new DisabledPhase(this));
     }

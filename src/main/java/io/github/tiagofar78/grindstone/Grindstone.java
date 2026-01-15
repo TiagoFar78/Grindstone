@@ -1,5 +1,6 @@
 package io.github.tiagofar78.grindstone;
 
+import io.github.tiagofar78.grindstone.commands.ForceStopCommand;
 import io.github.tiagofar78.grindstone.commands.LeaveQueueCommand;
 import io.github.tiagofar78.grindstone.party.PartyService;
 
@@ -15,6 +16,7 @@ public class Grindstone extends JavaPlugin {
     public static final String ADMIN_PERMISSION = "Grindstone.Admin";
 
     private static final String LEAVE_QUEUE_COMMAND_LABEL = "dequeue";
+    private static final String FORCE_STOP_COMMAND_LABEL = "forcestop";
 
     private static Grindstone instance;
 
@@ -31,6 +33,7 @@ public class Grindstone extends JavaPlugin {
         instance = (Grindstone) Bukkit.getServer().getPluginManager().getPlugin("TF_Grindstone");
 
         registerCommand(LEAVE_QUEUE_COMMAND_LABEL, new LeaveQueueCommand());
+        registerCommand(FORCE_STOP_COMMAND_LABEL, new ForceStopCommand());
 
         GrindstoneConfig.load();
 

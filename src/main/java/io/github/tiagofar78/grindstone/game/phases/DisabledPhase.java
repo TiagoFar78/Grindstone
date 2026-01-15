@@ -1,5 +1,6 @@
 package io.github.tiagofar78.grindstone.game.phases;
 
+import io.github.tiagofar78.grindstone.game.GamesManager;
 import io.github.tiagofar78.grindstone.game.Minigame;
 import io.github.tiagofar78.grindstone.game.MinigamePlayer;
 
@@ -43,7 +44,7 @@ public class DisabledPhase extends Phase {
 
         game.disable();
 
-        // TODO unregister game GameManager.removeGame(game.getId());
+        GamesManager.removeGame(game);
     }
 
 }

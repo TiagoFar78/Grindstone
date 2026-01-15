@@ -2,8 +2,10 @@ package io.github.tiagofar78.grindstone.game;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public final class GamesManager {
 
@@ -34,6 +36,10 @@ public final class GamesManager {
                 playerMinigame.remove(player.getName());
             }
         }
+    }
+
+    public static Set<Minigame> getUniqueMinigames() {
+        return new HashSet<>(playerMinigame.values());
     }
 
     // Player Related
