@@ -22,6 +22,10 @@ public class BukkitPlayer {
         return player;
     }
 
+    public static boolean isOnline(String playerName) {
+        return getBukkitPlayer(playerName) == null;
+    }
+
     public static void sendTitleMessage(MinigamePlayer player, String titleMessage, String subtitleMessage) {
         int defaultFadeIn = 1 * TICKS_PER_SECOND;
         int defaultStay = (int) (3.5 * TICKS_PER_SECOND);

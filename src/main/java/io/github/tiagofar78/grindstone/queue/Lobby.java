@@ -114,7 +114,8 @@ public class Lobby {
     }
 
     private void initMinigame() {
-        GamesManager.createMinigame(factory, settings, getMap(), parties.stream().map(p -> p.getMembers()).toList());
+        List<Collection<String>> partiesMembers = parties.stream().map(p -> p.getMembers()).toList();
+        GamesManager.createMinigame(factory, settings, getMap(), partiesMembers, false);
         QueuesManager.transferedToGame(parties);
         queue.transferedToGame(this);
     }

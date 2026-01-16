@@ -15,7 +15,7 @@ public class LobbyBasedQueue extends MatchmakingQueue {
 
     private Queue<Lobby> queue = new LinkedList<>();
 
-    protected LobbyBasedQueue(MinigameFactory factory, MinigameSettings settings, List<MinigameMap> availableMaps) {
+    public LobbyBasedQueue(MinigameFactory factory, MinigameSettings settings, List<MinigameMap> availableMaps) {
         super(factory, settings, availableMaps);
     }
 

@@ -6,6 +6,6 @@ import java.util.List;
 @FunctionalInterface
 public interface MinigameFactory {
 
-    Minigame create(MinigameMap map, MinigameSettings settings, List<Collection<String>> parties);
+    Minigame create(MinigameMap map, MinigameSettings settings, List<Collection<String>> parties, boolean keepTeams);
 
 }

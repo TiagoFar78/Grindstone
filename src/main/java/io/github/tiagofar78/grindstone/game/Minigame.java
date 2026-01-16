@@ -19,6 +19,10 @@ public abstract class Minigame {
     private Phase _phase;
 
     public Minigame(MinigameMap map, MinigameSettings settings, List<Collection<String>> parties) {
+        this(map, settings, parties, false);
+    }
+
+    public Minigame(MinigameMap map, MinigameSettings settings, List<Collection<String>> parties, boolean keepTeams) {
         List<List<MinigamePlayer>> players = toMinigamePlayer(parties);
 
         this.map = map;
@@ -26,7 +30,7 @@ public abstract class Minigame {
 
         playersOnLobby = new ArrayList<>();
         addToLobby(players);
-        teams = createTeams(players);
+        teams = keepTeams ? partiesToTeams(players) : createTeams(players);
 
         startNextPhase(new LoadingPhase(this));
     }
@@ -40,6 +44,15 @@ public abstract class Minigame {
     }
 
     public List<MinigameTeam<MinigamePlayer>> getTeams() {
+        return teams;
+    }
+
+    private List<MinigameTeam<MinigamePlayer>> partiesToTeams(List<List<MinigamePlayer>> parties) {
+        List<MinigameTeam<MinigamePlayer>> teams = new ArrayList<>();
+        for (List<MinigamePlayer> party : parties) {
+            teams.add(createTeam(party));
+        }
+
         return teams;
     }
 
@@ -128,6 +141,8 @@ public abstract class Minigame {
     public abstract List<List<MinigamePlayer>> toMinigamePlayer(List<Collection<String>> parties);
 
     public abstract List<MinigameTeam<MinigamePlayer>> createTeams(List<List<MinigamePlayer>> players);
+
+    public abstract MinigameTeam<MinigamePlayer> createTeam(List<MinigamePlayer> party);
 
     public abstract void resolvePlayerOutcomes();
 

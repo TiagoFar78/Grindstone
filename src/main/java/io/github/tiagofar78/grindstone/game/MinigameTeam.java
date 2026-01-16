@@ -13,9 +13,13 @@ public class MinigameTeam<T extends MinigamePlayer> {
     private List<T> members;
 
     public MinigameTeam(String name, Color color) {
+        this(name, color, new ArrayList<>());
+    }
+
+    public MinigameTeam(String name, Color color, List<T> members) {
         this.name = name;
         this.color = color;
-        this.members = new ArrayList<>();
+        this.members = members;
     }
 
     public String getName() {

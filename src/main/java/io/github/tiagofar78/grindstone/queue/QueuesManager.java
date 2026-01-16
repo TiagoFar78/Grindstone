@@ -1,12 +1,8 @@
 package io.github.tiagofar78.grindstone.queue;
 
-import io.github.tiagofar78.grindstone.Grindstone;
 import io.github.tiagofar78.grindstone.GrindstoneConfig;
-import io.github.tiagofar78.grindstone.commands.JoinQueueCommand;
 import io.github.tiagofar78.grindstone.game.GamesManager;
-import io.github.tiagofar78.grindstone.game.MinigameFactory;
 import io.github.tiagofar78.grindstone.game.MinigameMap;
-import io.github.tiagofar78.grindstone.game.MinigameSettings;
 import io.github.tiagofar78.grindstone.party.Party;
 import io.github.tiagofar78.grindstone.party.PartyService;
 
@@ -20,31 +16,6 @@ public final class QueuesManager {
 
     private QueuesManager() {
     };
-
-    public static void registerGamemode(
-            MinigameFactory factory,
-            MinigameSettings gamemode,
-            List<MinigameMap> availableMaps,
-            String commandLabel
-    ) {
-        MatchmakingQueue queue = new LobbyBasedQueue(factory, gamemode, availableMaps);
-        registerGamemode(availableMaps, commandLabel, queue);
-    }
-
-    public static void registerGamemode(List<MinigameMap> availableMaps, String commandLabel, MatchmakingQueue queue) {
-        if (commandLabel.contains(" ") || commandLabel.isEmpty()) {
-            throw new IllegalArgumentException(
-                    "Could not register gamemode with command label \"" + commandLabel + "\". A command cannot contain spaces."
-            );
-        }
-
-        Grindstone.registerCommand(commandLabel, new JoinQueueCommand(queue));
-
-        for (MinigameMap map : availableMaps) {
-            String label = commandLabel + "_" + map.getName().toLowerCase();
-            Grindstone.registerCommand(label, new JoinQueueCommand(queue, map));
-        }
-    }
 
     private static Map<Party, MatchmakingQueue> partyQueue = new HashMap<>();
 

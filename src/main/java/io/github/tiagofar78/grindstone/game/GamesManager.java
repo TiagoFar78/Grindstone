@@ -20,8 +20,18 @@ public final class GamesManager {
             MinigameMap map,
             List<Collection<String>> parties
     ) {
+        createMinigame(minigameFactory, settings, map, parties, false);
+    }
+
+    public static void createMinigame(
+            MinigameFactory minigameFactory,
+            MinigameSettings settings,
+            MinigameMap map,
+            List<Collection<String>> parties,
+            boolean keepTeams
+    ) {
         // TODO set referenceBlock of map
-        Minigame minigame = minigameFactory.create(map, settings, parties);
+        Minigame minigame = minigameFactory.create(map, settings, parties, keepTeams);
 
         for (Collection<String> party : parties) {
             for (String playerName : party) {
@@ -61,6 +71,54 @@ public final class GamesManager {
     public static boolean leftOngoingGame(String playerName) {
         Minigame game = playerMinigame.get(playerName);
         return game != null && !game.isInLobby(playerName) && !game.getCurrentPhase().hasGameEnded();
+    }
+
+    // Forcestart Related
+
+    public static ForcestartResult forceStart(
+            MinigameFactory factory,
+            MinigameSettings settings,
+            MinigameMap map,
+            List<Collection<String>> teams
+    ) {
+        if (teams.size() > settings.maxTeams()) {
+            return ForcestartResult.TOO_MANY_TEAMS;
+        }
+
+        if (teams.size() < settings.minTeams()) {
+            return ForcestartResult.TOO_FEW_TEAMS;
+        }
+
+        int total = totalPlayers(teams);
+        if (total < settings.minPlayers()) {
+            return ForcestartResult.TOO_FEW_PLAYERS;
+        }
+
+        if (total > settings.maxPlayersPerTeam() * settings.maxTeams()) {
+            return ForcestartResult.TOO_MANY_PLAYERS;
+        }
+
+        for (Collection<String> team : teams) {
+            if (team.size() > settings.maxPlayersPerTeam()) {
+                return ForcestartResult.TEAM_CAPACITY_EXCEEDED;
+            }
+        }
+
+        if (!settings.doTeamsFit(teams)) {
+            return ForcestartResult.INVALID_TEAMS_DISTRIBUTION;
+        }
+
+        createMinigame(factory, settings, map, teams, true);
+        return ForcestartResult.SUCCESS;
+    }
+
+    private static int totalPlayers(List<Collection<String>> teams) {
+        int sum = 0;
+        for (Collection<String> team : teams) {
+            sum += team.size();
+        }
+
+        return sum;
     }
 
 }
