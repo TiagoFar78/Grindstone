@@ -19,7 +19,7 @@ import java.util.Random;
 
 public class ForceStartCommand implements CommandExecutor {
 
-    public static final String FORCE_START_COMMAND_LABEL = "forcestart";
+    public static final String COMMAND_LABEL = "forcestart";
 
     private MinigameFactory factory;
     private MinigameSettings settings;

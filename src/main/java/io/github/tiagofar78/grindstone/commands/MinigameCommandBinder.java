@@ -42,7 +42,7 @@ public class MinigameCommandBinder {
             List<MinigameMap> availableMaps,
             String commandLabel
     ) {
-        commandLabel = ForceStartCommand.FORCE_START_COMMAND_LABEL + "_" + commandLabel;
+        commandLabel = ForceStartCommand.COMMAND_LABEL + "_" + commandLabel;
         Grindstone.registerCommand(commandLabel, new ForceStartCommand(factory, gamemode, availableMaps));
 
         for (MinigameMap map : availableMaps) {
