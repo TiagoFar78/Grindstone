@@ -3,8 +3,8 @@ package io.github.tiagofar78.grindstone.queue;
 import io.github.tiagofar78.grindstone.GrindstoneConfig;
 import io.github.tiagofar78.grindstone.bukkit.Scheduler;
 import io.github.tiagofar78.grindstone.game.GamesManager;
+import io.github.tiagofar78.grindstone.game.MapFactory;
 import io.github.tiagofar78.grindstone.game.MinigameFactory;
-import io.github.tiagofar78.grindstone.game.MinigameMap;
 import io.github.tiagofar78.grindstone.game.MinigameSettings;
 import io.github.tiagofar78.grindstone.party.Party;
 import io.github.tiagofar78.grindstone.util.TeamLayoutSolver;
@@ -22,7 +22,7 @@ public class Lobby {
 
     private MinigameFactory factory;
     private MinigameSettings settings;
-    private List<MinigameMap> availableMaps;
+    private List<MapFactory> availableMaps;
     private List<Party> parties;
 
     private int startCooldown = -1;
@@ -32,7 +32,7 @@ public class Lobby {
             LobbyBasedQueue queue,
             MinigameFactory factory,
             MinigameSettings settings,
-            List<MinigameMap> availableMaps,
+            List<MapFactory> availableMaps,
             Party firstParty
     ) {
         this.queue = queue;
@@ -44,12 +44,12 @@ public class Lobby {
         updateTimer();
     }
 
-    private void assignMap(MinigameMap map) {
+    private void assignMap(MapFactory map) {
         availableMaps = new ArrayList<>();
         availableMaps.add(map);
     }
 
-    public boolean add(Party party, MinigameMap map) {
+    public boolean add(Party party, MapFactory map) {
         int maxPlayers = settings.maxTeams() * settings.maxPlayersPerTeam();
         if (getTotalPlayers() + party.size() > maxPlayers) {
             return false;
@@ -120,7 +120,7 @@ public class Lobby {
         queue.transferedToGame(this);
     }
 
-    public MinigameMap getMap() {
+    public MapFactory getMap() {
         int i = new Random().nextInt(availableMaps.size());
         return availableMaps.get(i);
     }

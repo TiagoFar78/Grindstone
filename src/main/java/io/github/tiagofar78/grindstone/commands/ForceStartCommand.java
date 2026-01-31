@@ -4,8 +4,8 @@ import io.github.tiagofar78.grindstone.Grindstone;
 import io.github.tiagofar78.grindstone.bukkit.BukkitPlayer;
 import io.github.tiagofar78.grindstone.game.ForcestartResult;
 import io.github.tiagofar78.grindstone.game.GamesManager;
+import io.github.tiagofar78.grindstone.game.MapFactory;
 import io.github.tiagofar78.grindstone.game.MinigameFactory;
-import io.github.tiagofar78.grindstone.game.MinigameMap;
 import io.github.tiagofar78.grindstone.game.MinigameSettings;
 
 import org.bukkit.command.Command;
@@ -23,20 +23,20 @@ public class ForceStartCommand implements CommandExecutor {
 
     private MinigameFactory factory;
     private MinigameSettings settings;
-    private List<MinigameMap> availableMaps;
+    private List<MapFactory> availableMaps;
 
-    public ForceStartCommand(MinigameFactory factory, MinigameSettings settings, MinigameMap map) {
+    public ForceStartCommand(MinigameFactory factory, MinigameSettings settings, MapFactory map) {
         this(factory, settings, singleMapList(map));
     }
 
-    public ForceStartCommand(MinigameFactory factory, MinigameSettings settings, List<MinigameMap> maps) {
+    public ForceStartCommand(MinigameFactory factory, MinigameSettings settings, List<MapFactory> maps) {
         this.factory = factory;
         this.settings = settings;
         this.availableMaps = maps;
     }
 
-    private static List<MinigameMap> singleMapList(MinigameMap map) {
-        List<MinigameMap> maps = new ArrayList<>();
+    private static List<MapFactory> singleMapList(MapFactory map) {
+        List<MapFactory> maps = new ArrayList<>();
         maps.add(map);
         return maps;
     }

@@ -1,6 +1,6 @@
 package io.github.tiagofar78.grindstone.commands;
 
-import io.github.tiagofar78.grindstone.game.MinigameMap;
+import io.github.tiagofar78.grindstone.game.MapFactory;
 import io.github.tiagofar78.grindstone.queue.EnqueueResult;
 import io.github.tiagofar78.grindstone.queue.MatchmakingQueue;
 import io.github.tiagofar78.grindstone.queue.QueuesManager;
@@ -13,13 +13,13 @@ import org.bukkit.entity.Player;
 public class JoinQueueCommand implements CommandExecutor {
 
     private MatchmakingQueue queue;
-    private MinigameMap map;
+    private MapFactory map;
 
     public JoinQueueCommand(MatchmakingQueue queue) {
         this(queue, null);
     }
 
-    public JoinQueueCommand(MatchmakingQueue queue, MinigameMap map) {
+    public JoinQueueCommand(MatchmakingQueue queue, MapFactory map) {
         this.queue = queue;
         this.map = map;
     }

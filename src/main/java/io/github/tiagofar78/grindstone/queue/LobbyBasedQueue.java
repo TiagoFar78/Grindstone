@@ -1,7 +1,7 @@
 package io.github.tiagofar78.grindstone.queue;
 
+import io.github.tiagofar78.grindstone.game.MapFactory;
 import io.github.tiagofar78.grindstone.game.MinigameFactory;
-import io.github.tiagofar78.grindstone.game.MinigameMap;
 import io.github.tiagofar78.grindstone.game.MinigameSettings;
 import io.github.tiagofar78.grindstone.party.Party;
 
@@ -15,12 +15,12 @@ public class LobbyBasedQueue extends MatchmakingQueue {
 
     private Queue<Lobby> queue = new LinkedList<>();
 
-    public LobbyBasedQueue(MinigameFactory factory, MinigameSettings settings, List<MinigameMap> availableMaps) {
+    public LobbyBasedQueue(MinigameFactory factory, MinigameSettings settings, List<MapFactory> availableMaps) {
         super(factory, settings, availableMaps);
     }
 
     @Override
-    public void enqueue(Party party, MinigameMap map) {
+    public void enqueue(Party party, MapFactory map) {
         for (Lobby lobby : queue) {
             if (lobby.add(party, map)) {
                 return;

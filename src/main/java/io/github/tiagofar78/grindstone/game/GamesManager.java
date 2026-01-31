@@ -1,5 +1,8 @@
 package io.github.tiagofar78.grindstone.game;
 
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -9,38 +12,67 @@ import java.util.Set;
 
 public final class GamesManager {
 
+    public static final int SIMULTANEOUS_GAMES = 10;
+    public static final int MAPS_DISTANCE = 1000;
+    public static final int MAPS_Y_CORD = 100;
+
     private GamesManager() {
     }
 
+    private static Minigame[] gamesRunning = new Minigame[SIMULTANEOUS_GAMES];
     private static Map<String, Minigame> playerMinigame = new HashMap<>();
 
-    public static void createMinigame(
+    public static boolean createMinigame(
             MinigameFactory minigameFactory,
             MinigameSettings settings,
-            MinigameMap map,
+            MapFactory map,
             List<Collection<String>> parties
     ) {
-        createMinigame(minigameFactory, settings, map, parties, false);
+        return createMinigame(minigameFactory, settings, map, parties, false);
     }
 
-    public static void createMinigame(
+    public static boolean createMinigame(
             MinigameFactory minigameFactory,
             MinigameSettings settings,
-            MinigameMap map,
+            MapFactory map,
             List<Collection<String>> parties,
             boolean keepTeams
     ) {
-        // TODO set referenceBlock of map
-        Minigame minigame = minigameFactory.create(map, settings, parties, keepTeams);
+        int gameIndex = -1;
+        for (int i = 0; i < SIMULTANEOUS_GAMES; i++) {
+            if (gamesRunning[i] == null) {
+                gameIndex = i;
+                break;
+            }
+        }
+
+        if (gameIndex == -1) {
+            return false;
+        }
+
+        int x = map.indexInWorld() * MAPS_DISTANCE;
+        int z = gameIndex * MAPS_DISTANCE;
+        Location referenceBlock = new Location(Bukkit.getWorld(map.getWorldName()), x, MAPS_Y_CORD, z);
+        Minigame minigame = minigameFactory.create(map.create(referenceBlock), settings, parties, keepTeams);
+        gamesRunning[gameIndex] = minigame;
 
         for (Collection<String> party : parties) {
             for (String playerName : party) {
                 playerMinigame.put(playerName, minigame);
             }
         }
+
+        return true;
     }
 
     public static void removeGame(Minigame minigame) {
+        for (int i = 0; i < SIMULTANEOUS_GAMES; i++) {
+            if (gamesRunning[i] == minigame) {
+                gamesRunning[i] = null;
+                break;
+            }
+        }
+
         for (MinigameTeam<MinigamePlayer> team : minigame.getTeams()) {
             for (MinigamePlayer player : team.getMembers()) {
                 playerMinigame.remove(player.getName());
@@ -78,7 +110,7 @@ public final class GamesManager {
     public static ForcestartResult forceStart(
             MinigameFactory factory,
             MinigameSettings settings,
-            MinigameMap map,
+            MapFactory map,
             List<Collection<String>> teams
     ) {
         if (teams.size() > settings.maxTeams()) {

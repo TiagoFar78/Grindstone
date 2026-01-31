@@ -2,7 +2,7 @@ package io.github.tiagofar78.grindstone.queue;
 
 import io.github.tiagofar78.grindstone.GrindstoneConfig;
 import io.github.tiagofar78.grindstone.game.GamesManager;
-import io.github.tiagofar78.grindstone.game.MinigameMap;
+import io.github.tiagofar78.grindstone.game.MapFactory;
 import io.github.tiagofar78.grindstone.party.Party;
 import io.github.tiagofar78.grindstone.party.PartyService;
 
@@ -23,7 +23,7 @@ public final class QueuesManager {
         return partyQueue.containsKey(party);
     }
 
-    public static EnqueueResult enqueue(String playerName, MatchmakingQueue queue, MinigameMap map) {
+    public static EnqueueResult enqueue(String playerName, MatchmakingQueue queue, MapFactory map) {
         Party party = PartyService.getParty(playerName);
         if (!party.canQueueUp(playerName)) {
             return EnqueueResult.NOT_ALLOWED_BY_PARTY;
