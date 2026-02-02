@@ -1,6 +1,6 @@
 package io.github.tiagofar78.grindstone.game;
 
-import org.bukkit.Color;
+import org.bukkit.ChatColor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,17 +8,25 @@ import java.util.List;
 public class MinigameTeam<T extends MinigamePlayer> {
 
     private String name;
-    private Color color;
+    private ChatColor chatColor;
 
     private List<T> members;
 
-    public MinigameTeam(String name, Color color) {
-        this(name, color, new ArrayList<>());
+    public MinigameTeam(TeamPreset preset) {
+        this(preset, new ArrayList<>());
     }
 
-    public MinigameTeam(String name, Color color, List<T> members) {
+    public MinigameTeam(TeamPreset preset, List<T> members) {
+        this(preset.getDisplayName(), preset.getChatColor(), members);
+    }
+
+    public MinigameTeam(String name, ChatColor chatColor) {
+        this(name, chatColor, new ArrayList<>());
+    }
+
+    public MinigameTeam(String name, ChatColor chatColor, List<T> members) {
         this.name = name;
-        this.color = color;
+        this.chatColor = chatColor;
         this.members = members;
     }
 
@@ -26,8 +34,8 @@ public class MinigameTeam<T extends MinigamePlayer> {
         return name;
     }
 
-    public Color getColor() {
-        return color;
+    public ChatColor getChatColor() {
+        return chatColor;
     }
 
     public List<T> getMembers() {

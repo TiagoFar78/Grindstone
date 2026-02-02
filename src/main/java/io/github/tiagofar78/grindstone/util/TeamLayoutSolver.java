@@ -11,8 +11,8 @@ public final class TeamLayoutSolver {
     private TeamLayoutSolver() {
     }
 
-    public static <T> List<List<T>> solveSimple(
-            Collection<Collection<T>> parties,
+    public static <T> List<List<T>> solve(
+            Collection<List<T>> parties,
             int maxTeams,
             int maxPlayersPerTeam
     ) {
@@ -21,7 +21,7 @@ public final class TeamLayoutSolver {
             teams.add(new ArrayList<>());
         }
 
-        List<Collection<T>> ordered = parties.stream().sorted(Comparator.comparingInt(p -> -p.size())).toList();
+        List<List<T>> ordered = parties.stream().sorted(Comparator.comparingInt(p -> -p.size())).toList();
         for (Collection<T> party : ordered) {
             placeParty(party, teams, maxPlayersPerTeam);
         }

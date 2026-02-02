@@ -3,6 +3,7 @@ package io.github.tiagofar78.grindstone.game;
 import io.github.tiagofar78.grindstone.game.phases.DisabledPhase;
 import io.github.tiagofar78.grindstone.game.phases.LoadingPhase;
 import io.github.tiagofar78.grindstone.game.phases.Phase;
+import io.github.tiagofar78.grindstone.util.TeamLayoutSolver;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -14,7 +15,7 @@ public abstract class Minigame {
     private MinigameSettings settings;
 
     private List<MinigamePlayer> playersOnLobby;
-    private List<MinigameTeam<MinigamePlayer>> teams;
+    private List<MinigameTeam<? extends MinigamePlayer>> teams;
 
     private Phase _phase;
 
@@ -30,7 +31,7 @@ public abstract class Minigame {
 
         playersOnLobby = new ArrayList<>();
         addToLobby(players);
-        teams = keepTeams ? partiesToTeams(players) : createTeams(players);
+        teams = keepTeams ? partiesToTeams(players) : distributeParties(players);
 
         startNextPhase(new LoadingPhase(this));
     }
@@ -43,12 +44,12 @@ public abstract class Minigame {
         return settings;
     }
 
-    public List<MinigameTeam<MinigamePlayer>> getTeams() {
+    public List<MinigameTeam<? extends MinigamePlayer>> getTeams() {
         return teams;
     }
 
-    private List<MinigameTeam<MinigamePlayer>> partiesToTeams(List<List<MinigamePlayer>> parties) {
-        List<MinigameTeam<MinigamePlayer>> teams = new ArrayList<>();
+    private List<MinigameTeam<? extends MinigamePlayer>> partiesToTeams(List<List<MinigamePlayer>> parties) {
+        List<MinigameTeam<? extends MinigamePlayer>> teams = new ArrayList<>();
         for (List<MinigamePlayer> party : parties) {
             teams.add(createTeam(party));
         }
@@ -103,6 +104,31 @@ public abstract class Minigame {
         sendPlayerLeftMessage(playerName);
     }
 
+    private List<List<MinigamePlayer>> toMinigamePlayer(List<Collection<String>> parties) {
+        List<List<MinigamePlayer>> newParties = new ArrayList<>();
+        for (Collection<String> party : parties) {
+            List<MinigamePlayer> newParty = new ArrayList<>();
+            for (String member : party) {
+                newParty.add(createPlayer(member));
+            }
+            newParties.add(newParty);
+        }
+
+        return newParties;
+    }
+
+    private List<MinigameTeam<? extends MinigamePlayer>> distributeParties(List<List<MinigamePlayer>> parties) {
+        int maxTeams = getSettings().maxTeams();
+        int playersPerTeam = getSettings().maxPlayersPerTeam();
+        List<List<MinigamePlayer>> teamPlayers = TeamLayoutSolver.solve(parties, maxTeams, playersPerTeam);
+        List<MinigameTeam<? extends MinigamePlayer>> teams = new ArrayList<>();
+        for (List<MinigamePlayer> playersInTeam : teamPlayers) {
+            teams.add(createTeam(playersInTeam));
+        }
+
+        return teams;
+    }
+
 //  ########################################
 //  #              Admin zone              #
 //  ########################################
@@ -138,11 +164,9 @@ public abstract class Minigame {
 //  #            Games Specific            #
 //  ########################################
 
-    public abstract List<List<MinigamePlayer>> toMinigamePlayer(List<Collection<String>> parties);
+    public abstract MinigamePlayer createPlayer(String name);
 
-    public abstract List<MinigameTeam<MinigamePlayer>> createTeams(List<List<MinigamePlayer>> players);
-
-    public abstract MinigameTeam<MinigamePlayer> createTeam(List<MinigamePlayer> party);
+    public abstract MinigameTeam<? extends MinigamePlayer> createTeam(List<MinigamePlayer> party);
 
     public abstract void resolvePlayerOutcomes();
 

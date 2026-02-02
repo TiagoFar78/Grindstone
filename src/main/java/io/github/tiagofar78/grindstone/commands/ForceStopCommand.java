@@ -64,8 +64,8 @@ public class ForceStopCommand implements CommandExecutor {
         message.add(messageSeparator);
 
         for (Minigame game : games) {
-            for (MinigameTeam<MinigamePlayer> team : game.getTeams()) {
-                String teamLine = "- " + team.getColor() + team.getName() + ": ";
+            for (MinigameTeam<? extends MinigamePlayer> team : game.getTeams()) {
+                String teamLine = "- " + team.getChatColor() + team.getName() + ": ";
                 for (MinigamePlayer player : team.getMembers()) {
                     teamLine += player + ", ";
                 }

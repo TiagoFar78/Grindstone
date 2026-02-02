@@ -73,7 +73,7 @@ public final class GamesManager {
             }
         }
 
-        for (MinigameTeam<MinigamePlayer> team : minigame.getTeams()) {
+        for (MinigameTeam<? extends MinigamePlayer> team : minigame.getTeams()) {
             for (MinigamePlayer player : team.getMembers()) {
                 playerMinigame.remove(player.getName());
             }
