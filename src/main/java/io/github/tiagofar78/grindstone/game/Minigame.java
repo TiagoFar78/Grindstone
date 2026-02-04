@@ -1,5 +1,6 @@
 package io.github.tiagofar78.grindstone.game;
 
+import io.github.tiagofar78.grindstone.bukkit.BukkitPlayer;
 import io.github.tiagofar78.grindstone.game.phases.DisabledPhase;
 import io.github.tiagofar78.grindstone.game.phases.LoadingPhase;
 import io.github.tiagofar78.grindstone.game.phases.Phase;
@@ -129,6 +130,12 @@ public abstract class Minigame {
         return teams;
     }
 
+    public void teleportToPreparingRoom() {
+        for (MinigamePlayer player : playersOnLobby) {
+            BukkitPlayer.teleport(player, map.preparingRoomLocation());
+        }
+    }
+
 //  ########################################
 //  #              Admin zone              #
 //  ########################################
@@ -169,8 +176,6 @@ public abstract class Minigame {
     public abstract MinigameTeam<? extends MinigamePlayer> createTeam(List<MinigamePlayer> party);
 
     public abstract void resolvePlayerOutcomes();
-
-    public abstract void teleportToPreparingRoom();
 
 //  ########################################
 //  #               Messages               #

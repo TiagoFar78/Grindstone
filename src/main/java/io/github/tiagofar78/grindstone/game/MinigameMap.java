@@ -5,7 +5,6 @@ import org.bukkit.Location;
 public abstract class MinigameMap {
 
     private String name;
-    private Location referenceBlock;
 
     public MinigameMap(String name) {
         this.name = name;
@@ -15,13 +14,7 @@ public abstract class MinigameMap {
         return name;
     }
 
-    public Location getReferenceBlock() {
-        return referenceBlock;
-    }
-
-    public void setReferenceBlock(Location referenceBlock) {
-        this.referenceBlock = referenceBlock;
-    }
+    public abstract Location preparingRoomLocation();
 
     public abstract void load();
 

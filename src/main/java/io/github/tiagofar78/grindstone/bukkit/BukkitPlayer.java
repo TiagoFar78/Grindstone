@@ -3,6 +3,7 @@ package io.github.tiagofar78.grindstone.bukkit;
 import io.github.tiagofar78.grindstone.game.MinigamePlayer;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
 public class BukkitPlayer {
@@ -50,6 +51,15 @@ public class BukkitPlayer {
         stay *= TICKS_PER_SECOND;
         fadeOut *= TICKS_PER_SECOND;
         bukkitPlayer.sendTitle(title, subtitle, (int) fadeIn, (int) stay, (int) fadeOut);
+    }
+
+    public static void teleport(MinigamePlayer player, Location location) {
+        Player bukkitPlayer = getBukkitPlayer(player);
+        if (bukkitPlayer == null) {
+            return;
+        }
+
+        bukkitPlayer.teleport(location);
     }
 
 }
