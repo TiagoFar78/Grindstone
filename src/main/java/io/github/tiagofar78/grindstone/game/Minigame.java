@@ -102,6 +102,7 @@ public abstract class Minigame {
     public void playerLeft(String playerName) {
         MinigamePlayer player = getPlayer(playerName);
         removePlayerFromGame(player);
+        playersOnLobby.remove(player);
         sendPlayerLeftMessage(playerName);
     }
 
@@ -128,6 +129,24 @@ public abstract class Minigame {
         }
 
         return teams;
+    }
+
+    public int getTeamIndex(MinigamePlayer member) {
+        for (int i = 0; i < teams.size(); i++) {
+            if (teams.get(i).getMembers().contains(member)) {
+                return i;
+            }
+        }
+
+        return -1;
+    }
+
+    public MinigameTeam<? extends MinigamePlayer> getTeam(MinigamePlayer member) {
+        return teams.get(getTeamIndex(member));
+    }
+
+    public void makeSpectator(MinigamePlayer player) {
+        player.setSpectator(true);
     }
 
     public void teleportToPreparingRoom() {

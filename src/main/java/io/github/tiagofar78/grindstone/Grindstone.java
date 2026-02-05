@@ -2,6 +2,7 @@ package io.github.tiagofar78.grindstone;
 
 import io.github.tiagofar78.grindstone.commands.ForceStopCommand;
 import io.github.tiagofar78.grindstone.commands.LeaveQueueCommand;
+import io.github.tiagofar78.grindstone.listener.PlayerConnectionListener;
 import io.github.tiagofar78.grindstone.party.PartyService;
 
 import org.bukkit.Bukkit;
@@ -37,6 +38,7 @@ public class Grindstone extends JavaPlugin {
 
         GrindstoneConfig.load();
 
+        registerListener(new PlayerConnectionListener());
         PartyService.registerFallbackProviderListener();
     }
 
