@@ -90,6 +90,15 @@ public final class GamesManager {
         return playerMinigame.get(playerName);
     }
 
+    public static <T extends Minigame> T getGame(String playerName, Class<T> type) {
+        Minigame game = getGame(playerName);
+        if (type.isInstance(game)) {
+            return type.cast(game);
+        }
+
+        return null;
+    }
+
     public static boolean isInGame(String playerName) {
         Minigame game = playerMinigame.get(playerName);
         return game != null && game.isInLobby(playerName);
