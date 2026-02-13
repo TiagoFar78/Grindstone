@@ -5,3 +5,13 @@ LobbyQueueFullPlayersCooldown: 10
 GameCountdownAnnouncementsInterval: 15
 PreparingPhaseDuration: 5
 FinishedPhaseDuration: 15
+GameSummary:
+  - "<green>============================================"
+  - "                     <white>{0}"
+  - ""
+  - "                  <color:{3}>{1} - {2}"
+  - ""
+  - "                 <red><bold>1st. <reset><gray>{4} - {5} {10}"
+  - "                 <orange><bold>2nd. <reset><gray>{6} - {7} {10}"
+  - "                 <yellow><bold>3rd. <reset><gray>{8} - {9} {10}"  
+  - "<green>============================================"

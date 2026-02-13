@@ -11,10 +11,12 @@ import io.github.tiagofar78.grindstone.game.MinigameSettings;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Locale;
 import java.util.Random;
 
 public class ForceStartCommand implements CommandExecutor {
@@ -43,8 +45,9 @@ public class ForceStartCommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+        Locale locale = sender instanceof Player ? ((Player) sender).locale() : Locale.ENGLISH;
         if (!sender.hasPermission(Grindstone.ADMIN_PERMISSION)) {
-            // TODO send no permission message
+            BukkitPlayer.sendMessage(sender, locale, "forcestart.not_allowed");
             return true;
         }
 
@@ -53,7 +56,7 @@ public class ForceStartCommand implements CommandExecutor {
             List<String> members = new ArrayList<>();
             for (String member : team.split(",")) {
                 if (BukkitPlayer.isOnline(member)) {
-                    // TODO Send player not online message
+                    BukkitPlayer.sendMessage(sender, locale, "forcestart.player_not_online", member);
                     return true;
                 }
 
@@ -64,7 +67,7 @@ public class ForceStartCommand implements CommandExecutor {
 
         int mapIndex = new Random().nextInt(availableMaps.size());
         ForcestartResult result = GamesManager.forceStart(factory, settings, availableMaps.get(mapIndex), teams);
-        // TODO Send message according to result
+        BukkitPlayer.sendMessage(sender, locale, result.getMessageKey());
 
         return true;
     }

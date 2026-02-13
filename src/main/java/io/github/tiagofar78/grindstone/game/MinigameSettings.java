@@ -5,6 +5,8 @@ import java.util.List;
 
 public interface MinigameSettings {
 
+    String getName();
+
     int maxPartySize();
 
     int minPlayers();

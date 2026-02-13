@@ -1,10 +1,14 @@
 package io.github.tiagofar78.grindstone.game;
 
+import io.github.tiagofar78.grindstone.GrindstoneConfig;
 import io.github.tiagofar78.grindstone.bukkit.BukkitPlayer;
+import io.github.tiagofar78.grindstone.bukkit.Messages;
 import io.github.tiagofar78.grindstone.game.phases.DisabledPhase;
 import io.github.tiagofar78.grindstone.game.phases.LoadingPhase;
 import io.github.tiagofar78.grindstone.game.phases.Phase;
 import io.github.tiagofar78.grindstone.util.TeamLayoutSolver;
+
+import net.kyori.adventure.text.format.NamedTextColor;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -200,20 +204,95 @@ public abstract class Minigame {
 //  #               Messages               #
 //  ########################################
 
+    public void lobbyBroadcast(String messageKey, Object... args) {
+        for (MinigamePlayer playerOnLobby : playersOnLobby) {
+            BukkitPlayer.sendMessage(playerOnLobby, messageKey, args);
+        }
+    }
+
     public void sendLoadingMessage() {
-        // TODO
+        lobbyBroadcast("game.loading");
     }
 
     public void sendVictoryMessage() {
-        // TODO
+        MinigameTeam<? extends MinigamePlayer> winnerTeam = null;
+        for (MinigameTeam<? extends MinigamePlayer> team : getTeams()) {
+            if (team.isWinner()) {
+                winnerTeam = team;
+                break;
+            }
+        }
+
+        if (winnerTeam == null) {
+            throw new IllegalStateException("A winner must be decided when calling this method. Use MinigameTeam#won");
+        }
+
+        String gamemode = settings.getName();
+        String winnerColor = winnerTeam.getChatColor().asHexString();
+        String winnerName = winnerTeam.getName();
+        String teamMembers = String.join(", ", winnerTeam.getMembers().stream().map(p -> p.getName()).toList());
+        String[][] playersWithBestStats = playersWithBestStats();
+
+        GrindstoneConfig config = GrindstoneConfig.getInstance();
+        String template = String.join("\n", config.gameSummary);
+        Object[] staticArgs = new Object[]{
+                gamemode,
+                winnerName,
+                teamMembers,
+                winnerColor,
+                playersWithBestStats[0][0],
+                playersWithBestStats[0][1],
+                playersWithBestStats[1][0],
+                playersWithBestStats[1][1],
+                playersWithBestStats[2][0],
+                playersWithBestStats[2][1],
+                null // placeholder for {10}
+        };
+
+        for (MinigamePlayer playerOnLobby : playersOnLobby) {
+            staticArgs[10] = Messages.raw(BukkitPlayer.getLocale(playerOnLobby), highlightedStatMessageKey());
+            BukkitPlayer.sendTranslatedMessage(playerOnLobby, template, staticArgs);
+        }
+
+        for (MinigamePlayer player : winnerTeam.getMembers()) {
+            BukkitPlayer.sendTitleMessage(
+                    player,
+                    "game.winner.title",
+                    new Object[0],
+                    "game.winner.subtitle",
+                    new Object[0]
+            );
+        }
+
+        for (MinigameTeam<? extends MinigamePlayer> team : getTeams()) {
+            if (team == winnerTeam) {
+                continue;
+            }
+
+            for (MinigamePlayer player : winnerTeam.getMembers()) {
+                BukkitPlayer.sendTitleMessage(
+                        player,
+                        "game.loser.title",
+                        new Object[0],
+                        "game.loser.subtitle",
+                        new Object[0]
+                );
+            }
+        }
     }
 
+    public abstract String highlightedStatMessageKey();
+
+    public abstract String[][] playersWithBestStats();
+
     public void sendPlayerRejoinMessage(String playerName) {
-        // TODO send to all players in lobby
+        NamedTextColor teamColor = getTeam(getPlayer(playerName)).getChatColor();
+        lobbyBroadcast("game.rejoin", playerName, teamColor.asHexString());
     }
 
     public void sendPlayerLeftMessage(String playerName) {
-        // TODO send to all players in lobby
+        NamedTextColor teamColor = getTeam(getPlayer(playerName)).getChatColor();
+        lobbyBroadcast("game.left", playerName, teamColor.asHexString());
     }
 
     public abstract void sendGameExplanationMessage();

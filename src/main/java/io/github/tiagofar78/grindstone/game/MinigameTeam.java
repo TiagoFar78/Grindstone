@@ -1,6 +1,6 @@
 package io.github.tiagofar78.grindstone.game;
 
-import org.bukkit.ChatColor;
+import net.kyori.adventure.text.format.NamedTextColor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,9 +8,11 @@ import java.util.List;
 public class MinigameTeam<T extends MinigamePlayer> {
 
     private String name;
-    private ChatColor chatColor;
+    private NamedTextColor chatColor;
 
     private List<T> members;
+
+    private boolean isWinner = false;
 
     public MinigameTeam(TeamPreset preset) {
         this(preset, new ArrayList<>());
@@ -20,11 +22,11 @@ public class MinigameTeam<T extends MinigamePlayer> {
         this(preset.getDisplayName(), preset.getChatColor(), members);
     }
 
-    public MinigameTeam(String name, ChatColor chatColor) {
+    public MinigameTeam(String name, NamedTextColor chatColor) {
         this(name, chatColor, new ArrayList<>());
     }
 
-    public MinigameTeam(String name, ChatColor chatColor, List<T> members) {
+    public MinigameTeam(String name, NamedTextColor chatColor, List<T> members) {
         this.name = name;
         this.chatColor = chatColor;
         this.members = members;
@@ -34,7 +36,7 @@ public class MinigameTeam<T extends MinigamePlayer> {
         return name;
     }
 
-    public ChatColor getChatColor() {
+    public NamedTextColor getChatColor() {
         return chatColor;
     }
 
@@ -48,6 +50,14 @@ public class MinigameTeam<T extends MinigamePlayer> {
 
     public void removeMember(T member) {
         members.remove(member);
+    }
+
+    public boolean isWinner() {
+        return isWinner;
+    }
+
+    public void won() {
+        isWinner = true;
     }
 
 }

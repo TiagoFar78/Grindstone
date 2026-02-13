@@ -1,5 +1,6 @@
 package io.github.tiagofar78.grindstone.commands;
 
+import io.github.tiagofar78.grindstone.bukkit.BukkitPlayer;
 import io.github.tiagofar78.grindstone.queue.DequeueResult;
 import io.github.tiagofar78.grindstone.queue.QueuesManager;
 
@@ -18,8 +19,7 @@ public class LeaveQueueCommand implements CommandExecutor {
         }
 
         DequeueResult result = QueuesManager.dequeue(sender.getName());
-        // TODO send messages based on result
-        // TODO in case of success mention sender name
+        BukkitPlayer.sendMessage(sender, ((Player) sender).locale(), result.getMessageKey());
 
         return true;
     }

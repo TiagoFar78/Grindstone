@@ -1,6 +1,7 @@
 package io.github.tiagofar78.grindstone.queue;
 
 import io.github.tiagofar78.grindstone.GrindstoneConfig;
+import io.github.tiagofar78.grindstone.bukkit.BukkitPlayer;
 import io.github.tiagofar78.grindstone.bukkit.Scheduler;
 import io.github.tiagofar78.grindstone.game.GamesManager;
 import io.github.tiagofar78.grindstone.game.MapFactory;
@@ -9,6 +10,8 @@ import io.github.tiagofar78.grindstone.game.MinigameSettings;
 import io.github.tiagofar78.grindstone.party.Party;
 import io.github.tiagofar78.grindstone.util.TeamLayoutSolver;
 
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.util.ArrayList;
@@ -68,7 +71,10 @@ public class Lobby {
         }
 
         parties.add(party.copy());
-        // TODO send new player message
+        int currentPlayers = getTotalPlayers();
+        for (String member : party.getMembers()) {
+            lobbyBroadcast("lobby.player_joined", currentPlayers, maxPlayers, member);
+        }
 
         updateTimer();
         return true;
@@ -95,7 +101,13 @@ public class Lobby {
         }
 
         parties.remove(storedParty);
-        // TODO send left message
+
+        int maxPlayers = settings.maxPartySize() * settings.maxPlayersPerTeam();
+        int currentPlayers = getTotalPlayers();
+        for (String member : party.getMembers()) {
+            lobbyBroadcast("lobby.player_left", currentPlayers, maxPlayers, member);
+        }
+
         return true;
     }
 
@@ -132,7 +144,7 @@ public class Lobby {
 
         if (cooldown == -1) {
             if (startCooldown != -1) {
-                // TODO send message to players saying the timer has reset
+                lobbyBroadcast("lobby.timer_reset");
             }
 
             startCooldown = -1;
@@ -159,7 +171,7 @@ public class Lobby {
         }
 
         if (secondsLeft % GrindstoneConfig.getInstance().gameCountdownAnnouncementsInterval == 0) {
-            // TODO send countdown message
+            lobbyBroadcast("lobby.time_left", secondsLeft);
         }
 
         task = Scheduler.runLater(1, new Runnable() {
@@ -173,6 +185,15 @@ public class Lobby {
 
     public void delete() {
         task.cancel();
+    }
+
+    private void lobbyBroadcast(String messageKey, Object... args) {
+        for (Party party : parties) {
+            for (String member : party.getMembers()) {
+                Player player = Bukkit.getPlayer(member);
+                BukkitPlayer.sendMessage(player, player.locale(), messageKey, args);
+            }
+        }
     }
 
     private enum CountdownStage {

@@ -1,22 +1,22 @@
 package io.github.tiagofar78.grindstone.game;
 
-import org.bukkit.ChatColor;
+import net.kyori.adventure.text.format.NamedTextColor;
 
 public enum TeamPreset {
 
-    RED("Red", ChatColor.RED),
-    BLUE("Blue", ChatColor.BLUE),
-    GREEN("Green", ChatColor.BLUE),
-    YELLOW("Yellow", ChatColor.YELLOW),
-    AQUA("AQUA", ChatColor.AQUA),
-    GRAY("GRAY", ChatColor.DARK_GRAY),
-    WHITE("WHITE", ChatColor.WHITE),
-    PINK("PINK", ChatColor.LIGHT_PURPLE);
+    RED("Red", NamedTextColor.RED),
+    BLUE("Blue", NamedTextColor.BLUE),
+    GREEN("Green", NamedTextColor.BLUE),
+    YELLOW("Yellow", NamedTextColor.YELLOW),
+    AQUA("AQUA", NamedTextColor.AQUA),
+    GRAY("GRAY", NamedTextColor.DARK_GRAY),
+    WHITE("WHITE", NamedTextColor.WHITE),
+    PINK("PINK", NamedTextColor.LIGHT_PURPLE);
 
     private final String displayName;
-    private final ChatColor chatColor;
+    private final NamedTextColor chatColor;
 
-    TeamPreset(String displayName, ChatColor chatColor) {
+    TeamPreset(String displayName, NamedTextColor chatColor) {
         this.displayName = displayName;
         this.chatColor = chatColor;
     }
@@ -25,7 +25,7 @@ public enum TeamPreset {
         return displayName;
     }
 
-    public ChatColor getChatColor() {
+    public NamedTextColor getChatColor() {
         return chatColor;
     }
 

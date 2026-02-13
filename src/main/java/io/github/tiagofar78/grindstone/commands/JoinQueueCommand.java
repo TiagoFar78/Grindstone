@@ -1,5 +1,6 @@
 package io.github.tiagofar78.grindstone.commands;
 
+import io.github.tiagofar78.grindstone.bukkit.BukkitPlayer;
 import io.github.tiagofar78.grindstone.game.MapFactory;
 import io.github.tiagofar78.grindstone.queue.EnqueueResult;
 import io.github.tiagofar78.grindstone.queue.MatchmakingQueue;
@@ -32,8 +33,7 @@ public class JoinQueueCommand implements CommandExecutor {
         }
 
         EnqueueResult result = QueuesManager.enqueue(sender.getName(), queue, map);
-        // TODO send messages based on result
-        // TODO in case of success mention sender name
+        BukkitPlayer.sendMessage(sender, ((Player) sender).locale(), result.getMessageKey());
 
         return true;
     }

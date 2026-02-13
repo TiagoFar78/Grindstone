@@ -6,7 +6,11 @@ import io.github.tiagofar78.grindstone.bukkit.BukkitPlayer;
 import io.github.tiagofar78.grindstone.game.Minigame;
 import io.github.tiagofar78.grindstone.game.MinigamePlayer;
 
+import net.kyori.adventure.title.Title;
+
 import org.bukkit.Bukkit;
+
+import java.time.Duration;
 
 public class PreparingPhase extends Phase {
 
@@ -48,7 +52,6 @@ public class PreparingPhase extends Phase {
     }
 
     private static final int TICKS_PER_SECOND = 20;
-    private static final String LIGHT_RED_COLOR = "§c";
 
     private void runTimer(int secondsRemaining) {
         if (getGame().getCurrentPhase() != this) {
@@ -60,9 +63,17 @@ public class PreparingPhase extends Phase {
             return;
         }
 
+        Title.Times times = Title.Times.times(Duration.ZERO, Duration.ofSeconds(1), Duration.ZERO);
         for (MinigamePlayer player : getGame().getPlayersOnLobby()) {
-            String message = LIGHT_RED_COLOR + Integer.toString(secondsRemaining);
-            BukkitPlayer.sendTitleMessage(player, message, "", 0, 1, 0);
+            Object[] args = new Object[]{Integer.toString(secondsRemaining)};
+            BukkitPlayer.sendTitleMessage(
+                    player,
+                    times,
+                    "preparing_phase.title",
+                    args,
+                    "preparing_phase.subtitle",
+                    args
+            );
         }
 
         Bukkit.getScheduler().runTaskLater(Grindstone.getInstance(), new Runnable() {

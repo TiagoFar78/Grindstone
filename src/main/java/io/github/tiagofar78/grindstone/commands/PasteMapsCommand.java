@@ -14,6 +14,7 @@ import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.session.ClipboardHolder;
 import com.sk89q.worldedit.world.World;
 import io.github.tiagofar78.grindstone.Grindstone;
+import io.github.tiagofar78.grindstone.bukkit.BukkitPlayer;
 import io.github.tiagofar78.grindstone.game.GamesManager;
 import io.github.tiagofar78.grindstone.game.MapFactory;
 
@@ -21,11 +22,13 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.List;
+import java.util.Locale;
 
 public class PasteMapsCommand implements CommandExecutor {
 
@@ -43,19 +46,20 @@ public class PasteMapsCommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+        Locale locale = sender instanceof Player ? ((Player) sender).locale() : Locale.ENGLISH;
         if (!sender.hasPermission(Grindstone.ADMIN_PERMISSION)) {
-            // TODO Send not allowed message
+            BukkitPlayer.sendMessage(sender, locale, "pastemaps.not_allowed");
             return true;
         }
 
         if (Bukkit.getWorld(worldName) == null) {
-            // TODO Send world worldName not found
+            BukkitPlayer.sendMessage(sender, locale, "pastemaps.world_not_found");
             return true;
         }
 
-        // TODO Send pasting it may take some time
-        pasteMaps(); // TODO
-        // TODO Send maps were pasted
+        BukkitPlayer.sendMessage(sender, locale, "pastemaps.pasting");
+        pasteMaps();
+        BukkitPlayer.sendMessage(sender, locale, "pastemaps.completed");
 
         return false;
     }

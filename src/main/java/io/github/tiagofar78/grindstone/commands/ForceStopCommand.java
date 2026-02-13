@@ -1,6 +1,7 @@
 package io.github.tiagofar78.grindstone.commands;
 
 import io.github.tiagofar78.grindstone.Grindstone;
+import io.github.tiagofar78.grindstone.bukkit.BukkitPlayer;
 import io.github.tiagofar78.grindstone.game.GamesManager;
 import io.github.tiagofar78.grindstone.game.Minigame;
 import io.github.tiagofar78.grindstone.game.MinigamePlayer;
@@ -9,35 +10,38 @@ import io.github.tiagofar78.grindstone.game.MinigameTeam;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Set;
 
 public class ForceStopCommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+        Locale locale = sender instanceof Player ? ((Player) sender).locale() : Locale.ENGLISH;
         if (!sender.hasPermission(Grindstone.ADMIN_PERMISSION)) {
-            // TODO Send no perm message
+            BukkitPlayer.sendMessage(sender, locale, "forcestop.not_allowed");
             return true;
         }
 
         String name = sender.getName();
         if (GamesManager.isInGame(name)) {
             GamesManager.getGame(name).forceStop();
-            // TODO Send forcestop success message
+            BukkitPlayer.sendMessage(sender, locale, "forcestop.success");
             return true;
         }
 
         if (args.length == 0) {
             Set<Minigame> games = GamesManager.getUniqueMinigames();
             if (games.size() == 0) {
-                // TODO Send no games running at this moment message
+                BukkitPlayer.sendMessage(sender, locale, "forcestop.no_games_running");
                 return true;
             }
 
-            // TODO Send choose the name of a player in a game to cancel it message
+            BukkitPlayer.sendMessage(sender, locale, "forcestop.no_games_running");
             sender.sendMessage(getGamesMessage(games));
 
             return true;
@@ -46,11 +50,11 @@ public class ForceStopCommand implements CommandExecutor {
         String targetName = args[0];
         if (GamesManager.isInGame(targetName)) {
             GamesManager.getGame(targetName).forceStop();
-            // TODO Send forcestop success message
+            BukkitPlayer.sendMessage(sender, locale, "forcestop.success");
             return true;
         }
 
-        // TODO Send targetName not registered in game message
+        BukkitPlayer.sendMessage(sender, locale, "forcestop.no_game_for_target", targetName);
         return true;
     }
 
