@@ -2,11 +2,11 @@ package io.github.tiagofar78.grindstone.game;
 
 import io.github.tiagofar78.grindstone.GrindstoneConfig;
 import io.github.tiagofar78.grindstone.bukkit.BukkitPlayer;
-import io.github.tiagofar78.grindstone.bukkit.Messages;
 import io.github.tiagofar78.grindstone.game.phases.DisabledPhase;
 import io.github.tiagofar78.grindstone.game.phases.LoadingPhase;
 import io.github.tiagofar78.grindstone.game.phases.Phase;
 import io.github.tiagofar78.grindstone.util.TeamLayoutSolver;
+import io.github.tiagofar78.messagesrepo.MessagesRepo;
 
 import net.kyori.adventure.text.format.NamedTextColor;
 
@@ -211,7 +211,7 @@ public abstract class Minigame {
     }
 
     public void sendLoadingMessage() {
-        lobbyBroadcast("game.loading");
+        lobbyBroadcast("grindstone.game.loading");
     }
 
     public void sendVictoryMessage() {
@@ -250,16 +250,19 @@ public abstract class Minigame {
         };
 
         for (MinigamePlayer playerOnLobby : playersOnLobby) {
-            staticArgs[10] = Messages.raw(BukkitPlayer.getLocale(playerOnLobby), highlightedStatMessageKey());
+            staticArgs[10] = MessagesRepo.getTranslations().translate(
+                    BukkitPlayer.getLocale(playerOnLobby),
+                    highlightedStatMessageKey()
+            );
             BukkitPlayer.sendTranslatedMessage(playerOnLobby, template, staticArgs);
         }
 
         for (MinigamePlayer player : winnerTeam.getMembers()) {
             BukkitPlayer.sendTitleMessage(
                     player,
-                    "game.winner.title",
+                    "grindstone.game.winner.title",
                     new Object[0],
-                    "game.winner.subtitle",
+                    "grindstone.game.winner.subtitle",
                     new Object[0]
             );
         }
@@ -272,9 +275,9 @@ public abstract class Minigame {
             for (MinigamePlayer player : winnerTeam.getMembers()) {
                 BukkitPlayer.sendTitleMessage(
                         player,
-                        "game.loser.title",
+                        "grindstone.game.loser.title",
                         new Object[0],
-                        "game.loser.subtitle",
+                        "grindstone.game.loser.subtitle",
                         new Object[0]
                 );
             }
@@ -287,12 +290,12 @@ public abstract class Minigame {
 
     public void sendPlayerRejoinMessage(String playerName) {
         NamedTextColor teamColor = getTeam(getPlayer(playerName)).getChatColor();
-        lobbyBroadcast("game.rejoin", playerName, teamColor.asHexString());
+        lobbyBroadcast("grindstone.game.rejoin", playerName, teamColor.asHexString());
     }
 
     public void sendPlayerLeftMessage(String playerName) {
         NamedTextColor teamColor = getTeam(getPlayer(playerName)).getChatColor();
-        lobbyBroadcast("game.left", playerName, teamColor.asHexString());
+        lobbyBroadcast("grindstone.game.left", playerName, teamColor.asHexString());
     }
 
     public abstract void sendGameExplanationMessage();

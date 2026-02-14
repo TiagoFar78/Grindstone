@@ -171,7 +171,7 @@ public class Lobby {
         }
 
         if (secondsLeft % GrindstoneConfig.getInstance().gameCountdownAnnouncementsInterval == 0) {
-            lobbyBroadcast("lobby.time_left", secondsLeft);
+            lobbyBroadcast("grindstone.lobby.time_left", secondsLeft);
         }
 
         task = Scheduler.runLater(1, new Runnable() {

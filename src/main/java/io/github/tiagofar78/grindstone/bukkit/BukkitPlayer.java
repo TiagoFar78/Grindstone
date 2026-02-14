@@ -1,19 +1,24 @@
 package io.github.tiagofar78.grindstone.bukkit;
 
 import io.github.tiagofar78.grindstone.game.MinigamePlayer;
+import io.github.tiagofar78.messagesrepo.MessagesRepo;
 
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.title.Title;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 
+import java.text.MessageFormat;
 import java.time.Duration;
 import java.util.Locale;
 
 public class BukkitPlayer {
+
+    private static final MiniMessage MINI = MiniMessage.miniMessage();
 
     public static Player getBukkitPlayer(MinigamePlayer player) {
         return getBukkitPlayer(player.getName());
@@ -32,13 +37,27 @@ public class BukkitPlayer {
         return getBukkitPlayer(playerName) != null;
     }
 
+//  ########################################
+//  #               Messages               #
+//  ########################################
+
+    private static Component translateMessage(Locale locale, String key, Object... args) {
+        String message = MessagesRepo.getTranslations().translate(locale, key);
+        return formatMessage(message, args);
+    }
+
+    private static Component formatMessage(String message, Object... args) {
+        String formatted = MessageFormat.format(message, args);
+        return MINI.deserialize(formatted);
+    }
+
     public static void sendTranslatedMessage(MinigamePlayer player, String message, Object... args) {
         Player bukkitPlayer = getBukkitPlayer(player);
         if (bukkitPlayer == null) {
             return;
         }
 
-        bukkitPlayer.sendMessage(Messages.format(message, args));
+        bukkitPlayer.sendMessage(formatMessage(message, args));
     }
 
     public static void sendMessage(MinigamePlayer player, String key, Object... args) {
@@ -47,7 +66,7 @@ public class BukkitPlayer {
             return;
         }
 
-        bukkitPlayer.sendMessage(Messages.translate(bukkitPlayer.locale(), key, args));
+        bukkitPlayer.sendMessage(translateMessage(bukkitPlayer.locale(), key, args));
     }
 
     public static void sendMessage(Audience audience, Locale locale, String key, Object... args) {
@@ -55,7 +74,7 @@ public class BukkitPlayer {
             return;
         }
 
-        audience.sendMessage(Messages.translate(locale, key, args));
+        audience.sendMessage(translateMessage(locale, key, args));
     }
 
     public static void sendTitleMessage(
@@ -87,18 +106,9 @@ public class BukkitPlayer {
         }
 
         Locale locale = bukkitPlayer.locale();
-        Component titleComponent = Messages.translate(locale, titleKey, titleArgs);
-        Component subtitleComponent = Messages.translate(locale, subtitleKey, subtitleArgs);
+        Component titleComponent = translateMessage(locale, titleKey, titleArgs);
+        Component subtitleComponent = translateMessage(locale, subtitleKey, subtitleArgs);
         bukkitPlayer.showTitle(Title.title(titleComponent, subtitleComponent, times));
-    }
-
-    public static void teleport(MinigamePlayer player, Location location) {
-        Player bukkitPlayer = getBukkitPlayer(player);
-        if (bukkitPlayer == null) {
-            return;
-        }
-
-        bukkitPlayer.teleport(location);
     }
 
     public static Locale getLocale(MinigamePlayer player) {
@@ -108,6 +118,15 @@ public class BukkitPlayer {
         }
 
         return bukkitPlayer.locale();
+    }
+
+    public static void teleport(MinigamePlayer player, Location location) {
+        Player bukkitPlayer = getBukkitPlayer(player);
+        if (bukkitPlayer == null) {
+            return;
+        }
+
+        bukkitPlayer.teleport(location);
     }
 
 }

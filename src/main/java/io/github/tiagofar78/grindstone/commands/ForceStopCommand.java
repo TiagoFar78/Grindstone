@@ -23,25 +23,25 @@ public class ForceStopCommand implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         Locale locale = sender instanceof Player ? ((Player) sender).locale() : Locale.ENGLISH;
         if (!sender.hasPermission(Grindstone.ADMIN_PERMISSION)) {
-            BukkitPlayer.sendMessage(sender, locale, "forcestop.not_allowed");
+            BukkitPlayer.sendMessage(sender, locale, "grindstone.forcestop.not_allowed");
             return true;
         }
 
         String name = sender.getName();
         if (GamesManager.isInGame(name)) {
             GamesManager.getGame(name).forceStop();
-            BukkitPlayer.sendMessage(sender, locale, "forcestop.success");
+            BukkitPlayer.sendMessage(sender, locale, "grindstone.forcestop.success");
             return true;
         }
 
         if (args.length == 0) {
             Set<Minigame> games = GamesManager.getUniqueMinigames();
             if (games.size() == 0) {
-                BukkitPlayer.sendMessage(sender, locale, "forcestop.no_games_running");
+                BukkitPlayer.sendMessage(sender, locale, "grindstone.forcestop.no_games_running");
                 return true;
             }
 
-            BukkitPlayer.sendMessage(sender, locale, "forcestop.no_games_running");
+            BukkitPlayer.sendMessage(sender, locale, "grindstone.forcestop.no_games_running");
             sender.sendMessage(getGamesMessage(games));
 
             return true;
@@ -50,11 +50,11 @@ public class ForceStopCommand implements CommandExecutor {
         String targetName = args[0];
         if (GamesManager.isInGame(targetName)) {
             GamesManager.getGame(targetName).forceStop();
-            BukkitPlayer.sendMessage(sender, locale, "forcestop.success");
+            BukkitPlayer.sendMessage(sender, locale, "grindstone.forcestop.success");
             return true;
         }
 
-        BukkitPlayer.sendMessage(sender, locale, "forcestop.no_game_for_target", targetName);
+        BukkitPlayer.sendMessage(sender, locale, "grindstone.forcestop.no_game_for_target", targetName);
         return true;
     }
 

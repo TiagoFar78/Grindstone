@@ -2,9 +2,9 @@ package io.github.tiagofar78.grindstone.queue;
 
 public enum DequeueResult {
 
-    SUCCESS("leavequeue.success"),
-    NOT_ALLOWED_BY_PARTY("leavequeue.not_allowed"),
-    NOT_IN_QUEUE("leavequeue.not_in_queue");
+    SUCCESS("grindstone.leavequeue.success"),
+    NOT_ALLOWED_BY_PARTY("grindstone.leavequeue.not_allowed"),
+    NOT_IN_QUEUE("grindstone.leavequeue.not_in_queue");
 
     private String messageKey;
 

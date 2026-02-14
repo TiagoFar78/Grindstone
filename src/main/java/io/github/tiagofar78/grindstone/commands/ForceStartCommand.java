@@ -47,7 +47,7 @@ public class ForceStartCommand implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         Locale locale = sender instanceof Player ? ((Player) sender).locale() : Locale.ENGLISH;
         if (!sender.hasPermission(Grindstone.ADMIN_PERMISSION)) {
-            BukkitPlayer.sendMessage(sender, locale, "forcestart.not_allowed");
+            BukkitPlayer.sendMessage(sender, locale, "grindstone.forcestart.not_allowed");
             return true;
         }
 
@@ -56,7 +56,7 @@ public class ForceStartCommand implements CommandExecutor {
             List<String> members = new ArrayList<>();
             for (String member : team.split(",")) {
                 if (BukkitPlayer.isOnline(member)) {
-                    BukkitPlayer.sendMessage(sender, locale, "forcestart.player_not_online", member);
+                    BukkitPlayer.sendMessage(sender, locale, "grindstone.forcestart.player_not_online", member);
                     return true;
                 }
 

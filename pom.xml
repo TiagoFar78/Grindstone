@@ -35,6 +35,11 @@
             <artifactId>adventure-text-minimessage</artifactId>
             <version>4.26.1</version>
         </dependency>
+        <dependency>
+            <groupId>io.github.tiagofar78</groupId>
+            <artifactId>messagesrepo</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
     </dependencies>
 
     <repositories>

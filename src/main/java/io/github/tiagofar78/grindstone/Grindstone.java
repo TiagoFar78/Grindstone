@@ -4,6 +4,7 @@ import io.github.tiagofar78.grindstone.commands.ForceStopCommand;
 import io.github.tiagofar78.grindstone.commands.LeaveQueueCommand;
 import io.github.tiagofar78.grindstone.listener.PlayerConnectionListener;
 import io.github.tiagofar78.grindstone.party.PartyService;
+import io.github.tiagofar78.messagesrepo.MessagesRepo;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandExecutor;
@@ -30,6 +31,8 @@ public class Grindstone extends JavaPlugin {
         if (!new File(getDataFolder(), "config.yml").exists()) {
             saveDefaultConfig();
         }
+
+        MessagesRepo.getTranslations().register(this.getClassLoader(), "/lang");
 
         instance = (Grindstone) Bukkit.getServer().getPluginManager().getPlugin("TF_Grindstone");
 

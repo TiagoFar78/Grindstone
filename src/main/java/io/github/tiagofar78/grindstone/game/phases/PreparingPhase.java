@@ -69,9 +69,9 @@ public class PreparingPhase extends Phase {
             BukkitPlayer.sendTitleMessage(
                     player,
                     times,
-                    "preparing_phase.title",
+                    "grindstone.preparing_phase.title",
                     args,
-                    "preparing_phase.subtitle",
+                    "grindstone.preparing_phase.subtitle",
                     args
             );
         }

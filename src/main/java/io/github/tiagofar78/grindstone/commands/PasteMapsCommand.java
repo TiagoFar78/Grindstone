@@ -48,18 +48,18 @@ public class PasteMapsCommand implements CommandExecutor {
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         Locale locale = sender instanceof Player ? ((Player) sender).locale() : Locale.ENGLISH;
         if (!sender.hasPermission(Grindstone.ADMIN_PERMISSION)) {
-            BukkitPlayer.sendMessage(sender, locale, "pastemaps.not_allowed");
+            BukkitPlayer.sendMessage(sender, locale, "grindstone.pastemaps.not_allowed");
             return true;
         }
 
         if (Bukkit.getWorld(worldName) == null) {
-            BukkitPlayer.sendMessage(sender, locale, "pastemaps.world_not_found");
+            BukkitPlayer.sendMessage(sender, locale, "grindstone.pastemaps.world_not_found");
             return true;
         }
 
-        BukkitPlayer.sendMessage(sender, locale, "pastemaps.pasting");
+        BukkitPlayer.sendMessage(sender, locale, "grindstone.pastemaps.pasting");
         pasteMaps();
-        BukkitPlayer.sendMessage(sender, locale, "pastemaps.completed");
+        BukkitPlayer.sendMessage(sender, locale, "grindstone.pastemaps.completed");
 
         return false;
     }
