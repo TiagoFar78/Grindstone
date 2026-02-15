@@ -41,12 +41,12 @@ public class BukkitPlayer {
 //  #               Messages               #
 //  ########################################
 
-    private static Component translateMessage(Locale locale, String key, Object... args) {
+    public static Component translateMessage(Locale locale, String key, Object... args) {
         String message = MessagesRepo.getTranslations().translate(locale, key);
         return formatMessage(message, args);
     }
 
-    private static Component formatMessage(String message, Object... args) {
+    public static Component formatMessage(String message, Object... args) {
         String formatted = MessageFormat.format(message, args);
         return MINI.deserialize(formatted);
     }

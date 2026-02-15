@@ -15,3 +15,10 @@ GameSummary:
   - "                 <orange><bold>2nd. <reset><gray>{6} - {7} {10}"
   - "                 <yellow><bold>3rd. <reset><gray>{8} - {9} {10}"  
   - "<green>============================================"
+GameExplanation:
+  Width: 50
+  Divisor: "-"
+  DivisorColor: "<green>"
+  DescriptionColor: "<yellow>"
+  GameColor: "<white>"
+  

@@ -6,6 +6,7 @@ import io.github.tiagofar78.grindstone.game.phases.DisabledPhase;
 import io.github.tiagofar78.grindstone.game.phases.LoadingPhase;
 import io.github.tiagofar78.grindstone.game.phases.Phase;
 import io.github.tiagofar78.grindstone.util.TeamLayoutSolver;
+import io.github.tiagofar78.grindstone.util.TextFormatting;
 import io.github.tiagofar78.messagesrepo.MessagesRepo;
 
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -298,6 +299,27 @@ public abstract class Minigame {
         lobbyBroadcast("grindstone.game.left", playerName, teamColor.asHexString());
     }
 
-    public abstract void sendGameExplanationMessage();
+    public void sendGameExplanationMessage() {
+        GrindstoneConfig config = GrindstoneConfig.getInstance();
+        int width = config.gameExplanationWidth;
+        String divisor = config.gameExplanationDivisor;
+        String divisorColor = config.gameExplanationDivisorColor;
+        String explanationColor = config.gameExplanationColor;
+        String gameColor = config.gameExplanationGameColor;
+
+        String explanationKey = gameExplanationMessageKey();
+        for (MinigamePlayer player : playersOnLobby) {
+            String message = MessagesRepo.getTranslations().translate(BukkitPlayer.getLocale(player), explanationKey);
+            String centered = "\n" + TextFormatting.formatCentered(message, width) + "\n";
+            centered = explanationColor + centered.replaceAll("\n", "\n" + explanationColor);
+            centered = gameColor + settings.getName() + "\n" + centered;
+            centered = divisorColor + divisor.repeat(width) + "\n" + centered + "\n" + divisorColor + divisor.repeat(
+                    width
+            );
+            BukkitPlayer.sendMessage(player, centered);
+        }
+    }
+
+    public abstract String gameExplanationMessageKey();
 
 }

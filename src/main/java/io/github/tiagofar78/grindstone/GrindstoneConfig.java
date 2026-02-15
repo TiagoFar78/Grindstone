@@ -31,13 +31,11 @@ public class GrindstoneConfig {
     public final int finishedPhaseDuration;
 
     public final List<String> gameSummary;
-    public final int gameSummaryWidth;
-    public final String gameSummarySeparator;
-    public final String gameSummaryGamemode;
-    public final String gameSummaryWinner;
-    public final String gameSummaryStatsFirst;
-    public final String gameSummaryStatsSecond;
-    public final String gameSummaryStatsThird;
+    public final int gameExplanationWidth;
+    public final String gameExplanationDivisor;
+    public final String gameExplanationDivisorColor;
+    public final String gameExplanationColor;
+    public final String gameExplanationGameColor;
 
     private GrindstoneConfig() {
         YamlConfiguration config = getYamlConfiguration();
@@ -51,13 +49,11 @@ public class GrindstoneConfig {
         finishedPhaseDuration = config.getInt("FinishedPhaseDuration");
 
         gameSummary = config.getStringList("GameSummary");
-        gameSummaryWidth = config.getInt("GameSummary.Width");
-        gameSummarySeparator = config.getString("GameSummary.Separator");
-        gameSummaryGamemode = config.getString("GameSummary.Gamemode");
-        gameSummaryWinner = config.getString("GameSummary.Winner");
-        gameSummaryStatsFirst = config.getString("GameSummary.StatHighlight.First");
-        gameSummaryStatsSecond = config.getString("GameSummary.StatHighlight.Second");
-        gameSummaryStatsThird = config.getString("GameSummary.StatHighlight.Third");
+        gameExplanationWidth = config.getInt("GameExplanation.Width");
+        gameExplanationDivisor = config.getString("GameExplanation.Divisor");
+        gameExplanationDivisorColor = config.getString("GameExplanation.DivisorColor");
+        gameExplanationColor = config.getString("GameExplanation.DescriptionColor");
+        gameExplanationGameColor = config.getString("GameExplanation.GameColor");
     }
 
 }
