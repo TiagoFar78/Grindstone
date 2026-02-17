@@ -3,5 +3,4 @@ version: 0.1
 api-version: '1.21'
 authors: [TiagoFar78]
 main: io.github.tiagofar78.grindstone.Grindstone
-commands:
-  teste:
+depend: [WorldEdit, TF_MessagesRepo]
