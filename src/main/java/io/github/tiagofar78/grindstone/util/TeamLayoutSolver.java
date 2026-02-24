@@ -11,11 +11,7 @@ public final class TeamLayoutSolver {
     private TeamLayoutSolver() {
     }
 
-    public static <T> List<List<T>> solve(
-            Collection<List<T>> parties,
-            int maxTeams,
-            int maxPlayersPerTeam
-    ) {
+    public static <T> List<List<T>> solve(Collection<List<T>> parties, int maxTeams, int maxPlayersPerTeam) {
         List<List<T>> teams = new ArrayList<>();
         for (int i = 0; i < maxTeams; i++) {
             teams.add(new ArrayList<>());
