@@ -49,8 +49,8 @@ public class TeamLayoutSolverTest {
         List<List<String>> result = TeamLayoutSolver.solve(parties, 2, 3);
 
         int totalPlayers = result.stream().mapToInt(List::size).sum();
-        Assert.assertEquals(totalPlayers, 5);
 
+        Assert.assertEquals(totalPlayers, 5);
         Assert.assertTrue(result.get(0).size() <= 3);
         Assert.assertTrue(result.get(1).size() <= 3);
     }
@@ -67,6 +67,26 @@ public class TeamLayoutSolverTest {
         List<List<String>> result = TeamLayoutSolver.solve(parties, 2, 3);
 
         Assert.assertTrue(result.stream().allMatch(t -> t.size() == 3));
+    }
+
+    @Test
+    public void testLargePartyLargerThanLobby() {
+        List<List<String>> parties = List.of(
+                List.of("A", "B", "C", "D", "E")
+        );
+
+        Assert.expectThrows(IllegalStateException.class, () -> TeamLayoutSolver.solve(parties, 2, 2));
+    }
+
+    @Test
+    public void testSmallPartiesLargerThanLobby() {
+        List<List<String>> parties = List.of(
+                List.of("A", "B"),
+                List.of("C", "D"),
+                List.of("E")
+        );
+
+        Assert.expectThrows(IllegalStateException.class, () -> TeamLayoutSolver.solve(parties, 2, 2));
     }
 
     // Can fit test
@@ -152,6 +172,38 @@ public class TeamLayoutSolverTest {
         boolean result = TeamLayoutSolver.canFitParty(4, 2, 3, currentTeams);
 
         Assert.assertFalse(result);
+    }
+
+    @Test
+    public void testSplittableOversizedPartyFitsAcrossTeams() {
+        boolean result = TeamLayoutSolver.canFitParty(5, 2, 3, List.of());
+
+        Assert.assertTrue(result);
+    }
+
+    @Test
+    public void testSmallPartyCannotSplitEvenIfTotalSpaceAvailable() {
+        Collection<Collection<String>> currentTeams = List.of(
+                List.of("A", "B"),
+                List.of("C", "D"),
+                List.of("E", "F")
+        );
+
+        boolean result = TeamLayoutSolver.canFitParty(3, 3, 3, currentTeams);
+
+        Assert.assertFalse(result);
+    }
+
+    @Test
+    public void testSplittableOversizedPartyFitsWithExistingParties() {
+        Collection<Collection<String>> currentTeams = List.of(
+                List.of("A", "B"),
+                List.of("C", "D")
+        );
+
+        boolean result = TeamLayoutSolver.canFitParty(5, 3, 3, currentTeams);
+
+        Assert.assertTrue(result);
     }
 
 }
