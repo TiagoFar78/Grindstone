@@ -19,6 +19,7 @@ public class Client {
                 } catch (IOException e) {
                     System.out.println("Could not receive server message.");
                     e.printStackTrace();
+                    break;
                 }
             }
         }).start();

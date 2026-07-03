@@ -27,6 +27,7 @@ public class CLITicTacToe extends TicTacToe implements CLIGame {
     public void process(int id, String[] args) {
         if (args.length != 2 || !isDigit(args[0]) || !isDigit(args[1])) {
             getPlayer(id).sendTranslatedMessage("Usage: <row> <col>", MessagesChannel.CHAT);
+            return;
         }
         
         play(id, Integer.parseInt(args[0]), Integer.parseInt(args[1]));
