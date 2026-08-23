@@ -1,10 +1,7 @@
-.classpath
-.project
-.settings/
-target/
+# Eclipse
+**/.classpath
+**/.project
+**/.settings/
 
-src/main/java/io/github/tiagofar78/grindstone/test/
-TestServer/**
-!TestServer/plugins/
-!TestServer/plugins/TF_Grindstone/
-!TestServer/plugins/TF_Grindstone/**
+# Maven
+**/target/
