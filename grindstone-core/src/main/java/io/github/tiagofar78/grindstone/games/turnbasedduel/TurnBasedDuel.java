@@ -48,14 +48,14 @@ public abstract class TurnBasedDuel extends Game {
 
     @Override
     public void sendPlayerLeftMessage(Player player) {
-        player.sendMessage(Messages.YOU_LEFT, MessagesChannel.TITLE);
-        getOtherPlayer(player).sendMessage(Messages.PLAYER_LEFT, MessagesChannel.CHAT, player);
+        player.sendMessage("TurnBasedDuel.you_left", MessagesChannel.TITLE);
+        getOtherPlayer(player).sendMessage("TurnBasedDuel.player_left", MessagesChannel.CHAT, player);
     }
 
     @Override
     public void sendVictoryMessage() {
         if (winner != null) {
-            winner.sendMessage(Messages.VICTORY, MessagesChannel.TITLE);
+            winner.sendMessage("TurnBasedDuel.victory", MessagesChannel.TITLE);
         }
     }
 
@@ -63,11 +63,11 @@ public abstract class TurnBasedDuel extends Game {
     public void sendDefeatOrDrawMessage() {
         if (winner == null) {
             for (Player p : players) {
-                p.sendMessage(Messages.DRAW, MessagesChannel.TITLE);
+                p.sendMessage("TurnBasedDuel.draw", MessagesChannel.TITLE);
             }
         }
         
-        getOtherPlayer(winner).sendMessage(Messages.DEFEAT, MessagesChannel.TITLE);
+        getOtherPlayer(winner).sendMessage("TurnBasedDuel.defeat", MessagesChannel.TITLE);
     }
 
 }

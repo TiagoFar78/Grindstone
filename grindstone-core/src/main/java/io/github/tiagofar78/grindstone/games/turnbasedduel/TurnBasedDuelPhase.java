@@ -39,8 +39,8 @@ public class TurnBasedDuelPhase extends Phase {
     @Override
     public void start() {
         TurnBasedDuel g = (TurnBasedDuel) getGame();
-        g.getPlayer(0).sendMessage(Messages.YOUR_TURN, MessagesChannel.TOP_BAR);
-        g.getPlayer(1).sendMessage(Messages.OTHER_TURN, MessagesChannel.TOP_BAR, g.getPlayer(0));
+        g.getPlayer(0).sendMessage("TurnBasedDuel.your_turn", MessagesChannel.TOP_BAR);
+        g.getPlayer(1).sendMessage("TurnBasedDuel.other_turn", MessagesChannel.TOP_BAR, g.getPlayer(0));
     }
 
 }

@@ -26,10 +26,10 @@ public abstract class Player {
     
     public abstract void sendTranslatedMessage(String message, MessagesChannel channel);
     
-    public void sendMessage(MessageKey messageKey, MessagesChannel channel, Object... args) {
+    public void sendMessage(String key, MessagesChannel channel, Object... args) {
         GameDependencies services = getGame().getDependencies();
         Locale playerLocale = services.getPlayerLocaleService().getLocale(getUUID());
-        String translatedMessage = services.getTranslationService().translate(playerLocale, messageKey.getKey());
+        String translatedMessage = services.getTranslationService().translate(playerLocale, key);
         // TODO Formatting missing
         sendTranslatedMessage(translatedMessage, channel);
     }

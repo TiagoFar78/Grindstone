@@ -41,22 +41,22 @@ public abstract class TicTacToe extends TurnBasedDuel {
     public void play(int playerIndex, int row, int col) {
         int currentPlayer = turn % 2;
         if (playerIndex != currentPlayer) {
-            getPlayer(playerIndex).sendMessage(Messages.NOT_YOUR_TURN, MessagesChannel.CHAT);
+            getPlayer(playerIndex).sendMessage("TurnBasedDuel.not_your_turn", MessagesChannel.CHAT);
             return;
         }
 
         if (getCurrentPhase().isClockStopped()) {
-            getPlayer(playerIndex).sendMessage(io.github.tiagofar78.grindstone.games.Messages.GAME_PAUSED, MessagesChannel.CHAT);
+            getPlayer(playerIndex).sendMessage("game_paused", MessagesChannel.CHAT);
             return;
         }
 
         if (row < 0 || row >= BOARD_SIZE || col < 0 || col >= BOARD_SIZE) {
-            getPlayer(playerIndex).sendMessage(Messages.INVALID_POSITION, MessagesChannel.CHAT);
+            getPlayer(playerIndex).sendMessage("TurnBasedDuel.invalid_position", MessagesChannel.CHAT);
             return;
         }
 
         if (board[row][col] != EMPTY) {
-            getPlayer(playerIndex).sendMessage(Messages.POSITION_OCCUPIED, MessagesChannel.CHAT);
+            getPlayer(playerIndex).sendMessage("TurnBasedDuel.position_occupied", MessagesChannel.CHAT);
             return;
         }
 
