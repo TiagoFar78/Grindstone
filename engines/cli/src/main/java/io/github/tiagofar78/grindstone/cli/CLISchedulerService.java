@@ -2,7 +2,7 @@ package io.github.tiagofar78.grindstone.cli;
 
 import java.time.Duration;
 
-import io.github.tiagofar78.grindstone.game.SchedulerService;
+import io.github.tiagofar78.grindstone.services.SchedulerService;
 
 public class CLISchedulerService implements SchedulerService {
 

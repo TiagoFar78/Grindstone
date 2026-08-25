@@ -1,17 +1,17 @@
-package io.github.tiagofar78.grindstone.i18n;
+package io.github.tiagofar78.grindstone.services;
 
 import java.util.Locale;
 
 public interface TranslationService {
-    
+
     static TranslationService getDefaultTranslator() {
         return new TranslationService() {
-            
+
             @Override
             public String translate(Locale locale, String key) {
                 return key;
             }
-            
+
             @Override
             public void register(String folderPath) {
                 // Empty

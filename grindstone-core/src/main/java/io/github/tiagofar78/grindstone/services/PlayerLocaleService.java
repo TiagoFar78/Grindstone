@@ -1,4 +1,4 @@
-package io.github.tiagofar78.grindstone.i18n;
+package io.github.tiagofar78.grindstone.services;
 
 import java.util.HashMap;
 import java.util.Locale;
@@ -6,17 +6,17 @@ import java.util.Map;
 import java.util.UUID;
 
 public interface PlayerLocaleService {
-    
+
     static PlayerLocaleService getDefaultPlayerLocaleService() {
         return new PlayerLocaleService() {
-            
+
             private Map<UUID, Locale> playerLocale = new HashMap<>();
-            
+
             @Override
             public void register(UUID id, Locale locale) {
                 playerLocale.put(id, locale);
             }
-            
+
             @Override
             public Locale getLocale(UUID id) {
                 return playerLocale.getOrDefault(id, Locale.ENGLISH);

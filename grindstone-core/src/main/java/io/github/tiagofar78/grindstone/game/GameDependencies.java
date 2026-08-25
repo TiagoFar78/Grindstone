@@ -1,7 +1,8 @@
 package io.github.tiagofar78.grindstone.game;
 
-import io.github.tiagofar78.grindstone.i18n.PlayerLocaleService;
-import io.github.tiagofar78.grindstone.i18n.TranslationService;
+import io.github.tiagofar78.grindstone.services.SchedulerService;
+import io.github.tiagofar78.grindstone.services.PlayerLocaleService;
+import io.github.tiagofar78.grindstone.services.TranslationService;
 
 public class GameDependencies {
     
