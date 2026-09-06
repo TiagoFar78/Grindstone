@@ -4,19 +4,11 @@ import io.github.tiagofar78.grindstone.games.blindtag.BlindTag;
 import io.github.tiagofar78.grindstone.games.blindtag.map.Cell;
 import io.github.tiagofar78.grindstone.games.blindtag.player.BTPlayer;
 
-public class Clone extends Item {
-
-    private BTPlayer cloned;
-
-    public BTPlayer getCloned() {
-        return cloned;
-    }
+public class Compass extends Item {
 
     @Override
     public void use(BlindTag game, BTPlayer player) {
-        cloned = player;
-        Cell cell = player.getCurrentCell();
-        cell.addClone(this);
-        game.onClonePlaced(player, cell);
+        Cell current = player.getCurrentCell();
+        game.onCompassUsed(player, current, current.getArrows().values());
     }
 }

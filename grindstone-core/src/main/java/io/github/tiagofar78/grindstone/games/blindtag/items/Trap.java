@@ -9,26 +9,22 @@ public class Trap extends Item {
 
     private BTPlayer placer;
 
-    public Trap() {
-        super();
-    }
-
     public BTPlayer getPlacer() {
         return placer;
     }
 
-    public void trigger(BTPlayer player) {
-        if (player == placer) {
+    public void trigger(BTPlayer victim) {
+        if (victim == placer) {
             return;
         }
-
-        player.deductGold(GOLD_STEAL);
+        victim.takeGold(GOLD_STEAL);
         placer.addGold(GOLD_STEAL);
     }
 
     @Override
     public void use(BlindTag game, BTPlayer player) {
         placer = player;
-        // Implemented in Task 8
+        player.getCurrentCell().addTrap(this);
+        game.onTrapPlaced(player, player.getCurrentCell());
     }
 }

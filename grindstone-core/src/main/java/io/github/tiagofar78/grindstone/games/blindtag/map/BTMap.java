@@ -3,142 +3,176 @@ package io.github.tiagofar78.grindstone.games.blindtag.map;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Random;
-import java.util.Set;
-
 public class BTMap {
 
     public static final int GRID_SIZE = 5;
 
     private final List<Cell> cells;
-    private Cell spawnCell;
+    private final Cell spawnCell;
+    private final int teleportCellsCount;
 
-    public BTMap(List<Cell> cells, Cell spawnCell) {
+    public BTMap(List<Cell> cells, Cell spawnCell, int teleportCellsCount) {
         this.cells = cells;
         this.spawnCell = spawnCell;
+        this.teleportCellsCount = teleportCellsCount;
     }
-
-    // >---------------------{ Grid access }---------------------<
 
     public Cell getCell(int number) {
         return cells.get(number - 1);
     }
 
-    public Cell getRandomBlankCell(Random random) {
-        List<Cell> blankCells = cells.stream().filter(c -> c instanceof BlankCell).toList();
-        return blankCells.get(random.nextInt(blankCells.size()));
+    public List<Cell> getCells() {
+        return Collections.unmodifiableList(cells);
     }
 
     public Cell getSpawnCell() {
         return spawnCell;
     }
 
-    // >-----------------{ Arrow mutation }----------------<
+    public Cell getRandomNonTeleportCell(Random random) {
+        return cells.get(random.nextInt(cells.size() - teleportCellsCount));
+    }
 
-    public void addArrow(Random random) { // TODO make this method much simpler now that you know it will only need to add an arrow
-        List<Cell> realCells = getRealCells();
-        if (realCells.size() < 2) {
-            return;
-        }
+    public void addArrow(Random random) {
+        List<Cell> sources = cells.subList(0, cells.size() - teleportCellsCount);
+        Collections.shuffle(sources, random);
 
-        // Collect cells that have more than one arrow (safe to remove from)
-        List<Cell> removableCandidates = new ArrayList<>();
-        for (Cell cell : realCells) {
-            if (cell.getArrows().size() > 1) {
-                removableCandidates.add(cell);
+        for (Cell source : sources) {
+            List<Direction> freeDirections = new ArrayList<>();
+            for (Direction d : Direction.values()) {
+                if (!source.hasArrow(d)) {
+                    freeDirections.add(d);
+                }
             }
-        }
 
-        if (!removableCandidates.isEmpty()) {
-            Cell sourceCell = removableCandidates.get(random.nextInt(removableCandidates.size()));
-            List<Direction> directions = new ArrayList<>(sourceCell.getArrows().keySet());
-            Direction dirToRemove = directions.get(random.nextInt(directions.size()));
-            // Remove by replacing with an empty-direction map entry; Cell doesn't expose
-            // a remove â€” we rebuild via a new arrow map by overwriting with null, but
-            // Cell's map is EnumMap. We need to expose removal.
-            sourceCell.removeArrow(dirToRemove);
-        }
-
-        // Add one new valid arrow: pick a random real cell as source and a different
-        // real cell as destination, using a direction not already occupied.
-        List<Cell> shuffled = new ArrayList<>(realCells);
-        Collections.shuffle(shuffled, random);
-
-        for (Cell source : shuffled) {
-            List<Direction> freeDirections = freeDirections(source);
             if (freeDirections.isEmpty()) {
                 continue;
             }
-            // Pick a destination that is a different real cell
-            List<Cell> destinations = new ArrayList<>(realCells);
+
+            List<Cell> destinations = new ArrayList<>(cells);
             destinations.remove(source);
             if (destinations.isEmpty()) {
                 continue;
             }
+
             Direction dir = freeDirections.get(random.nextInt(freeDirections.size()));
             Cell dest = destinations.get(random.nextInt(destinations.size()));
-            source.addArrow(Arrow.of(dir, dest));
+            source.putArrow(new Arrow(dir, dest));
             return;
         }
     }
 
-    private List<Direction> freeDirections(Cell cell) {
-        List<Direction> free = new ArrayList<>();
-        for (Direction d : Direction.values()) {
-            if (!cell.hasArrow(d)) {
-                free.add(d);
-            }
-        }
-        return free;
-    }
-
-    // >-----------------{ BFS shortest path }----------------<
-
-    public List<Cell> findShortestPath(Cell from, Cell to) { // TODO adapt this method to return List<Direction> instead
+    public List<Direction> findShortestPath(Cell from, Cell to) {
         if (from == to) {
             return List.of();
         }
 
         Map<Cell, Cell> predecessor = new HashMap<>();
+        Map<Cell, Direction> incomingDir = new HashMap<>();
         Queue<Cell> queue = new LinkedList<>();
-        Set<Cell> visited = new HashSet<>();
 
         queue.add(from);
-        visited.add(from);
         predecessor.put(from, null);
 
         while (!queue.isEmpty()) {
             Cell current = queue.poll();
             for (Arrow arrow : current.getArrows().values()) {
                 Cell next = arrow.destination();
-                if (visited.contains(next)) {
+                if (predecessor.containsKey(next)) {
                     continue;
                 }
-                visited.add(next);
+
                 predecessor.put(next, current);
+                incomingDir.put(next, arrow.direction());
                 if (next == to) {
-                    return buildPath(predecessor, from, to);
+                    return buildPath(predecessor, incomingDir, from, to);
                 }
+
                 queue.add(next);
             }
         }
 
-        throw new IllegalStateException("Could not find a path between the two cells.");
+        return List.of();
     }
 
-    private List<Cell> buildPath(Map<Cell, Cell> predecessor, Cell from, Cell to) {
-        List<Cell> path = new ArrayList<>();
+    private List<Direction> buildPath(Map<Cell, Cell> predecessor, Map<Cell, Direction> incomingDir, Cell from, Cell to) {
+        List<Direction> path = new ArrayList<>();
         Cell current = to;
-        while (current != null) {
-            path.add(current);
+        while (current != from) {
+            path.add(incomingDir.get(current));
             current = predecessor.get(current);
         }
+
         Collections.reverse(path);
         return Collections.unmodifiableList(path);
+    }
+
+    public Direction directionToward(Cell from, Cell to) {
+        int dr = Integer.signum(to.getRow() - from.getRow());
+        int dc = Integer.signum(to.getCol() - from.getCol());
+        for (Direction d : Direction.values()) {
+            if (d.rowDelta() == dr && d.colDelta() == dc) {
+                return d;
+            }
+        }
+
+        return Direction.N;
+    }
+
+    public int similarityScore(Cell[][] guessed) {
+        int correct = 0;
+
+        for (int r = 0; r < GRID_SIZE; r++) {
+            for (int c = 0; c < GRID_SIZE; c++) {
+                Cell real = cellAt(r, c);
+                Cell guess = guessed[r][c];
+
+                if (real == null || guess == null) {
+                    continue;
+                }
+
+                if (real.getClass() == guess.getClass()) {
+                    correct++;
+                }
+
+                if (!(real instanceof TeleportCell) && real.getNumber() == guess.getNumber()) {
+                    correct++;
+                }
+
+                for (Direction dir : Direction.values()) {
+                    Arrow realArrow = real.getArrow(dir);
+                    Arrow guessArrow = guess.getArrow(dir);
+
+                    if (realArrow == null || guessArrow == null) {
+                        continue;
+                    }
+
+                    Cell realDest = realArrow.destination();
+                    Cell guessDest = guessArrow.destination();
+
+                    if (realDest.getRow() == guessDest.getRow()
+                            && realDest.getCol() == guessDest.getCol()) {
+                        correct++;
+                    }
+                }
+            }
+        }
+
+        return correct * 2;
+    }
+
+    private Cell cellAt(int row, int col) {
+        for (Cell c : cells) {
+            if (c.getRow() == row && c.getCol() == col) {
+                return c;
+            }
+        }
+
+        return null;
     }
 }

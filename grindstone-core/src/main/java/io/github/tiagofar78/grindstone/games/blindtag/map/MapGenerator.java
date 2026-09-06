@@ -8,195 +8,184 @@ import java.util.Random;
 
 public class MapGenerator {
 
-    // Cell-type count bounds [min, max] (inclusive)
     private static final int GOLD_MIN = 1, GOLD_MAX = 2;
     private static final int SHOP_MIN = 2, SHOP_MAX = 3;
     private static final int GOOD_MIN = 1, GOOD_MAX = 3;
     private static final int BAD_MIN = 3, BAD_MAX = 5;
-    private static final int TELEPORT_COUNT = 1;
+    private static final int GAP_MIN = 0, GAP_MAX = 5;
 
-    // Gap bounds: how many of the 25 positions may be gaps
-    private static final int GAP_MIN = 0;
-    private static final int GAP_MAX = 5;
+    public static BTMap generate(Random random) {
+        Cell[][] grid = new Cell[BTMap.GRID_SIZE][BTMap.GRID_SIZE];
 
-    public static BTMap generate(Random random) { // TODO Make as simple as possible while keeping in mind the constraints of every cell having at least one arrow out and every cell is reachable by any other cell (except for TeleportCells). I suggest you represent a map as a Cell[5][5] and then, in the end you generate a BTMap, where the list is a random order for the cells.
-        BTMap map = new BTMap();
-
-        // 1. Decide number of gaps and which positions are real
-        int gapCount = GAP_MIN + random.nextInt(GAP_MAX - GAP_MIN + 1);
         List<int[]> allPositions = allPositions();
         Collections.shuffle(allPositions, random);
-        List<int[]> realPositions = allPositions.subList(gapCount, allPositions.size());
+        int gapCount = GAP_MIN + random.nextInt(GAP_MAX - GAP_MIN + 1);
+        List<int[]> realPositions = new ArrayList<>(allPositions.subList(gapCount, allPositions.size()));
 
-        int realCount = realPositions.size(); // 25 - gapCount
+        int realCount = realPositions.size();
 
-        // 2. Decide cell-type counts
-        int goldCount = GOLD_MIN + random.nextInt(GOLD_MAX - GOLD_MIN + 1);
-        int shopCount = SHOP_MIN + random.nextInt(SHOP_MAX - SHOP_MIN + 1);
-        int goodCount = GOOD_MIN + random.nextInt(GOOD_MAX - GOOD_MIN + 1);
-        int badCount = BAD_MIN + random.nextInt(BAD_MAX - BAD_MIN + 1);
-        int teleportCount = TELEPORT_COUNT;
+        int gold     = between(random, GOLD_MIN, GOLD_MAX);
+        int shop     = between(random, SHOP_MIN, SHOP_MAX);
+        int good     = between(random, GOOD_MIN, GOOD_MAX);
+        int bad      = between(random, BAD_MIN, BAD_MAX);
+        int teleport = 1;
 
-        int specialCount = goldCount + shopCount + goodCount + badCount + teleportCount;
+        int special = gold + shop + good + bad + teleport;
+        while (special > realCount && bad > BAD_MIN)   { bad--;      special--; }
+        while (special > realCount && good > GOOD_MIN) { good--;     special--; }
+        while (special > realCount && shop > SHOP_MIN) { shop--;     special--; }
+        while (special > realCount && gold > GOLD_MIN) { gold--;     special--; }
+        if    (special > realCount)                    { teleport = 0; special--; }
 
-        // If we don't have enough real cells for all special types, trim starting from
-        // the least important (bad, good, shop) until we fit.
-        while (specialCount > realCount && badCount > BAD_MIN) { badCount--; specialCount--; }
-        while (specialCount > realCount && goodCount > GOOD_MIN) { goodCount--; specialCount--; }
-        while (specialCount > realCount && shopCount > SHOP_MIN) { shopCount--; specialCount--; }
-        while (specialCount > realCount && goldCount > GOLD_MIN) { goldCount--; specialCount--; }
-        // If still over (extremely sparse map), drop teleport last
-        if (specialCount > realCount) { teleportCount = 0; specialCount--; }
+        int blank = realCount - special;
 
-        int blankCount = realCount - specialCount;
-
-        // 3. Build a shuffled list of cell types
         List<String> types = new ArrayList<>();
-        for (int i = 0; i < goldCount; i++) types.add("GOLD");
-        for (int i = 0; i < shopCount; i++) types.add("SHOP");
-        for (int i = 0; i < goodCount; i++) types.add("GOOD");
-        for (int i = 0; i < badCount; i++) types.add("BAD");
-        for (int i = 0; i < teleportCount; i++) types.add("TELEPORT");
-        for (int i = 0; i < blankCount; i++) types.add("BLANK");
+        for (int i = 0; i < gold;     i++) types.add("GOLD");
+        for (int i = 0; i < shop;     i++) types.add("SHOP");
+        for (int i = 0; i < good;     i++) types.add("GOOD");
+        for (int i = 0; i < bad;      i++) types.add("BAD");
+        for (int i = 0; i < blank;    i++) types.add("BLANK");
         Collections.shuffle(types, random);
+        for (int i = 0; i < teleport; i++) types.add("TELEPORT");
 
-        // 4. Assign shuffled numbers 1..realCount to non-Teleport cells
-        //    (TeleportCell gets no number)
-        List<Integer> numbers = new ArrayList<>();
-        for (int n = 1; n <= realCount; n++) numbers.add(n);
-        Collections.shuffle(numbers, random);
-
-        // 5. Place cells on the grid
-        List<Cell> placedCells = new ArrayList<>();
-        int numIdx = 0;
         for (int i = 0; i < realCount; i++) {
             int[] pos = realPositions.get(i);
             String type = types.get(i);
-            Cell cell;
-            if (type.equals("TELEPORT")) {
-                cell = new TeleportCell();
+            Cell cell = switch (type) {
+                case "TELEPORT" -> new TeleportCell(pos[0], pos[1]);
+                case "GOLD"     -> new GoldCell (0, pos[0], pos[1]);
+                case "SHOP"     -> new ShopCell (0, pos[0], pos[1]);
+                case "GOOD"     -> new GoodCell (0, pos[0], pos[1]);
+                case "BAD"      -> new BadCell  (0, pos[0], pos[1]);
+                default         -> new BlankCell(0, pos[0], pos[1]);
+            };
+            grid[pos[0]][pos[1]] = cell;
+        }
+
+        generateArrows(random, grid, realPositions, teleport > 0);
+
+        int nonTeleportCount = realCount - teleport;
+        Cell[] indexed = new Cell[realCount];
+        Cell teleportCellRef = null;
+
+        List<Cell> nonTeleportCells = new ArrayList<>();
+        for (int[] pos : realPositions) {
+            Cell c = grid[pos[0]][pos[1]];
+            if (c instanceof TeleportCell) {
+                teleportCellRef = c;
             } else {
-                int number = numbers.get(numIdx++);
-                cell = switch (type) {
-                    case "GOLD"  -> new GoldCell(number);
-                    case "SHOP"  -> new ShopCell(number);
-                    case "GOOD"  -> new GoodCell(number);
-                    case "BAD"   -> new BadCell(number);
-                    default      -> new BlankCell(number);
-                };
-            }
-            map.setCell(pos[0], pos[1], cell);
-            placedCells.add(cell);
-        }
-
-        // 6. Generate arrows â€” every real cell gets at least one outgoing arrow
-        generateArrows(map, realPositions, placedCells);
-
-        // 7. Choose spawn cell: random non-Teleport real cell
-        List<Cell> spawnCandidates = new ArrayList<>();
-        for (Cell c : placedCells) {
-            if (!(c instanceof TeleportCell)) {
-                spawnCandidates.add(c);
+                nonTeleportCells.add(c);
             }
         }
-        map.setSpawnCell(spawnCandidates.get(random.nextInt(spawnCandidates.size())));
 
-        return map;
+        Collections.shuffle(nonTeleportCells, random);
+        for (int i = 0; i < nonTeleportCells.size(); i++) {
+            nonTeleportCells.get(i).setNumber(i + 1);
+            indexed[i] = nonTeleportCells.get(i);
+        }
+
+        if (teleportCellRef != null) {
+            indexed[nonTeleportCount] = teleportCellRef;
+        }
+
+        List<Cell> cells = new ArrayList<>(Arrays.asList(indexed));
+
+        Cell spawnCell = nonTeleportCells.get(random.nextInt(nonTeleportCells.size()));
+
+        return new BTMap(cells, spawnCell, teleport);
     }
 
-    // >-------------------{ Arrow generation }-------------------<
-
-    /**
-     * Generates arrows for the map. Strategy:
-     * <ol>
-     *   <li>For each real cell, pick at least one outgoing direction whose neighbour
-     *       (found by scanning in that direction, wrapping and skipping gaps) is another
-     *       real cell. A random subset of additional directions are also added.</li>
-     *   <li>Wrap-around arrows are only placed on cardinal directions (N/E/S/W) and get
-     *       a generated color string.</li>
-     * </ol>
-     */
-    private void generateArrows(BTMap map, List<int[]> realPositions, List<Cell> placedCells) {
-        // Build a fast position-to-cell lookup
-        Cell[][] grid = buildGrid(map);
-
-        for (int i = 0; i < realPositions.size(); i++) {
-            int[] pos = realPositions.get(i);
-            int row = pos[0], col = pos[1];
-            Cell source = placedCells.get(i);
-
-            // Try all 8 directions; collect those that lead to a real cell
-            List<Direction> validDirs = new ArrayList<>();
-            for (Direction dir : Direction.values()) {
-                Cell dest = findDestination(grid, row, col, dir);
-                if (dest != null && dest != source) {
-                    validDirs.add(dir);
-                }
-            }
-
-            if (validDirs.isEmpty()) {
-                // Isolated cell â€” self-referencing arrow so it's not stuck
-                Direction selfDir = Direction.N;
-                source.addArrow(Arrow.self(selfDir, source));
-                continue;
-            }
-
-            // Guarantee at least one arrow
-            Collections.shuffle(validDirs, random);
-            addArrowForDirection(source, grid, row, col, validDirs.get(0));
-
-            // Randomly add more arrows (50% chance each additional direction)
-            for (int d = 1; d < validDirs.size(); d++) {
-                if (random.nextBoolean()) {
-                    addArrowForDirection(source, grid, row, col, validDirs.get(d));
-                }
+    private static void generateArrows(Random random, Cell[][] grid, List<int[]> realPositions, boolean hasTeleport) {
+        List<int[]> nonTpPositions = new ArrayList<>();
+        int[] tpPosition = null;
+        for (int[] pos : realPositions) {
+            if (grid[pos[0]][pos[1]] instanceof TeleportCell) {
+                tpPosition = pos;
+            } else {
+                nonTpPositions.add(pos);
             }
         }
-    }
 
-    /**
-     * Creates and adds one arrow from {@code source} in {@code dir} to the
-     * appropriate destination, handling wrap-around.
-     */
-    private void addArrowForDirection(Cell source, Cell[][] grid, int row, int col, Direction dir) {
-        Cell dest = findDestination(grid, row, col, dir);
-        if (dest == null) {
+        if (nonTpPositions.isEmpty()) {
             return;
         }
 
-        // Determine if this is a wrap-around arrow:
-        // It wraps if the straight-line neighbour is out of bounds or a gap,
-        // and the destination was found by wrapping.
-        boolean isWrap = isWrappingArrow(grid, row, col, dir);
+        List<int[]> inTree = new ArrayList<>();
+        List<int[]> notInTree = new ArrayList<>(nonTpPositions);
+        Collections.shuffle(notInTree, random);
+        inTree.add(notInTree.remove(0));
 
-        if (isWrap && dir.isCardinal()) {
-            String color = colorForDirection(dir);
-            source.addArrow(Arrow.wrap(dir, dest, color));
-        } else {
-            source.addArrow(Arrow.of(dir, dest));
+        while (!notInTree.isEmpty()) {
+            int[] from = inTree.get(random.nextInt(inTree.size()));
+            int   idx  = random.nextInt(notInTree.size());
+            int[] to   = notInTree.remove(idx);
+
+            Cell src  = grid[from[0]][from[1]];
+            Cell dest = grid[to[0]][to[1]];
+
+            Direction dir = pickFreeDirection(random, src);
+            if (dir != null) {
+                src.putArrow(new Arrow(dir, dest));
+            }
+
+            Direction backDir = pickFreeDirection(random, dest);
+            if (backDir != null) {
+                dest.putArrow(new Arrow(backDir, src));
+            }
+
+            inTree.add(to);
+        }
+
+        for (int[] pos : nonTpPositions) {
+            Cell source = grid[pos[0]][pos[1]];
+            for (Direction dir : Direction.values()) {
+                if (source.hasArrow(dir)) {
+                    continue;
+                }
+
+                if (!random.nextBoolean()) {
+                    continue;
+                }
+
+                Cell dest = findNearestInDirection(grid, pos[0], pos[1], dir);
+                if (dest != null) {
+                    source.putArrow(new Arrow(dir, dest));
+                }
+            }
+        }
+
+        if (hasTeleport && tpPosition != null) {
+            Cell tp = grid[tpPosition[0]][tpPosition[1]];
+            for (int[] pos : nonTpPositions) {
+                Cell source = grid[pos[0]][pos[1]];
+                Direction dir = pickFreeDirection(random, source);
+                if (dir != null) {
+                    source.putArrow(new Arrow(dir, tp));
+                }
+            }
         }
     }
 
-    /**
-     * Returns the destination cell in {@code dir} from {@code (row, col)},
-     * scanning past gaps and wrapping around the grid boundary.
-     * Returns {@code null} if no real cell is reachable.
-     */
-    private Cell findDestination(Cell[][] grid, int row, int col, Direction dir) {
-        int dRow = dir.rowDelta();
-        int dCol = dir.colDelta();
+    private static Direction pickFreeDirection(Random random, Cell cell) {
+        List<Direction> free = new ArrayList<>();
+        for (Direction d : Direction.values()) {
+            if (!cell.hasArrow(d)) {
+                free.add(d);
+            }
+        }
+
+        if (free.isEmpty()) {
+            return null;
+        }
+
+        return free.get(random.nextInt(free.size()));
+    }
+
+    private static Cell findNearestInDirection(Cell[][] grid, int row, int col, Direction dir) {
+        int r = Math.floorMod(row + dir.rowDelta(), BTMap.GRID_SIZE);
+        int c = Math.floorMod(col + dir.colDelta(), BTMap.GRID_SIZE);
         int steps = 0;
-        int maxSteps = BTMap.GRID_SIZE * 2; // generous cap for wrap-around scans
-
-        int r = row + dRow;
-        int c = col + dCol;
-
-        while (steps < maxSteps) {
-            // Wrap coordinates
-            r = Math.floorMod(r, BTMap.GRID_SIZE);
-            c = Math.floorMod(c, BTMap.GRID_SIZE);
-
-            // Back at origin â€” only real cell in this direction would be a self-loop
+        while (steps < BTMap.GRID_SIZE * 2) {
             if (r == row && c == col) {
                 return null;
             }
@@ -205,45 +194,19 @@ public class MapGenerator {
                 return grid[r][c];
             }
 
-            r += dRow;
-            c += dCol;
+            r = Math.floorMod(r + dir.rowDelta(), BTMap.GRID_SIZE);
+            c = Math.floorMod(c + dir.colDelta(), BTMap.GRID_SIZE);
             steps++;
         }
 
         return null;
     }
 
-    /**
-     * Returns true if the arrow from {@code (row, col)} in {@code dir} wraps around
-     * the grid edge or skips at least one gap.
-     */
-    private boolean isWrappingArrow(Cell[][] grid, int row, int col, Direction dir) {
-        int newRow = row + dir.rowDelta();
-        int newCol = col + dir.colDelta();
-        // Out of bounds â†’ definitely wraps
-        if (isOutOfBounds(newRow, newCol)) {
-            return true;
-        }
-        // In bounds but a gap â†’ wraps (skips gap)
-        if (grid[newRow][newCol] == null) {
-            return true;
-        }
-        return false;
+    private static int between(Random random, int min, int max) {
+        return min + random.nextInt(max - min + 1);
     }
 
-    // >-------------------{ Helpers }-------------------<
-
-    private Cell[][] buildGrid(BTMap map) {
-        Cell[][] g = new Cell[BTMap.GRID_SIZE][BTMap.GRID_SIZE];
-        for (int r = 0; r < BTMap.GRID_SIZE; r++) {
-            for (int c = 0; c < BTMap.GRID_SIZE; c++) {
-                g[r][c] = map.getCell(r, c);
-            }
-        }
-        return g;
-    }
-
-    private List<int[]> allPositions() {
+    private static List<int[]> allPositions() {
         List<int[]> positions = new ArrayList<>();
         for (int r = 0; r < BTMap.GRID_SIZE; r++) {
             for (int c = 0; c < BTMap.GRID_SIZE; c++) {
@@ -251,20 +214,5 @@ public class MapGenerator {
             }
         }
         return positions;
-    }
-
-    private boolean isOutOfBounds(int row, int col) {
-        return row < 0 || row >= BTMap.GRID_SIZE || col < 0 || col >= BTMap.GRID_SIZE;
-    }
-
-    /** A stable color name based on the cardinal direction. */
-    private String colorForDirection(Direction dir) {
-        return switch (dir) {
-            case N -> "blue";
-            case E -> "red";
-            case S -> "green";
-            case W -> "yellow";
-            default -> "white";
-        };
     }
 }

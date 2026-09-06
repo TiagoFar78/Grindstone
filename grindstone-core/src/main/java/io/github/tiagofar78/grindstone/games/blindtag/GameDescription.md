@@ -26,7 +26,7 @@ Players have four slots where they can hold their items. Items can be used right
 Items list:
 - Compass: See adjacent cells categories and current cell number.
 - Sixth sense: See the direction of the tagged player if not tagged or the direction to the closer player if tagged.
-- Hawk eye: Shortest path to a player. To the closest player if tagged, and to tagged if not tagged.
+- Hawk eye: Shortest path to a player. User must chose the target.
 - Clone: Creates a clone that looks like it is a player.
 - Witch: Teleport a player to another space.
 - Needy: Teleport an adjacent cell of a random player.

@@ -1,8 +1,8 @@
 package io.github.tiagofar78.grindstone.games.blindtag.map;
 
 import io.github.tiagofar78.grindstone.games.blindtag.BlindTag;
-import io.github.tiagofar78.grindstone.games.blindtag.items.Trap;
 import io.github.tiagofar78.grindstone.games.blindtag.items.Clone;
+import io.github.tiagofar78.grindstone.games.blindtag.items.Trap;
 import io.github.tiagofar78.grindstone.games.blindtag.player.BTPlayer;
 
 import java.util.ArrayList;
@@ -13,7 +13,7 @@ import java.util.Map;
 
 public abstract class Cell {
 
-    private final int number;
+    private int number;
     private final int row;
     private final int col;
     private final Map<Direction, Arrow> arrows = new EnumMap<>(Direction.class);
@@ -26,10 +26,12 @@ public abstract class Cell {
         this.col = col;
     }
 
-    // >--------------------{ Properties }--------------------<
-
     public int getNumber() {
         return number;
+    }
+
+    public void setNumber(int number) {
+        this.number = number;
     }
 
     public int getRow() {

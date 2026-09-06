@@ -2,8 +2,8 @@ package io.github.tiagofar78.grindstone.games.blindtag.player;
 
 import io.github.tiagofar78.grindstone.game.Player;
 import io.github.tiagofar78.grindstone.games.blindtag.items.Item;
+import io.github.tiagofar78.grindstone.games.blindtag.map.BTMap;
 import io.github.tiagofar78.grindstone.games.blindtag.map.Cell;
-import io.github.tiagofar78.grindstone.games.blindtag.map.Direction;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -18,6 +18,7 @@ public abstract class BTPlayer extends Player {
     private int gold = 0;
     private int score = 0;
     private final List<Item> items = new ArrayList<>();
+    private BTMap guessedMap = null;
 
     public BTPlayer(UUID uuid) {
         super(uuid);
@@ -35,7 +36,7 @@ public abstract class BTPlayer extends Player {
 
     // >---------------------{ Gold }---------------------<
 
-    public int getGold() {
+    public int gold() {
         return gold;
     }
 
@@ -43,7 +44,7 @@ public abstract class BTPlayer extends Player {
         gold += amount;
     }
 
-    public void deductGold(int amount) {
+    public void takeGold(int amount) {
         gold -= amount;
     }
 
@@ -53,7 +54,7 @@ public abstract class BTPlayer extends Player {
         return score;
     }
 
-    public void increaseScore(int amount) {
+    public void addScore(int amount) {
         score += amount;
     }
 
@@ -63,11 +64,14 @@ public abstract class BTPlayer extends Player {
         return Collections.unmodifiableList(items);
     }
 
-    public void addItem(Item item) {
-        if (items.size() >= MAX_ITEMS) {
+    public boolean isInventoryFull() {
+        return items.size() >= MAX_ITEMS;
+    }
+
+    public void giveItem(Item item) {
+        if (isInventoryFull()) {
             return;
         }
-
         items.add(item);
     }
 
@@ -75,4 +79,13 @@ public abstract class BTPlayer extends Player {
         items.remove(item);
     }
 
+    // >------------------{ Guessed Map }------------------<
+
+    public BTMap getGuessedMap() {
+        return guessedMap;
+    }
+
+    public void setGuessedMap(BTMap guessedMap) {
+        this.guessedMap = guessedMap;
+    }
 }

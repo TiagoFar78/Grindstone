@@ -3,7 +3,7 @@ package io.github.tiagofar78.grindstone.games.blindtag.shop;
 import java.util.HashMap;
 import java.util.Map;
 
-import io.github.tiagofar78.grindstone.games.blindtag.items.Item;
+import io.github.tiagofar78.grindstone.games.blindtag.map.ShopCell;
 import io.github.tiagofar78.grindstone.games.blindtag.player.BTPlayer;
 
 public class Shop {
@@ -24,6 +24,10 @@ public class Shop {
     }
 
     public void executeBuyItem(BTPlayer player, String itemCode) {
+        if (!(player.getCurrentCell() instanceof ShopCell)) {
+            return;
+        }
+
         if (player.isInventoryFull()) {
             return;
         }
@@ -34,7 +38,7 @@ public class Shop {
         }
 
         ShopItem item = ShopItem.valueOf(itemCode);
-        player.giveItem(item.create());
+        player.giveItem(item.buy());
         player.takeGold(itemCost);
         costs.put(itemCode, costs.get(itemCode) + 1);
     }
