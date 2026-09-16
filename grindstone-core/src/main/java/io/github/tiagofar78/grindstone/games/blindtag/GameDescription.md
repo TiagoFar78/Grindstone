@@ -14,7 +14,7 @@ The map grid will consist of at most of a 5x5 grid. Each cell can have one of si
 
 Each cell can also have multiple arrows that serve as a path to cells nearby. An arrow can be placed in the eight directions, up, down, left, right, top-left, top-right, bottom-left, bottom-right. The four cardinal positions arrows can be poiting to the same cell that it is leaving. When an arrow is going outside the map, for example when a cell in the bottom row has an arrow pointing down, that arrow is supposed to show up in the oposite side of the map, in this example, making it connect to any cell in the top row. This kind of arrows need to have a color associated, and each cell can only have one arrow per cardinal point.
 
-One random cell will be initialized as the starting point. Players will spawn randomly at the start of the game, but that space is where they will teleport to when they are sent to spawn.
+One random cell will be initialized as the starting point. Players will spawn randomly at the start of the game, but the starting point is where they will teleport to when they are sent to spawn.
 
 # Objective
 

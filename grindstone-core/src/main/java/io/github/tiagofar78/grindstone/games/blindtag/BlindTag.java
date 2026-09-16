@@ -163,17 +163,9 @@ public abstract class BlindTag extends Game {
                 .toList();
     }
 
-    // >--------------------{ Guess }--------------------<
+    // >--------------------{ Player Actions }--------------------<
 
-    public void submitGuess(BTPlayer player, Cell[][] guessedGrid) {
-        int bonus = map.similarityScore(guessedGrid);
-        player.addScore(bonus);
-
-        boolean allSubmitted = players.stream().allMatch(p -> p.getGuessedMap() != null);
-        if (allSubmitted) {
-            startNextPhase();
-        }
-    }
+    public void move(BTPlayer player, Direction direction) {
         Cell current = player.getCurrentCell();
         Arrow arrow = current.getArrow(direction);
         if (arrow == null) {
@@ -188,9 +180,8 @@ public abstract class BlindTag extends Game {
         player.removeItem(item);
     }
 
-    public void submitGuess(BTPlayer player, BTMap guessedMap) {
-        player.setGuessedMap(guessedMap);
-        int bonus = computeGuessBonus(map, guessedMap);
+    public void submitGuess(BTPlayer player, Cell[][] guessedGrid) {
+        int bonus = map.similarityScore(guessedGrid);
         player.addScore(bonus);
 
         boolean allSubmitted = players.stream().allMatch(p -> p.getGuessedMap() != null);
@@ -240,11 +231,6 @@ public abstract class BlindTag extends Game {
     // >-------------------{ Messages }-------------------<
 
     @Override
-    public void sendLoadingMessage() {
-        // Loading is instant for BlindTag
-    }
-
-    @Override
     public void sendPlayerLeftMessage(Player player) {
         player.sendMessage("BlindTag.you_left", MessagesChannel.TITLE);
         for (Player p : getLobby().getPlayers()) {
@@ -268,9 +254,6 @@ public abstract class BlindTag extends Game {
         onGameSummary(players, winners);
         onDisplayGuesses(players);
     }
-
-    @Override
-    public void sendDefeatOrDrawMessage() {}
 
     // >--------------{ Abstract Rendering Hooks }--------------<
 

@@ -12,6 +12,6 @@ public class BadCell extends Cell {
 
     @Override
     public void applyEffect(BlindTag game, BTPlayer player) {
-        UnluckyWheel.spin(game, player, 0);
+        UnluckyWheel.spin(game, player);
     }
 }

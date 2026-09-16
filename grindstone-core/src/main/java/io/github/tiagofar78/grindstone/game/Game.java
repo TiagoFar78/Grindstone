@@ -27,11 +27,11 @@ public abstract class Game {
         return dependencies;
     }
 
+//  >------------------------{ Lobby }------------------------<
+
     public MatchLobby getLobby() {
         return lobby;
     }
-
-//  >------------------------{ Lobby }------------------------<
     
     public abstract void removePlayerFromGame(Player player);
 
@@ -91,7 +91,7 @@ public abstract class Game {
 
 //  >-----------------------{ Messages }-----------------------<
     
-    public abstract void sendLoadingMessage();    
+    public abstract void sendLoadingMessage();
 
     public abstract void sendPlayerLeftMessage(Player player);
     
