@@ -24,16 +24,16 @@
 
     <dependencyManagement>
         <dependencies>
-	        <dependency>
-	            <groupId>io.github.tiagofar78</groupId>
-	            <artifactId>grindstone-core</artifactId>
-	            <version>${project.version}</version>
-	        </dependency>
-	        <dependency>
-	            <groupId>io.github.tiagofar78</groupId>
-	            <artifactId>grindstone-matchmaking</artifactId>
-	            <version>${project.version}</version>
-	        </dependency>
+            <dependency>
+                <groupId>io.github.tiagofar78</groupId>
+                <artifactId>grindstone-core</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.github.tiagofar78</groupId>
+                <artifactId>grindstone-matchmaking</artifactId>
+                <version>${project.version}</version>
+            </dependency>
             <dependency>
                 <groupId>org.testng</groupId>
                 <artifactId>testng</artifactId>
