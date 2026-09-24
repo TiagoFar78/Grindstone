@@ -40,10 +40,6 @@ public class UnluckyWheel {
                 }
             }
             case 4 -> {
-                game.getMap().addArrow(random);
-                game.getMap().addArrow(random);
-            }
-            case 5 -> {
                 spin(game, player);
                 spin(game, player);
             }

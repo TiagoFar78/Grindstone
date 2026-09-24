@@ -38,35 +38,6 @@ public class BTMap {
         return cells.get(random.nextInt(cells.size() - teleportCellsCount));
     }
 
-    public void addArrow(Random random) {
-        List<Cell> sources = cells.subList(0, cells.size() - teleportCellsCount);
-        Collections.shuffle(sources, random);
-
-        for (Cell source : sources) {
-            List<Direction> freeDirections = new ArrayList<>();
-            for (Direction d : Direction.values()) {
-                if (!source.hasArrow(d)) {
-                    freeDirections.add(d);
-                }
-            }
-
-            if (freeDirections.isEmpty()) {
-                continue;
-            }
-
-            List<Cell> destinations = new ArrayList<>(cells);
-            destinations.remove(source);
-            if (destinations.isEmpty()) {
-                continue;
-            }
-
-            Direction dir = freeDirections.get(random.nextInt(freeDirections.size()));
-            Cell dest = destinations.get(random.nextInt(destinations.size()));
-            source.putArrow(new Arrow(dir, dest));
-            return;
-        }
-    }
-
     public List<Direction> findShortestPath(Cell from, Cell to) {
         if (from == to) {
             return List.of();

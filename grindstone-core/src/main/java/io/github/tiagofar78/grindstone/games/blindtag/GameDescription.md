@@ -48,7 +48,6 @@ Items list:
 - Give 2 gold to each player
 - Lose 3 gold
 - If not tagged, tag will know a path to you. If you are tagged, all players will know a path that leads to you.
-- Board is slighly changed.
 - Two extra spins.
 
 # Move order
