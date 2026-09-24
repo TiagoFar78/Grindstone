@@ -11,6 +11,7 @@ The map grid will consist of at most of a 5x5 grid. Each cell can have one of si
 - Bad: Spin the unlucky wheel. 3-5 cells
 - Teleport: Teleports to a random cell in the map. 1 cell
 - Blank: Does nothing
+- Void: Empty spaces, not real cells. 2-5.
 
 Each cell can also have multiple arrows that serve as a path to cells nearby. An arrow can be placed in the eight directions, up, down, left, right, top-left, top-right, bottom-left, bottom-right. The four cardinal positions arrows can be poiting to the same cell that it is leaving. When an arrow is going outside the map, for example when a cell in the bottom row has an arrow pointing down, that arrow is supposed to show up in the oposite side of the map, in this example, making it connect to any cell in the top row. This kind of arrows need to have a color associated, and each cell can only have one arrow per cardinal point.
 

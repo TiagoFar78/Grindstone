@@ -2,32 +2,37 @@ package io.github.tiagofar78.grindstone.games.blindtag.map;
 
 public enum Direction {
 
-    N,
-    NE,
-    E,
-    SE,
-    S,
-    SW,
-    W,
-    NW;
+    N(-1, 0),
+    NE(-1, 1),
+    E(0, 1),
+    SE(1, 1),
+    S(1, 0),
+    SW(1, -1),
+    W(0, -1),
+    NW(-1, -1);
+
+    private int rowDelta;
+    private int colDelta;
+
+    private Direction(int rowDelta, int colDelta) {
+        this.rowDelta = rowDelta;
+        this.colDelta = colDelta;
+    }
 
     public boolean isCardinal() {
         return this == N || this == E || this == S || this == W;
     }
 
     public int rowDelta() {
-        return switch (this) {
-            case N, NE, NW -> -1;
-            case S, SE, SW -> 1;
-            default -> 0;
-        };
+        return rowDelta;
     }
 
     public int colDelta() {
-        return switch (this) {
-            case E, NE, SE -> 1;
-            case W, NW, SW -> -1;
-            default -> 0;
-        };
+        return colDelta;
+    }
+
+    public Direction opposite() {
+        Direction[] values = values();
+        return values[(ordinal() + values.length / 2) % values.length];
     }
 }

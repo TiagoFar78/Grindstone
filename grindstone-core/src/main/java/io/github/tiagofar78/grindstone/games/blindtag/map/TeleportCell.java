@@ -17,11 +17,6 @@ public class TeleportCell extends Cell {
     }
 
     @Override
-    public void setNumber(int number) {
-        throw new IllegalStateException("TeleportCell does not have a number");
-    }
-
-    @Override
     public void applyEffect(BlindTag game, BTPlayer player) {
         Cell destination = game.getMap().getRandomNonTeleportCell(game.getRandom());
         game.onTeleported(player, destination);
