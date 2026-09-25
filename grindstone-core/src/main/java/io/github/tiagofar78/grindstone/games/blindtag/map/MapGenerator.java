@@ -206,15 +206,28 @@ public class MapGenerator {
         return candidates;
     }
 
+    // This method and everything below was done by AI. TODO Review
     private static void addMinimumPathsToMakeGridStronglyConnected(Random random, Cell[][] grid, boolean[][][] incoming) {
         List<Cell> cells = new ArrayList<>();
+        List<Cell> teleports = new ArrayList<>();
         for (Cell[] row : grid) {
             for (Cell cell : row) {
-                if (cell != null) {
+                if (cell == null) {
+                    continue;
+                }
+                if (cell instanceof TeleportCell) {
+                    teleports.add(cell);
+                } else {
                     cells.add(cell);
                 }
             }
         }
+
+        connectStronglyConnected(random, cells, incoming);
+        ensureTeleportsReachable(random, cells, teleports, incoming);
+    }
+
+    private static void connectStronglyConnected(Random random, List<Cell> cells, boolean[][][] incoming) {
         if (cells.size() <= 1) {
             return;
         }
@@ -236,7 +249,12 @@ public class MapGenerator {
         for (Cell cell : cells) {
             int from = componentOf.get(cell);
             for (Arrow arrow : cell.getArrows().values()) {
-                int to = componentOf.get(arrow.destination());
+                Cell target = arrow.destination();
+                if (target instanceof TeleportCell) {
+                    continue;
+                }
+
+                int to = componentOf.get(target);
                 if (from != to) {
                     hasOutsideOutgoing[from] = true;
                     hasOutsideIncoming[to] = true;
@@ -250,6 +268,7 @@ public class MapGenerator {
             if (!hasOutsideIncoming[i]) sources.add(i);
             if (!hasOutsideOutgoing[i]) sinks.add(i);
         }
+
         Collections.shuffle(sources, random);
         Collections.shuffle(sinks, random);
 
@@ -295,6 +314,43 @@ public class MapGenerator {
         return null;
     }
 
+    private static void ensureTeleportsReachable(Random random, List<Cell> cells, List<Cell> teleports, boolean[][][] incoming) {
+        List<Cell> shuffledCells = new ArrayList<>(cells);
+        Collections.shuffle(shuffledCells, random);
+
+        for (Cell teleport : teleports) {
+            if (hasIncomingArrow(teleport, incoming)) {
+                continue;
+            }
+            
+            for (Cell source : shuffledCells) {
+                Direction outDir = freeOutgoingDirection(random, source);
+                if (outDir == null) {
+                    continue;
+                }
+
+                Direction inDir = outDir.opposite();
+                if (incoming[teleport.getRow()][teleport.getCol()][inDir.ordinal()]) {
+                    continue;
+                }
+
+                source.putArrow(new Arrow(outDir, teleport));
+                incoming[teleport.getRow()][teleport.getCol()][inDir.ordinal()] = true;
+                break;
+            }
+        }
+    }
+
+    private static boolean hasIncomingArrow(Cell cell, boolean[][][] incoming) {
+        for (boolean incomingDirection : incoming[cell.getRow()][cell.getCol()]) {
+            if (incomingDirection) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     private static List<List<Cell>> findStronglyConnectedComponents(List<Cell> cells) {
         Map<Cell, Integer> index = new HashMap<>();
         Map<Cell, Integer> lowlink = new HashMap<>();
@@ -321,6 +377,9 @@ public class MapGenerator {
 
         for (Arrow arrow : cell.getArrows().values()) {
             Cell next = arrow.destination();
+            if (next instanceof TeleportCell) {
+                continue;
+            }
             if (!index.containsKey(next)) {
                 tarjan(next, index, lowlink, onStack, stack, counter, result);
                 lowlink.put(cell, Math.min(lowlink.get(cell), lowlink.get(next)));
