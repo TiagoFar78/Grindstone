@@ -4,6 +4,7 @@ import io.github.tiagofar78.grindstone.game.Game;
 import io.github.tiagofar78.grindstone.game.GameDependencies;
 import io.github.tiagofar78.grindstone.game.MessagesChannel;
 import io.github.tiagofar78.grindstone.game.Player;
+import io.github.tiagofar78.grindstone.game.Team;
 import io.github.tiagofar78.grindstone.game.phases.Phase;
 import io.github.tiagofar78.grindstone.games.blindtag.items.Item;
 import io.github.tiagofar78.grindstone.games.blindtag.map.Arrow;
@@ -11,11 +12,9 @@ import io.github.tiagofar78.grindstone.games.blindtag.map.BTMap;
 import io.github.tiagofar78.grindstone.games.blindtag.map.Cell;
 import io.github.tiagofar78.grindstone.games.blindtag.map.Direction;
 import io.github.tiagofar78.grindstone.games.blindtag.map.MapGenerator;
-import io.github.tiagofar78.grindstone.games.blindtag.map.TeleportCell;
 import io.github.tiagofar78.grindstone.games.blindtag.phases.PlayPhase;
 import io.github.tiagofar78.grindstone.games.blindtag.phases.RevealPhase;
 import io.github.tiagofar78.grindstone.games.blindtag.phases.SubmitGuessPhase;
-import io.github.tiagofar78.grindstone.games.blindtag.player.BTPlayer;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -23,7 +22,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
-public abstract class BlindTag extends Game {
+public abstract class BlindTag extends Game<BTPlayer, Team<BTPlayer>> {
 
     public static final int PLAYER_COUNT = 3;
     public static final int WIN_SCORE = 200;
@@ -37,13 +36,13 @@ public abstract class BlindTag extends Game {
 
     private final Random random;
 
-    protected BlindTag(GameDependencies dependencies, List<Player> players, Random random) {
-        super(dependencies, players);
+    protected BlindTag(GameDependencies dependencies, List<Team<BTPlayer>> teams, Random random) {
+        super(dependencies, teams);
         this.random = random;
     }
 
-    protected BlindTag(GameDependencies dependencies, List<Player> players) {
-        this(dependencies, players, new Random());
+    protected BlindTag(GameDependencies dependencies, List<Team<BTPlayer>> teams) {
+        this(dependencies, teams, new Random());
     }
 
     // >-----------------------{ Lifecycle }-----------------------<
@@ -54,28 +53,21 @@ public abstract class BlindTag extends Game {
 
         players = new ArrayList<>();
         for (Player p : getLobby().getPlayers()) {
-            players.add((BTPlayer) p);
+            BTPlayer btp = (BTPlayer) p;
+            players.add(btp);
+            btp.setCurrentCell(map.getRandomNonTeleportCell(random));
         }
 
-        tagger = players.get(random.nextInt(players.size()));
-
-        List<Cell> available = new ArrayList<>(map.getCells().stream()
-                .filter(c -> !(c instanceof TeleportCell))
-                .toList());
-        Collections.shuffle(available, random);
-
-        for (int i = 0; i < players.size(); i++) {
-            players.get(i).setCurrentCell(available.get(i % available.size()));
-        }
+        tagger = players.get(0);
     }
 
     @Override
-    public Phase getFirstPhase() {
+    public Phase<BlindTag> getFirstPhase() {
         return new PlayPhase(this);
     }
 
     @Override
-    public void removePlayerFromGame(Player player) {
+    public void removePlayerFromGame(BTPlayer player) {
         if (players == null) {
             return;
         }
@@ -231,7 +223,7 @@ public abstract class BlindTag extends Game {
     // >-------------------{ Messages }-------------------<
 
     @Override
-    public void sendPlayerLeftMessage(Player player) {
+    public void sendPlayerLeftMessage(BTPlayer player) {
         player.sendMessage("BlindTag.you_left", MessagesChannel.TITLE);
         for (Player p : getLobby().getPlayers()) {
             if (p != player) {

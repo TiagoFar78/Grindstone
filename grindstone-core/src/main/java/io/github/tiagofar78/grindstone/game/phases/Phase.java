@@ -2,19 +2,19 @@ package io.github.tiagofar78.grindstone.game.phases;
 
 import io.github.tiagofar78.grindstone.game.Game;
 
-public abstract class Phase {
+public abstract class Phase<G extends Game<?, ?>> {
 
-    private Game game;
+    private G game;
 
-    public Phase(Game game) {
+    public Phase(G game) {
         this.game = game;
     }
 
-    public Game getGame() {
+    public G getGame() {
         return game;
     }
 
-    public abstract Phase next();
+    public abstract Phase<G> next();
 
     public abstract boolean isClockStopped();
 

@@ -1,28 +1,22 @@
 package io.github.tiagofar78.grindstone.games.blindtag.phases;
 
-import io.github.tiagofar78.grindstone.game.Game;
+import io.github.tiagofar78.grindstone.game.phases.OngoingPhase;
 import io.github.tiagofar78.grindstone.game.phases.Phase;
 import io.github.tiagofar78.grindstone.games.blindtag.BlindTag;
 
-public class SubmitGuessPhase extends Phase {
+public class SubmitGuessPhase extends OngoingPhase<BlindTag> {
 
-    public SubmitGuessPhase(Game game) {
+    public SubmitGuessPhase(BlindTag game) {
         super(game);
     }
 
     @Override
-    public Phase next() {
+    public Phase<BlindTag> next() {
         return new RevealPhase(getGame());
     }
 
-    @Override public boolean isClockStopped() { return true;  }
-    @Override public boolean hasGameStarted()  { return true;  }
-    @Override public boolean hasGameEnded()    { return false; }
-    @Override public boolean isGameDisabled()  { return false; }
-
     @Override
     public void start() {
-        BlindTag game = (BlindTag) getGame();
-        game.onSubmitGuessStarted(game.getBTPlayers());
+        getGame().onSubmitGuessStarted(getGame().getBTPlayers());
     }
 }

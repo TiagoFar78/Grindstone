@@ -5,7 +5,7 @@ import java.util.UUID;
 
 public abstract class Player {
     
-    private Game game;
+    private Game<?, ?> game;
     private UUID uuid;
     
     public Player(UUID uuid) {
@@ -16,11 +16,11 @@ public abstract class Player {
         return uuid;
     }
     
-    public Game getGame() {
+    public Game<?, ?> getGame() {
         return game;
     }
     
-    public void setGame(Game game) {
+    protected void setGame(Game<?, ?> game) {
         this.game = game;
     }
     

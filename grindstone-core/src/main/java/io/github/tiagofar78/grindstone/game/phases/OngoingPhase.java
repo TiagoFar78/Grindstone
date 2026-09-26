@@ -2,20 +2,20 @@ package io.github.tiagofar78.grindstone.game.phases;
 
 import io.github.tiagofar78.grindstone.game.Game;
 
-public class FinishedPhase<G extends Game<?, ?>> extends Phase<G> {
+public abstract class OngoingPhase<G extends Game<?, ?>> extends Phase<G> {
 
-    public FinishedPhase(G game) {
+    public OngoingPhase(G game) {
         super(game);
     }
 
     @Override
     public Phase<G> next() {
-        return new DisabledPhase<G>(getGame());
+        return new FinishedPhase<G>(getGame());
     }
 
     @Override
     public boolean isClockStopped() {
-        return true;
+        return false;
     }
 
     @Override
@@ -32,11 +32,5 @@ public class FinishedPhase<G extends Game<?, ?>> extends Phase<G> {
     public boolean isGameDisabled() {
         return false;
     }
-
-    @Override
-    public void start() {
-        G game = getGame();
-        game.runGameOver();
-        game.archive();
-    }
+    
 }

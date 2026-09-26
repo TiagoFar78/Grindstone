@@ -2,15 +2,15 @@ package io.github.tiagofar78.grindstone.game.phases;
 
 import io.github.tiagofar78.grindstone.game.Game;
 
-public class MatchIntroPhase extends Phase {
+public class MatchIntroPhase<G extends Game<?, ?>> extends Phase<G> {
 
-    public MatchIntroPhase(Game game) {
+    public MatchIntroPhase(G game) {
         super(game);
     }
 
     @Override
-    public Phase next() {
-        return getGame().getFirstPhase();
+    public Phase<G> next() {
+        return (Phase<G>) getGame().getFirstPhase();
     }
 
     @Override
@@ -35,7 +35,7 @@ public class MatchIntroPhase extends Phase {
 
     @Override
     public void start() {
-        Game game = getGame();
+        G game = getGame();
         game.runMatchIntro();
     }
 

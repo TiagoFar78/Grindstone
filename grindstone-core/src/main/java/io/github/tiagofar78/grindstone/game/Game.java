@@ -6,20 +6,24 @@ import io.github.tiagofar78.grindstone.game.phases.DisabledPhase;
 import io.github.tiagofar78.grindstone.game.phases.LoadingPhase;
 import io.github.tiagofar78.grindstone.game.phases.Phase;
 
-public abstract class Game {
+public abstract class Game<P extends Player, T extends Team<P>> {
     
     private GameDependencies dependencies;
 
+    private List<T> teams;
     private MatchLobby lobby;
 
-    private Phase currPhase;
+    private Phase<? extends Game<P, T>> currPhase;
 
-    public Game(GameDependencies dependencies, List<Player> players) {
+    public Game(GameDependencies dependencies, List<T> teams) {
         this.dependencies = dependencies;
         this.lobby = new MatchLobby();
-        for (Player player : players) {
-            player.setGame(this);
-            lobby.addPlayer(player);
+        this.teams = teams;
+        for (T team : teams) {
+            for (P player : team.getMembers()) {
+                player.setGame(this);
+                lobby.addPlayer(player);
+            }
         }
     }
     
@@ -29,13 +33,17 @@ public abstract class Game {
 
 //  >------------------------{ Lobby }------------------------<
 
+    public List<T> getTeams() {
+        return teams;
+    }
+
     public MatchLobby getLobby() {
         return lobby;
     }
     
-    public abstract void removePlayerFromGame(Player player);
+    public abstract void removePlayerFromGame(P player);
 
-    public void playerLeft(Player player) {
+    public void playerLeft(P player) {
         sendPlayerLeftMessage(player);
         removePlayerFromGame(player);
         lobby.removePlayer(player);
@@ -44,13 +52,13 @@ public abstract class Game {
 //  >------------------------{ Admin }------------------------<
 
     public void forceStop() {
-        startNextPhase(new DisabledPhase(this));
+        startNextPhase(new DisabledPhase<Game<P, T>>(this));
     }
 
 //  >------------------------{ Phase }------------------------<
     
     public void start() {
-        startNextPhase(new LoadingPhase(this));
+        startNextPhase(new LoadingPhase<Game<P, T>>(this));
     }
 
     public abstract void load();
@@ -59,7 +67,7 @@ public abstract class Game {
         startNextPhase();
     }
 
-    public abstract Phase getFirstPhase();
+    public abstract Phase<? extends Game<P, T>> getFirstPhase();
     
     public void runGameOver() {
         sendGameOverMessages();
@@ -70,7 +78,7 @@ public abstract class Game {
         // Empty
     }
 
-    public Phase getCurrentPhase() {
+    public Phase<? extends Game<P, T>> getCurrentPhase() {
         return currPhase;
     }
 
@@ -78,7 +86,7 @@ public abstract class Game {
         startNextPhase(currPhase.next());
     }
 
-    public void startNextPhase(Phase phase) {
+    public void startNextPhase(Phase<? extends Game<P, T>> phase) {
         currPhase = phase;
         currPhase.start();
     }
@@ -93,7 +101,7 @@ public abstract class Game {
     
     public abstract void sendLoadingMessage();
 
-    public abstract void sendPlayerLeftMessage(Player player);
+    public abstract void sendPlayerLeftMessage(P player);
     
     private void sendGameOverMessages() {
         sendVictoryMessage();
