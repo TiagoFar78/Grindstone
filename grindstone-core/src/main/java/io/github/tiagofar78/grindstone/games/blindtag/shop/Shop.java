@@ -3,8 +3,8 @@ package io.github.tiagofar78.grindstone.games.blindtag.shop;
 import java.util.HashMap;
 import java.util.Map;
 
+import io.github.tiagofar78.grindstone.games.blindtag.BTPlayer;
 import io.github.tiagofar78.grindstone.games.blindtag.map.ShopCell;
-import io.github.tiagofar78.grindstone.games.blindtag.player.BTPlayer;
 
 public class Shop {
 

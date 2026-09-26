@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.Random;
+
 public class BTMap {
 
     public static final int GRID_SIZE = 5;
