@@ -2,7 +2,7 @@ package io.github.tiagofar78.grindstone.game;
 
 import java.util.List;
 
-import io.github.tiagofar78.enginebridge.game.GameBridge;
+import io.github.tiagofar78.grindstone.enginebridge.game.GameBridge;
 import io.github.tiagofar78.grindstone.game.phases.DisabledPhase;
 import io.github.tiagofar78.grindstone.game.phases.LoadingPhase;
 import io.github.tiagofar78.grindstone.game.phases.Phase;

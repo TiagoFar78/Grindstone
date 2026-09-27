@@ -1,4 +1,4 @@
-package io.github.tiagofar78.enginebridge.player;
+package io.github.tiagofar78.grindstone.enginebridge.player;
 
 import io.github.tiagofar78.grindstone.game.MessagesChannel;
 

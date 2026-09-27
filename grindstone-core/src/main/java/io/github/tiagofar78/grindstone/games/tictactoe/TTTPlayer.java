@@ -2,7 +2,7 @@ package io.github.tiagofar78.grindstone.games.tictactoe;
 
 import java.util.UUID;
 
-import io.github.tiagofar78.enginebridge.player.Messager;
+import io.github.tiagofar78.grindstone.enginebridge.player.Messager;
 import io.github.tiagofar78.grindstone.game.Player;
 
 public class TTTPlayer extends Player<Messager> {

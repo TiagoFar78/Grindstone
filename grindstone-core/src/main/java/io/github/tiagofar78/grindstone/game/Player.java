@@ -3,7 +3,7 @@ package io.github.tiagofar78.grindstone.game;
 import java.util.Locale;
 import java.util.UUID;
 
-import io.github.tiagofar78.enginebridge.player.Messager;
+import io.github.tiagofar78.grindstone.enginebridge.player.Messager;
 
 public abstract class Player<B extends Messager> {
     

@@ -1,6 +1,6 @@
 package io.github.tiagofar78.grindstone.games.blindtag;
 
-import io.github.tiagofar78.enginebridge.player.Messager;
+import io.github.tiagofar78.grindstone.enginebridge.player.Messager;
 import io.github.tiagofar78.grindstone.game.Player;
 import io.github.tiagofar78.grindstone.games.blindtag.items.Item;
 import io.github.tiagofar78.grindstone.games.blindtag.map.BTMap;
