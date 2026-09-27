@@ -1,24 +1,46 @@
-package io.github.tiagofar78.grindstone.games.turnbasedduel;
+package io.github.tiagofar78.grindstone.games.tictactoe;
 
+import java.util.List;
+
+import io.github.tiagofar78.grindstone.game.Game;
 import io.github.tiagofar78.grindstone.game.GameDependencies;
 import io.github.tiagofar78.grindstone.game.MessagesChannel;
-import io.github.tiagofar78.grindstone.game.Player;
+import io.github.tiagofar78.grindstone.game.Team;
 import io.github.tiagofar78.grindstone.game.phases.Phase;
 
-public abstract class TicTacToe extends TurnBasedDuel {
+public class TicTacToe extends Game<TTTBridge, TTTPlayer, Team<TTTPlayer>> {
 
     public static final int BOARD_SIZE = 3;
     private static final int EMPTY = -1;
     
     private int[][] board;
     private int turn;
+    private int winner = -1;
     
-    public TicTacToe(GameDependencies dependencies, Player p1, Player p2) {
-        super(dependencies, p1, p2);
+    public TicTacToe(GameDependencies dependencies, TTTBridge bridge, TTTPlayer p1, TTTPlayer p2) {
+        Team<TTTPlayer> p1Team = new Team<>(List.of(p1));
+        Team<TTTPlayer> p2Team = new Team<>(List.of(p2));
+        super(dependencies, bridge, List.of(p1Team, p2Team));
     }
     
     public int[][] getBoard() {
         return board;
+    }
+
+    protected TTTPlayer getPlayer(int index) {
+        return getTeams().get(index).getMembers().stream().findFirst().get();
+    }
+
+    private TTTPlayer getOtherPlayer(int index) {
+        return getPlayer((index + 1) % 2);
+    }
+
+    private TTTPlayer getOtherPlayer(TTTPlayer p) {
+        return getOtherPlayer(p.getIndex());
+    }
+    
+    private void setWinner(int playerIndex) {
+        winner = playerIndex;
     }
     
     @Override
@@ -34,11 +56,12 @@ public abstract class TicTacToe extends TurnBasedDuel {
     }
     
     @Override
-    public Phase getFirstPhase() {
+    public Phase<TicTacToe> getFirstPhase() {
         return new TicTacToePhase(this);
     }
 
-    public void play(int playerIndex, int row, int col) {
+    public void play(TTTPlayer player, int row, int col) {
+        int playerIndex = player.getIndex();
         int currentPlayer = turn % 2;
         if (playerIndex != currentPlayer) {
             getPlayer(playerIndex).sendMessage("TurnBasedDuel.not_your_turn", MessagesChannel.CHAT);
@@ -63,7 +86,7 @@ public abstract class TicTacToe extends TurnBasedDuel {
         board[row][col] = playerIndex;
         turn++;
         
-        updateGrid(row, col, playerIndex);
+        gameEngine.updateGrid(this, row, col, playerIndex);
         
         if (hasWon(playerIndex)) {
             setWinner(playerIndex);
@@ -72,8 +95,6 @@ public abstract class TicTacToe extends TurnBasedDuel {
             startNextPhase();
         }
     }
-    
-    public abstract void updateGrid(int row, int col, int playerIndex);
 
     private boolean hasWon(int playerIndex) {
         for (int i = 0; i < BOARD_SIZE; i++) {
@@ -135,6 +156,35 @@ public abstract class TicTacToe extends TurnBasedDuel {
         }
         
         return true;
+    }
+
+    @Override
+    public void sendLoadingMessage() {
+        // Empty, it loads instantly, no need to send loading message
+    }
+
+    @Override
+    public void sendPlayerLeftMessage(TTTPlayer player) {
+        player.sendMessage("TurnBasedDuel.you_left", MessagesChannel.TITLE);
+        getOtherPlayer(player).sendMessage("TurnBasedDuel.player_left", MessagesChannel.CHAT, player);
+    }
+
+    @Override
+    public void sendGameOverMessages() {
+        if (winner != -1) {
+            getPlayer(winner).sendMessage("TurnBasedDuel.victory", MessagesChannel.TITLE);
+            getOtherPlayer(winner).sendMessage("TurnBasedDuel.defeat", MessagesChannel.TITLE);
+        }
+        else {
+            getPlayer(0).sendMessage("TurnBasedDuel.draw", MessagesChannel.TITLE);
+            getPlayer(1).sendMessage("TurnBasedDuel.draw", MessagesChannel.TITLE);
+        }
+    }
+
+    @Override
+    public void removePlayerFromGame(TTTPlayer player) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'removePlayerFromGame'");
     }
 
 }

@@ -3,7 +3,6 @@ package io.github.tiagofar78.grindstone.games.blindtag;
 import io.github.tiagofar78.grindstone.game.Game;
 import io.github.tiagofar78.grindstone.game.GameDependencies;
 import io.github.tiagofar78.grindstone.game.MessagesChannel;
-import io.github.tiagofar78.grindstone.game.Player;
 import io.github.tiagofar78.grindstone.game.Team;
 import io.github.tiagofar78.grindstone.game.phases.Phase;
 import io.github.tiagofar78.grindstone.games.blindtag.items.Item;
@@ -22,7 +21,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
-public abstract class BlindTag extends Game<BTPlayer, Team<BTPlayer>> {
+public abstract class BlindTag extends Game<BTBridge, BTPlayer, Team<BTPlayer>> {
 
     public static final int PLAYER_COUNT = 3;
     public static final int WIN_SCORE = 200;
@@ -36,13 +35,13 @@ public abstract class BlindTag extends Game<BTPlayer, Team<BTPlayer>> {
 
     private final Random random;
 
-    protected BlindTag(GameDependencies dependencies, List<Team<BTPlayer>> teams, Random random) {
-        super(dependencies, teams);
+    protected BlindTag(GameDependencies dependencies, BTBridge bridge, List<Team<BTPlayer>> teams, Random random) {
+        super(dependencies, bridge, teams);
         this.random = random;
     }
 
-    protected BlindTag(GameDependencies dependencies, List<Team<BTPlayer>> teams) {
-        this(dependencies, teams, new Random());
+    protected BlindTag(GameDependencies dependencies, BTBridge bridge, List<Team<BTPlayer>> teams) {
+        this(dependencies, bridge, teams, new Random());
     }
 
     // >-----------------------{ Lifecycle }-----------------------<
@@ -52,7 +51,7 @@ public abstract class BlindTag extends Game<BTPlayer, Team<BTPlayer>> {
         map = MapGenerator.generate(random);
 
         players = new ArrayList<>();
-        for (Player p : getLobby().getPlayers()) {
+        for (BTPlayer p : getLobby().getPlayers()) {
             BTPlayer btp = (BTPlayer) p;
             players.add(btp);
             btp.setCurrentCell(map.getRandomNonTeleportCell(random));
@@ -225,7 +224,7 @@ public abstract class BlindTag extends Game<BTPlayer, Team<BTPlayer>> {
     @Override
     public void sendPlayerLeftMessage(BTPlayer player) {
         player.sendMessage("BlindTag.you_left", MessagesChannel.TITLE);
-        for (Player p : getLobby().getPlayers()) {
+        for (BTPlayer p : getLobby().getPlayers()) {
             if (p != player) {
                 p.sendMessage("BlindTag.player_left", MessagesChannel.CHAT, player);
             }
@@ -233,7 +232,7 @@ public abstract class BlindTag extends Game<BTPlayer, Team<BTPlayer>> {
     }
 
     @Override
-    public void sendVictoryMessage() {
+    public void sendGameOverMessages() {
         List<BTPlayer> winners = computeWinners();
         for (BTPlayer p : players) {
             if (winners.contains(p)) {

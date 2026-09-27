@@ -2,22 +2,25 @@ package io.github.tiagofar78.grindstone.game;
 
 import java.util.List;
 
+import io.github.tiagofar78.enginebridge.game.GameBridge;
 import io.github.tiagofar78.grindstone.game.phases.DisabledPhase;
 import io.github.tiagofar78.grindstone.game.phases.LoadingPhase;
 import io.github.tiagofar78.grindstone.game.phases.Phase;
 
-public abstract class Game<P extends Player, T extends Team<P>> {
+public abstract class Game<B extends GameBridge, P extends Player<?>, T extends Team<P>> {
     
     private GameDependencies dependencies;
+    public final B gameEngine;
 
     private List<T> teams;
-    private MatchLobby lobby;
+    private MatchLobby<P> lobby;
 
-    private Phase<? extends Game<P, T>> currPhase;
+    private Phase<? extends Game<B, P, T>> currPhase;
 
-    public Game(GameDependencies dependencies, List<T> teams) {
+    public Game(GameDependencies dependencies, B bridge, List<T> teams) {
         this.dependencies = dependencies;
-        this.lobby = new MatchLobby();
+        this.gameEngine = bridge;
+        this.lobby = new MatchLobby<P>();
         this.teams = teams;
         for (T team : teams) {
             for (P player : team.getMembers()) {
@@ -31,13 +34,17 @@ public abstract class Game<P extends Player, T extends Team<P>> {
         return dependencies;
     }
 
+    public B getGameEngine() {
+        return gameEngine;
+    }
+
 //  >------------------------{ Lobby }------------------------<
 
     public List<T> getTeams() {
         return teams;
     }
 
-    public MatchLobby getLobby() {
+    public MatchLobby<P> getLobby() {
         return lobby;
     }
     
@@ -52,13 +59,13 @@ public abstract class Game<P extends Player, T extends Team<P>> {
 //  >------------------------{ Admin }------------------------<
 
     public void forceStop() {
-        startNextPhase(new DisabledPhase<Game<P, T>>(this));
+        startNextPhase(new DisabledPhase<Game<B, P, T>>(this));
     }
 
 //  >------------------------{ Phase }------------------------<
     
     public void start() {
-        startNextPhase(new LoadingPhase<Game<P, T>>(this));
+        startNextPhase(new LoadingPhase<Game<B, P, T>>(this));
     }
 
     public abstract void load();
@@ -67,7 +74,7 @@ public abstract class Game<P extends Player, T extends Team<P>> {
         startNextPhase();
     }
 
-    public abstract Phase<? extends Game<P, T>> getFirstPhase();
+    public abstract Phase<? extends Game<B, P, T>> getFirstPhase();
     
     public void runGameOver() {
         sendGameOverMessages();
@@ -78,7 +85,7 @@ public abstract class Game<P extends Player, T extends Team<P>> {
         // Empty
     }
 
-    public Phase<? extends Game<P, T>> getCurrentPhase() {
+    public Phase<? extends Game<B, P, T>> getCurrentPhase() {
         return currPhase;
     }
 
@@ -86,7 +93,7 @@ public abstract class Game<P extends Player, T extends Team<P>> {
         startNextPhase(currPhase.next());
     }
 
-    public void startNextPhase(Phase<? extends Game<P, T>> phase) {
+    public void startNextPhase(Phase<? extends Game<B, P, T>> phase) {
         currPhase = phase;
         currPhase.start();
     }
@@ -103,13 +110,6 @@ public abstract class Game<P extends Player, T extends Team<P>> {
 
     public abstract void sendPlayerLeftMessage(P player);
     
-    private void sendGameOverMessages() {
-        sendVictoryMessage();
-        sendDefeatOrDrawMessage();
-    }
-    
-    public abstract void sendVictoryMessage();
-    
-    public abstract void sendDefeatOrDrawMessage();
+    public abstract void sendGameOverMessages();
 
 }

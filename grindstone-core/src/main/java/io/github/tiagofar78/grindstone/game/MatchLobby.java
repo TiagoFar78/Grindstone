@@ -4,40 +4,40 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-public class MatchLobby {
+public class MatchLobby<P> {
 
-    private Set<Player> players = new HashSet<>();
-    private Set<Player> spectators = new HashSet<>();
+    private Set<P> players = new HashSet<>();
+    private Set<P> spectators = new HashSet<>();
 
-    public boolean isInLobby(Player player) {
+    public boolean isInLobby(P player) {
         return players.contains(player) || spectators.contains(player);
     }
 
 //  >------------------------{ Player }------------------------<
     
-    public Collection<Player> getPlayers() {
+    public Collection<P> getPlayers() {
         return players;
     }
     
-    public void addPlayer(Player player) {
+    public void addPlayer(P player) {
         players.add(player);
     }
 
-    public void removePlayer(Player player) {
+    public void removePlayer(P player) {
         players.add(player);
     }
 
 //  >----------------------{ Spectator }----------------------<
     
-    public Collection<Player> getSpectators() {
+    public Collection<P> getSpectators() {
         return spectators;
     }
 
-    public void addSpectator(Player player) {
+    public void addSpectator(P player) {
         spectators.add(player);
     }
 
-    public void removeSpectator(Player player) {
+    public void removeSpectator(P player) {
         spectators.remove(player);
     }
 

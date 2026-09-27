@@ -2,7 +2,7 @@ package io.github.tiagofar78.grindstone.game.phases;
 
 import io.github.tiagofar78.grindstone.game.Game;
 
-public class MatchIntroPhase<G extends Game<?, ?>> extends Phase<G> {
+public class MatchIntroPhase<G extends Game<?, ?, ?>> extends Phase<G> {
 
     public MatchIntroPhase(G game) {
         super(game);

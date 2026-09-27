@@ -2,7 +2,7 @@ package io.github.tiagofar78.grindstone.game.phases;
 
 import io.github.tiagofar78.grindstone.game.Game;
 
-public abstract class Phase<G extends Game<?, ?>> {
+public abstract class Phase<G extends Game<?, ?, ?>> {
 
     private G game;
 

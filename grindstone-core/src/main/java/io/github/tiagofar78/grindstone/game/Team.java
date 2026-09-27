@@ -5,7 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class Team<T extends Player> {
+public class Team<T extends Player<?>> {
     
     private Set<T> members;
 

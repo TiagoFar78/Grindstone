@@ -3,12 +3,17 @@ package io.github.tiagofar78.grindstone.game;
 import java.util.Locale;
 import java.util.UUID;
 
-public abstract class Player {
+import io.github.tiagofar78.enginebridge.player.Messager;
+
+public abstract class Player<B extends Messager> {
     
-    private Game<?, ?> game;
+    private B playerEngine;
     private UUID uuid;
     
-    public Player(UUID uuid) {
+    private Game<?, ?, ?> game;
+    
+    public Player(B playerBridge, UUID uuid) {
+        playerEngine = playerBridge;
         this.uuid = uuid;
     }
     
@@ -16,22 +21,20 @@ public abstract class Player {
         return uuid;
     }
     
-    public Game<?, ?> getGame() {
+    public Game<?, ?, ?> getGame() {
         return game;
     }
     
-    protected void setGame(Game<?, ?> game) {
+    protected void setGame(Game<?, ?, ?> game) {
         this.game = game;
     }
-    
-    public abstract void sendTranslatedMessage(String message, MessagesChannel channel);
     
     public void sendMessage(String key, MessagesChannel channel, Object... args) {
         GameDependencies services = getGame().getDependencies();
         Locale playerLocale = services.getPlayerLocaleService().getLocale(getUUID());
         String translatedMessage = services.getTranslationService().translate(playerLocale, key);
         // TODO Formatting missing
-        sendTranslatedMessage(translatedMessage, channel);
+        playerEngine.sendMessage(translatedMessage, channel);
     }
 
 }

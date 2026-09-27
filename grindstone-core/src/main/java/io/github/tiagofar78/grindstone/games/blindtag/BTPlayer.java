@@ -1,5 +1,6 @@
 package io.github.tiagofar78.grindstone.games.blindtag;
 
+import io.github.tiagofar78.enginebridge.player.Messager;
 import io.github.tiagofar78.grindstone.game.Player;
 import io.github.tiagofar78.grindstone.games.blindtag.items.Item;
 import io.github.tiagofar78.grindstone.games.blindtag.map.BTMap;
@@ -10,7 +11,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
-public abstract class BTPlayer extends Player {
+public abstract class BTPlayer extends Player<Messager> {
 
     public static final int MAX_ITEMS = 4;
 
@@ -20,8 +21,8 @@ public abstract class BTPlayer extends Player {
     private final List<Item> items = new ArrayList<>();
     private BTMap guessedMap = null;
 
-    public BTPlayer(UUID uuid) {
-        super(uuid);
+    public BTPlayer(Messager bridge, UUID uuid) {
+        super(bridge, uuid);
     }
 
     // >--------------------{ Position }--------------------<

@@ -35,7 +35,9 @@ public class Server {
         if (id == -1) {
             System.out.println("Client tried to connect but server is full");
             try {
-                new PrintWriter(client.getOutputStream(), true).println("Server is full");
+                PrintWriter printer = new PrintWriter(client.getOutputStream(), true);
+                printer.println("Server is full");
+                printer.close();
             } catch (IOException e) {
                 // Empty
             }
@@ -65,7 +67,6 @@ public class Server {
     static void handleClient(int id, Socket socket) {
         try (
             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
         ) {
             String line;
             while ((line = in.readLine()) != null) {

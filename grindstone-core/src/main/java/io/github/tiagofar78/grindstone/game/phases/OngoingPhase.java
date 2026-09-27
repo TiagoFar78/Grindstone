@@ -2,7 +2,7 @@ package io.github.tiagofar78.grindstone.game.phases;
 
 import io.github.tiagofar78.grindstone.game.Game;
 
-public abstract class OngoingPhase<G extends Game<?, ?>> extends Phase<G> {
+public abstract class OngoingPhase<G extends Game<?, ?, ?>> extends Phase<G> {
 
     public OngoingPhase(G game) {
         super(game);
