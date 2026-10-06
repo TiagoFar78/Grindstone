@@ -11,7 +11,7 @@ public class Shop {
     private static final int INITIAL_PRICE = 1;
 
     private Map<String, Integer> costs;
-    
+
     public Shop() {
         costs = new HashMap<>();
         for (ShopItem item : ShopItem.values()) {
@@ -42,5 +42,5 @@ public class Shop {
         player.takeGold(itemCost);
         costs.put(itemCode, costs.get(itemCode) + 1);
     }
-    
+
 }

@@ -72,7 +72,12 @@ public class BTMap {
         return List.of();
     }
 
-    private List<Direction> buildPath(Map<Cell, Cell> predecessor, Map<Cell, Direction> incomingDir, Cell from, Cell to) {
+    private List<Direction> buildPath(
+            Map<Cell, Cell> predecessor,
+            Map<Cell, Direction> incomingDir,
+            Cell from,
+            Cell to
+    ) {
         List<Direction> path = new ArrayList<>();
         Cell current = to;
         while (current != from) {
@@ -127,8 +132,7 @@ public class BTMap {
                     Cell realDest = realArrow.destination();
                     Cell guessDest = guessArrow.destination();
 
-                    if (realDest.getRow() == guessDest.getRow()
-                            && realDest.getCol() == guessDest.getCol()) {
+                    if (realDest.getRow() == guessDest.getRow() && realDest.getCol() == guessDest.getCol()) {
                         correct++;
                     }
                 }

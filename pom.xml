@@ -68,7 +68,7 @@
                             <trimTrailingWhitespace/>
                             <endWithNewline/>
                             <eclipse>
-                                <file>${project.basedir}${file.separator}formatter-config.xml</file>
+                                <file>${maven.multiModuleProjectDirectory}${file.separator}formatter-config.xml</file>
                             </eclipse>
                         </java>
                         <pom>

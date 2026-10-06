@@ -12,17 +12,17 @@ public class TicTacToe extends Game<TTTBridge, TTTPlayer, Team<TTTPlayer>> {
 
     public static final int BOARD_SIZE = 3;
     private static final int EMPTY = -1;
-    
+
     private int[][] board;
     private int turn;
     private int winner = -1;
-    
+
     public TicTacToe(GameDependencies dependencies, TTTBridge bridge, TTTPlayer p1, TTTPlayer p2) {
         Team<TTTPlayer> p1Team = new Team<>(List.of(p1));
         Team<TTTPlayer> p2Team = new Team<>(List.of(p2));
         super(dependencies, bridge, List.of(p1Team, p2Team));
     }
-    
+
     public int[][] getBoard() {
         return board;
     }
@@ -38,23 +38,23 @@ public class TicTacToe extends Game<TTTBridge, TTTPlayer, Team<TTTPlayer>> {
     private TTTPlayer getOtherPlayer(TTTPlayer p) {
         return getOtherPlayer(p.getIndex());
     }
-    
+
     private void setWinner(int playerIndex) {
         winner = playerIndex;
     }
-    
+
     @Override
     public void load() {
         this.board = new int[BOARD_SIZE][BOARD_SIZE];
         this.turn = 0;
-        
+
         for (int row = 0; row < BOARD_SIZE; row++) {
             for (int col = 0; col < BOARD_SIZE; col++) {
                 board[row][col] = EMPTY;
             }
         }
     }
-    
+
     @Override
     public Phase<TicTacToe> getFirstPhase() {
         return new TicTacToePhase(this);
@@ -85,9 +85,9 @@ public class TicTacToe extends Game<TTTBridge, TTTPlayer, Team<TTTPlayer>> {
 
         board[row][col] = playerIndex;
         turn++;
-        
+
         gameEngine.updateGrid(this, row, col, playerIndex);
-        
+
         if (hasWon(playerIndex)) {
             setWinner(playerIndex);
             startNextPhase();
@@ -102,7 +102,7 @@ public class TicTacToe extends Game<TTTBridge, TTTPlayer, Team<TTTPlayer>> {
                 return true;
             }
         }
-        
+
         return isMainDiagonalWin(playerIndex) || isAntiDiagonalWin(playerIndex);
     }
 
@@ -112,7 +112,7 @@ public class TicTacToe extends Game<TTTBridge, TTTPlayer, Team<TTTPlayer>> {
                 return false;
             }
         }
-        
+
         return true;
     }
 
@@ -122,7 +122,7 @@ public class TicTacToe extends Game<TTTBridge, TTTPlayer, Team<TTTPlayer>> {
                 return false;
             }
         }
-        
+
         return true;
     }
 
@@ -132,7 +132,7 @@ public class TicTacToe extends Game<TTTBridge, TTTPlayer, Team<TTTPlayer>> {
                 return false;
             }
         }
-        
+
         return true;
     }
 
@@ -142,7 +142,7 @@ public class TicTacToe extends Game<TTTBridge, TTTPlayer, Team<TTTPlayer>> {
                 return false;
             }
         }
-        
+
         return true;
     }
 
@@ -154,7 +154,7 @@ public class TicTacToe extends Game<TTTBridge, TTTPlayer, Team<TTTPlayer>> {
                 }
             }
         }
-        
+
         return true;
     }
 
@@ -174,8 +174,7 @@ public class TicTacToe extends Game<TTTBridge, TTTPlayer, Team<TTTPlayer>> {
         if (winner != -1) {
             getPlayer(winner).sendMessage("TurnBasedDuel.victory", MessagesChannel.TITLE);
             getOtherPlayer(winner).sendMessage("TurnBasedDuel.defeat", MessagesChannel.TITLE);
-        }
-        else {
+        } else {
             getPlayer(0).sendMessage("TurnBasedDuel.draw", MessagesChannel.TITLE);
             getPlayer(1).sendMessage("TurnBasedDuel.draw", MessagesChannel.TITLE);
         }

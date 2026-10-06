@@ -8,7 +8,7 @@ import io.github.tiagofar78.grindstone.game.phases.LoadingPhase;
 import io.github.tiagofar78.grindstone.game.phases.Phase;
 
 public abstract class Game<B extends GameBridge, P extends Player<?>, T extends Team<P>> {
-    
+
     private GameDependencies dependencies;
     public final B gameEngine;
 
@@ -29,7 +29,7 @@ public abstract class Game<B extends GameBridge, P extends Player<?>, T extends 
             }
         }
     }
-    
+
     public GameDependencies getDependencies() {
         return dependencies;
     }
@@ -47,7 +47,7 @@ public abstract class Game<B extends GameBridge, P extends Player<?>, T extends 
     public MatchLobby<P> getLobby() {
         return lobby;
     }
-    
+
     public abstract void removePlayerFromGame(P player);
 
     public void playerLeft(P player) {
@@ -63,19 +63,19 @@ public abstract class Game<B extends GameBridge, P extends Player<?>, T extends 
     }
 
 //  >------------------------{ Phase }------------------------<
-    
+
     public void start() {
         startNextPhase(new LoadingPhase<Game<B, P, T>>(this));
     }
 
     public abstract void load();
-    
+
     public void runMatchIntro() {
         startNextPhase();
     }
 
     public abstract Phase<? extends Game<B, P, T>> getFirstPhase();
-    
+
     public void runGameOver() {
         sendGameOverMessages();
         startNextPhase();
@@ -99,17 +99,17 @@ public abstract class Game<B extends GameBridge, P extends Player<?>, T extends 
     }
 
 //  >--------------------{ Game Specifics }--------------------<
-    
+
     public void archive() {
         // Empty
     }
 
 //  >-----------------------{ Messages }-----------------------<
-    
+
     public abstract void sendLoadingMessage();
 
     public abstract void sendPlayerLeftMessage(P player);
-    
+
     public abstract void sendGameOverMessages();
 
 }

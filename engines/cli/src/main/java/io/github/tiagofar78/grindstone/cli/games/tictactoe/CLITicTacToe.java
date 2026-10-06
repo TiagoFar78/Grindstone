@@ -25,20 +25,20 @@ public class CLITicTacToe extends TicTacToe implements CLIGame {
             p.sendMessage("Usage: <row> <col>", MessagesChannel.CHAT);
             return;
         }
-        
+
         play(p, Integer.parseInt(args[0]), Integer.parseInt(args[1]));
     }
-    
+
     private boolean isDigit(String s) {
         for (int i = 0; i < s.length(); i++) {
             if (!Character.isDigit(s.charAt(i))) {
                 return false;
             }
         }
-        
+
         return true;
     }
-    
+
     @Override
     public void disconnect(int id) {
         removePlayerFromGame(getPlayer(id));

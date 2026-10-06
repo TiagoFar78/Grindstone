@@ -72,11 +72,11 @@ public class MapGenerator {
         int blank = positions.size() - gold - shop - good - bad - teleport;
 
         List<String> types = new ArrayList<>();
-        for (int i = 0; i < gold;     i++) types.add("GOLD");
-        for (int i = 0; i < shop;     i++) types.add("SHOP");
-        for (int i = 0; i < good;     i++) types.add("GOOD");
-        for (int i = 0; i < bad;      i++) types.add("BAD");
-        for (int i = 0; i < blank;    i++) types.add("BLANK");
+        for (int i = 0; i < gold; i++) types.add("GOLD");
+        for (int i = 0; i < shop; i++) types.add("SHOP");
+        for (int i = 0; i < good; i++) types.add("GOOD");
+        for (int i = 0; i < bad; i++) types.add("BAD");
+        for (int i = 0; i < blank; i++) types.add("BLANK");
         Collections.shuffle(types, random);
         for (int i = 0; i < teleport; i++) types.add("TELEPORT");
 
@@ -92,11 +92,11 @@ public class MapGenerator {
     private static Cell buildCell(String type, int number, int r, int c) {
         return switch (type) {
             case "TELEPORT" -> new TeleportCell(r, c);
-            case "GOLD"     -> new GoldCell (number, r, c);
-            case "SHOP"     -> new ShopCell (number, r, c);
-            case "GOOD"     -> new GoodCell (number, r, c);
-            case "BAD"      -> new BadCell  (number, r, c);
-            default         -> new BlankCell(number, r, c);
+            case "GOLD" -> new GoldCell(number, r, c);
+            case "SHOP" -> new ShopCell(number, r, c);
+            case "GOOD" -> new GoodCell(number, r, c);
+            case "BAD" -> new BadCell(number, r, c);
+            default -> new BlankCell(number, r, c);
         };
     }
 
@@ -121,8 +121,7 @@ public class MapGenerator {
                 for (Direction dir : Direction.values()) {
                     if (isDirectPath(grid, cell.getRow(), cell.getCol(), dir)) {
                         directDirections++;
-                    }
-                    else {
+                    } else {
                         voidDirections++;
                     }
                 }
@@ -137,7 +136,7 @@ public class MapGenerator {
             directProbability = Math.max(0, Math.min(1, expectedDirectPaths / directDirections));
         }
 
-        return new double[] { directProbability, voidProbability };
+        return new double[]{directProbability, voidProbability};
     }
 
     private static boolean isDirectPath(Cell[][] grid, int r, int c, Direction dir) {
@@ -159,8 +158,14 @@ public class MapGenerator {
         return null;
     }
 
-    private static void generateCellArrows(Random random, Cell[][] grid, Cell cell,
-            double directPathChance, double voidPathChance, boolean[][][] incoming) {
+    private static void generateCellArrows(
+            Random random,
+            Cell[][] grid,
+            Cell cell,
+            double directPathChance,
+            double voidPathChance,
+            boolean[][][] incoming
+    ) {
         if (cell == null || cell instanceof TeleportCell) {
             return;
         }
@@ -192,7 +197,12 @@ public class MapGenerator {
         cell.putArrow(new Arrow(dir, target));
     }
 
-    private static List<Cell> findVoidCandidates(Cell[][] grid, Cell source, Direction incomingSide, boolean[][][] incoming) {
+    private static List<Cell> findVoidCandidates(
+            Cell[][] grid,
+            Cell source,
+            Direction incomingSide,
+            boolean[][][] incoming
+    ) {
         List<Cell> candidates = new ArrayList<>();
         for (Cell[] row : grid) {
             for (Cell c : row) {
@@ -207,7 +217,11 @@ public class MapGenerator {
     }
 
     // This method and everything below was done by AI. TODO Review
-    private static void addMinimumPathsToMakeGridStronglyConnected(Random random, Cell[][] grid, boolean[][][] incoming) {
+    private static void addMinimumPathsToMakeGridStronglyConnected(
+            Random random,
+            Cell[][] grid,
+            boolean[][][] incoming
+    ) {
         List<Cell> cells = new ArrayList<>();
         List<Cell> teleports = new ArrayList<>();
         for (Cell[] row : grid) {
@@ -314,7 +328,12 @@ public class MapGenerator {
         return null;
     }
 
-    private static void ensureTeleportsReachable(Random random, List<Cell> cells, List<Cell> teleports, boolean[][][] incoming) {
+    private static void ensureTeleportsReachable(
+            Random random,
+            List<Cell> cells,
+            List<Cell> teleports,
+            boolean[][][] incoming
+    ) {
         List<Cell> shuffledCells = new ArrayList<>(cells);
         Collections.shuffle(shuffledCells, random);
 
@@ -322,7 +341,7 @@ public class MapGenerator {
             if (hasIncomingArrow(teleport, incoming)) {
                 continue;
             }
-            
+
             for (Cell source : shuffledCells) {
                 Direction outDir = freeOutgoingDirection(random, source);
                 if (outDir == null) {
@@ -367,8 +386,15 @@ public class MapGenerator {
         return result;
     }
 
-    private static void tarjan(Cell cell, Map<Cell, Integer> index, Map<Cell, Integer> lowlink,
-            Set<Cell> onStack, Deque<Cell> stack, int[] counter, List<List<Cell>> result) {
+    private static void tarjan(
+            Cell cell,
+            Map<Cell, Integer> index,
+            Map<Cell, Integer> lowlink,
+            Set<Cell> onStack,
+            Deque<Cell> stack,
+            int[] counter,
+            List<List<Cell>> result
+    ) {
         index.put(cell, counter[0]);
         lowlink.put(cell, counter[0]);
         counter[0]++;
@@ -383,8 +409,7 @@ public class MapGenerator {
             if (!index.containsKey(next)) {
                 tarjan(next, index, lowlink, onStack, stack, counter, result);
                 lowlink.put(cell, Math.min(lowlink.get(cell), lowlink.get(next)));
-            }
-            else if (onStack.contains(next)) {
+            } else if (onStack.contains(next)) {
                 lowlink.put(cell, Math.min(lowlink.get(cell), index.get(next)));
             }
         }

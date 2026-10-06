@@ -150,8 +150,14 @@ public class MapViewer {
         return builder.toString();
     }
 
-    private static void appendBlock(StringBuilder top, StringBuilder mid, StringBuilder bottom, Cell cell, boolean isSpawn,
-            VoidMarks marks) {
+    private static void appendBlock(
+            StringBuilder top,
+            StringBuilder mid,
+            StringBuilder bottom,
+            Cell cell,
+            boolean isSpawn,
+            VoidMarks marks
+    ) {
         if (cell == null) {
             top.append(" ".repeat(BLOCK_WIDTH));
             mid.append(" ".repeat(BLOCK_WIDTH));
@@ -163,12 +169,15 @@ public class MapViewer {
         char close = isSpawn ? '*' : ']';
         String label = open + String.valueOf(symbol(cell)) + close;
 
-        top.append(slot(cell, Direction.NW, marks)).append(' ').append(centerSlot(cell, Direction.N, marks)).append(' ')
-                .append(slot(cell, Direction.NE, marks)).append(' ');
-        mid.append(slot(cell, Direction.W, marks)).append(' ').append(label).append(' ').append(slot(cell, Direction.E, marks))
-                .append(' ');
-        bottom.append(slot(cell, Direction.SW, marks)).append(' ').append(centerSlot(cell, Direction.S, marks)).append(' ')
-                .append(slot(cell, Direction.SE, marks)).append(' ');
+        top.append(slot(cell, Direction.NW, marks)).append(' ').append(centerSlot(cell, Direction.N, marks)).append(
+                ' '
+        ).append(slot(cell, Direction.NE, marks)).append(' ');
+        mid.append(slot(cell, Direction.W, marks)).append(' ').append(label).append(' ').append(
+                slot(cell, Direction.E, marks)
+        ).append(' ');
+        bottom.append(slot(cell, Direction.SW, marks)).append(' ').append(centerSlot(cell, Direction.S, marks)).append(
+                ' '
+        ).append(slot(cell, Direction.SE, marks)).append(' ');
     }
 
     private static String slot(Cell cell, Direction direction, VoidMarks marks) {

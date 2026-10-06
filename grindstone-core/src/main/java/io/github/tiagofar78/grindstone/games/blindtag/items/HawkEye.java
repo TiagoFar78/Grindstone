@@ -22,7 +22,9 @@ public class HawkEye extends Item {
         }
 
         List<Direction> path = game.getMap().findShortestPath(
-                player.getCurrentCell(), target.getCurrentCell());
+                player.getCurrentCell(),
+                target.getCurrentCell()
+        );
         game.onHawkEyeUsed(player, path);
     }
 
@@ -35,7 +37,9 @@ public class HawkEye extends Item {
             }
 
             int dist = game.getMap().findShortestPath(
-                    player.getCurrentCell(), other.getCurrentCell()).size();
+                    player.getCurrentCell(),
+                    other.getCurrentCell()
+            ).size();
             if (dist < minPath) {
                 minPath = dist;
                 nearest = other;

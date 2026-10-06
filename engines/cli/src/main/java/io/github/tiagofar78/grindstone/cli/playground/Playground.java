@@ -26,9 +26,8 @@ public class Playground {
     private static final String CMD_START = "start";
     private static final String CMD_LEAVE = "leave";
 
-    private static final String START_USAGE = "Usage: " + CMD_START
-            + " <game_index|game_name> <team> <team> ...  (players of a team separated by ',', e.g. '"
-            + CMD_START + " 1 1 2' or '" + CMD_START + " 1 1,2 3,4')";
+    private static final String START_USAGE =
+            "Usage: " + CMD_START + " <game_index|game_name> <team> <team> ...  (players of a team separated by ',', e.g. '" + CMD_START + " 1 1 2' or '" + CMD_START + " 1 1,2 3,4')";
 
     private static final String COL_GAMES = "GAMES";
     private static final String COL_RUNNING = "RUNNING";
@@ -60,15 +59,17 @@ public class Playground {
     private int nextGameId = 1;
 
     public Playground() {
-        registerGame(new AvailableGame(
-                "TicTacToe",
-                teams -> {
-                    GameDependencies dependencies = new GameDependencies(CLIServices.scheduler);
-                    TTTPlayer p1 = new TTTPlayer(teams.get(0).getFirst(), UUID.randomUUID(), 0);
-                    TTTPlayer p2 = new TTTPlayer(teams.get(1).getFirst(), UUID.randomUUID(), 1);
-                    return (CLIGame) new CLITicTacToe(dependencies, new CLITTTBridge(), p1, p2);
-                }
-        ));
+        registerGame(
+                new AvailableGame(
+                        "TicTacToe",
+                        teams -> {
+                            GameDependencies dependencies = new GameDependencies(CLIServices.scheduler);
+                            TTTPlayer p1 = new TTTPlayer(teams.get(0).getFirst(), UUID.randomUUID(), 0);
+                            TTTPlayer p2 = new TTTPlayer(teams.get(1).getFirst(), UUID.randomUUID(), 1);
+                            return (CLIGame) new CLITicTacToe(dependencies, new CLITTTBridge(), p1, p2);
+                        }
+                )
+        );
     }
 
     public void registerGame(AvailableGame game) {
@@ -231,8 +232,10 @@ public class Playground {
             clientGame.put(playerId, game);
         }
         for (int playerId : players) {
-            send(playerId, "Game #" + entry.id + " (" + type.displayName() + ") started! Type '" + CMD_LEAVE
-                    + "' to go back to the main page.");
+            send(
+                    playerId,
+                    "Game #" + entry.id + " (" + type.displayName() + ") started! Type '" + CMD_LEAVE + "' to go back to the main page."
+            );
         }
 
         refreshMenus();
@@ -295,7 +298,8 @@ public class Playground {
         List<String> table = mergeColumns(
                 new Column(COL_GAMES, buildGamesColumn()),
                 new Column(COL_RUNNING, buildRunningColumn()),
-                new Column(COL_ONLINE, buildOnlineColumn(clientId)));
+                new Column(COL_ONLINE, buildOnlineColumn(clientId))
+        );
 
         int width = table.isEmpty() ? 20 : table.get(0).length();
         String border = "=".repeat(width);
@@ -382,8 +386,7 @@ public class Playground {
             return List.of("none");
         }
 
-        List<Integer> sorted = online.stream()
-                .sorted(Comparator.comparing(clientGame::containsKey)) // free players first
+        List<Integer> sorted = online.stream().sorted(Comparator.comparing(clientGame::containsKey)) // free players first
                 .toList();
 
         List<String> lines = new ArrayList<>();

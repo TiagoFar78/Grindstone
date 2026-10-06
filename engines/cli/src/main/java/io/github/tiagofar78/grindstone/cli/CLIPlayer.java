@@ -5,7 +5,7 @@ import io.github.tiagofar78.grindstone.enginebridge.player.Messager;
 import io.github.tiagofar78.grindstone.game.MessagesChannel;
 
 public class CLIPlayer implements Messager {
-    
+
     public final int id;
 
     public CLIPlayer(int id) {

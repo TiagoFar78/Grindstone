@@ -19,12 +19,12 @@ public class CLITTTBridge implements TTTBridge {
         for (TTTPlayer player : game.getLobby().getPlayers()) {
             showGrid(player, board);
         }
-        
+
         for (TTTPlayer player : game.getLobby().getSpectators()) {
             showGrid(player, board);
         }
     }
-    
+
     private String drawBoard(int[][] board) {
         StringBuilder sb = new StringBuilder();
         int boardSize = board.length;
@@ -53,7 +53,7 @@ public class CLITTTBridge implements TTTBridge {
 
         return sb.toString();
     }
-    
+
     private void showGrid(TTTPlayer p, String grid) {
         p.sendMessage(grid, MessagesChannel.CHAT);
     }
@@ -62,5 +62,5 @@ public class CLITTTBridge implements TTTBridge {
     public void disable(Game<?, ?, ?> game) {
         Server.playground.removeGame((CLIGame) game);
     }
-    
+
 }

@@ -17,5 +17,5 @@ public class TTTPlayer extends Player<Messager> {
     public int getIndex() {
         return index;
     }
-    
+
 }

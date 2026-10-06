@@ -32,5 +32,5 @@ public abstract class OngoingPhase<G extends Game<?, ?, ?>> extends Phase<G> {
     public boolean isGameDisabled() {
         return false;
     }
-    
+
 }

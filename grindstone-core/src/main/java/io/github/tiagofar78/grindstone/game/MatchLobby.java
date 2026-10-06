@@ -14,11 +14,11 @@ public class MatchLobby<P> {
     }
 
 //  >------------------------{ Player }------------------------<
-    
+
     public Collection<P> getPlayers() {
         return players;
     }
-    
+
     public void addPlayer(P player) {
         players.add(player);
     }
@@ -28,7 +28,7 @@ public class MatchLobby<P> {
     }
 
 //  >----------------------{ Spectator }----------------------<
-    
+
     public Collection<P> getSpectators() {
         return spectators;
     }

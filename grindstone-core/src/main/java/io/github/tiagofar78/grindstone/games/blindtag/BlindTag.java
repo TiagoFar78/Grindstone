@@ -145,13 +145,8 @@ public abstract class BlindTag extends Game<BTBridge, BTPlayer, Team<BTPlayer>> 
     // >--------------------{ Winner tracking }--------------------<
 
     public List<BTPlayer> computeWinners() {
-        int maxScore = players.stream()
-                .mapToInt(BTPlayer::getScore)
-                .max()
-                .orElse(0);
-        return players.stream()
-                .filter(p -> p.getScore() == maxScore)
-                .toList();
+        int maxScore = players.stream().mapToInt(BTPlayer::getScore).max().orElse(0);
+        return players.stream().filter(p -> p.getScore() == maxScore).toList();
     }
 
     // >--------------------{ Player Actions }--------------------<

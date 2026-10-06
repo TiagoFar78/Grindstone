@@ -35,7 +35,9 @@ public class UnluckyWheel {
                 BTPlayer target = pathRevealTarget(game, player);
                 if (target != null) {
                     List<Direction> path = game.getMap().findShortestPath(
-                            player.getCurrentCell(), target.getCurrentCell());
+                            player.getCurrentCell(),
+                            target.getCurrentCell()
+                    );
                     game.onPathReveal(player, path);
                 }
             }
@@ -63,7 +65,9 @@ public class UnluckyWheel {
             }
 
             int dist = game.getMap().findShortestPath(
-                    player.getCurrentCell(), other.getCurrentCell()).size();
+                    player.getCurrentCell(),
+                    other.getCurrentCell()
+            ).size();
             if (dist < minDist) {
                 minDist = dist;
                 nearest = other;

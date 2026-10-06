@@ -5,5 +5,5 @@ import io.github.tiagofar78.grindstone.game.Game;
 public interface GameBridge {
 
     void disable(Game<?, ?, ?> game);
-    
+
 }

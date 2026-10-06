@@ -30,5 +30,5 @@ public class BTPlayerTest {
     }
 
     // TODO test gold can go negative
-    
+
 }

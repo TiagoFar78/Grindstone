@@ -22,11 +22,9 @@ public class RevealPhase extends FinishedPhase<BlindTag> {
 
         game.onRevealPhaseStarted(players);
 
-        game.getDependencies()
-                .getSchedulerService()
-                .runAfter(REVEAL_DURATION, () -> {
-                    game.runGameOver();
-                    game.archive();
-                });
+        game.getDependencies().getSchedulerService().runAfter(REVEAL_DURATION, () -> {
+            game.runGameOver();
+            game.archive();
+        });
     }
 }

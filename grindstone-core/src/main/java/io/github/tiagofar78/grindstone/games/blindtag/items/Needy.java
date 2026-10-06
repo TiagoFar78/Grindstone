@@ -13,9 +13,7 @@ public class Needy extends Item {
 
     @Override
     public void use(BlindTag game, BTPlayer player) {
-        List<BTPlayer> others = game.getBTPlayers().stream()
-                .filter(p -> p != player)
-                .toList();
+        List<BTPlayer> others = game.getBTPlayers().stream().filter(p -> p != player).toList();
 
         if (others.isEmpty()) {
             return;
