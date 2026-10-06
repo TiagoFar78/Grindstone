@@ -1,4 +1,4 @@
-package io.github.tiagofar78.grindstone.cli;
+package io.github.tiagofar78.grindstone.cli.services;
 
 import java.time.Duration;
 

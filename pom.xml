@@ -18,22 +18,22 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <maven.compiler.source>22</maven.compiler.source>
-        <maven.compiler.target>22</maven.compiler.target>
+        <maven.compiler.source>26</maven.compiler.source>
+        <maven.compiler.target>26</maven.compiler.target>
     </properties>
 
     <dependencyManagement>
         <dependencies>
-	        <dependency>
-	            <groupId>io.github.tiagofar78</groupId>
-	            <artifactId>grindstone-core</artifactId>
-	            <version>${project.version}</version>
-	        </dependency>
-	        <dependency>
-	            <groupId>io.github.tiagofar78</groupId>
-	            <artifactId>grindstone-matchmaking</artifactId>
-	            <version>${project.version}</version>
-	        </dependency>
+            <dependency>
+                <groupId>io.github.tiagofar78</groupId>
+                <artifactId>grindstone-core</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.github.tiagofar78</groupId>
+                <artifactId>grindstone-matchmaking</artifactId>
+                <version>${project.version}</version>
+            </dependency>
             <dependency>
                 <groupId>org.testng</groupId>
                 <artifactId>testng</artifactId>
@@ -68,7 +68,7 @@
                             <trimTrailingWhitespace/>
                             <endWithNewline/>
                             <eclipse>
-                                <file>${project.basedir}${file.separator}formatter-config.xml</file>
+                                <file>${maven.multiModuleProjectDirectory}${file.separator}formatter-config.xml</file>
                             </eclipse>
                         </java>
                         <pom>

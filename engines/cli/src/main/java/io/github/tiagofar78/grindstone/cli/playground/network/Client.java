@@ -1,4 +1,4 @@
-package io.github.tiagofar78.grindstone.cli.network;
+package io.github.tiagofar78.grindstone.cli.playground.network;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -7,7 +7,7 @@ import java.io.PrintWriter;
 import java.net.Socket;
 
 public class Client {
-    
+
     public static void main(String[] args) throws IOException {
         Socket socket = new Socket("localhost", 12345);
 
@@ -23,7 +23,7 @@ public class Client {
                 }
             }
         }).start();
-        
+
         PrintWriter serverOut = new PrintWriter(socket.getOutputStream(), true);
         BufferedReader keyboard = new BufferedReader(new InputStreamReader(System.in));
 
@@ -34,7 +34,7 @@ public class Client {
                 break;
             }
         }
-        
+
         socket.close();
     }
 

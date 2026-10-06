@@ -1,6 +1,9 @@
 @echo off
 setlocal
 
+set "JAVA_HOME=C:\Users\tiago\AppData\Roaming\Kiro\User\globalStorage\pleiades.java-extension-pack-jdk\java\latest"
+set "PATH=%JAVA_HOME%\bin;%PATH%"
+
 for %%F in ("target\grindstone-cli-engine-*.jar") do set CLI_JAR=%%~fF
 for %%F in ("..\..\grindstone-core\target\grindstone-core-*.jar") do set CORE_JAR=%%~fF
 
@@ -16,5 +19,5 @@ if not defined CORE_JAR (
     exit /b 1
 )
 
-java -cp "%CLI_JAR%;%CORE_JAR%" io.github.tiagofar78.grindstone.cli.network.Server
+java -cp "%CLI_JAR%;%CORE_JAR%" io.github.tiagofar78.grindstone.cli.playground.network.Server
 pause
