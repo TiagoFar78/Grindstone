@@ -6,7 +6,6 @@ import io.github.tiagofar78.grindstone.game.Game;
 import io.github.tiagofar78.grindstone.game.GameDependencies;
 import io.github.tiagofar78.grindstone.game.MessagesChannel;
 import io.github.tiagofar78.grindstone.game.Team;
-import io.github.tiagofar78.grindstone.game.phases.FinishedPhase;
 import io.github.tiagofar78.grindstone.game.phases.Phase;
 
 public class TicTacToe extends Game<TTTBridge, TTTPlayer, Team<TTTPlayer>> {
