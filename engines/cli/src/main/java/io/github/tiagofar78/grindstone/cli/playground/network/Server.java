@@ -1,4 +1,4 @@
-package io.github.tiagofar78.grindstone.cli.network;
+package io.github.tiagofar78.grindstone.cli.playground.network;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -7,13 +7,13 @@ import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-import io.github.tiagofar78.grindstone.cli.CommandLineInterface;
+import io.github.tiagofar78.grindstone.cli.playground.Playground;
 
 public class Server {
     
     private static final int MAX_CLIENTS = 10;
     
-    private static CommandLineInterface cli;
+    public static final Playground playground = new Playground();
     private static ServerSocket server;
     private static Socket[] IDS_TAKEN = new Socket[MAX_CLIENTS];
     private static PrintWriter[] OUTS = new PrintWriter[MAX_CLIENTS];
@@ -41,23 +41,25 @@ public class Server {
             } catch (IOException e) {
                 // Empty
             }
+            return;
         }
 
         System.out.println("New client connected");
         sendMessage(id, "Connected to server");
+        playground.connect(id);
         new Thread(() -> handleClient(id, client)).start();
     }
     
     private static void disconnectClient(int id) {
-        cli.disconnect(id);
+        playground.disconnect(id);
         IDS_TAKEN[id] = null;
         OUTS[id] = null;
+        System.out.println("Client disconnected");
     }
     
     public static void main(String[] args) throws IOException {
         System.out.println("Server started");
         server = new ServerSocket(12345);
-        cli = new CommandLineInterface();
 
         while (true) {
             connectClient(server.accept());
@@ -70,10 +72,6 @@ public class Server {
         ) {
             String line;
             while ((line = in.readLine()) != null) {
-                if (line.isEmpty()) {
-                    continue;
-                }
-                
                 String[] args = line.trim().split("\\s+");
                 if (args[0].equals("close")) {
                     server.close();
@@ -84,7 +82,7 @@ public class Server {
                     continue;
                 }
                 
-                cli.process(id, args);
+                playground.process(id, args);
             }
         } catch (IOException e) {
             disconnectClient(id);

@@ -1,5 +1,8 @@
 package io.github.tiagofar78.grindstone.cli.games.tictactoe;
 
+import io.github.tiagofar78.grindstone.cli.CLIGame;
+import io.github.tiagofar78.grindstone.cli.playground.network.Server;
+import io.github.tiagofar78.grindstone.game.Game;
 import io.github.tiagofar78.grindstone.game.MessagesChannel;
 import io.github.tiagofar78.grindstone.games.tictactoe.TTTBridge;
 import io.github.tiagofar78.grindstone.games.tictactoe.TTTPlayer;
@@ -53,6 +56,11 @@ public class CLITTTBridge implements TTTBridge {
     
     private void showGrid(TTTPlayer p, String grid) {
         p.sendMessage(grid, MessagesChannel.CHAT);
+    }
+
+    @Override
+    public void disable(Game<?, ?, ?> game) {
+        Server.playground.removeGame((CLIGame) game);
     }
     
 }

@@ -19,5 +19,5 @@ if not defined CORE_JAR (
     exit /b 1
 )
 
-java -cp "%CLI_JAR%;%CORE_JAR%" io.github.tiagofar78.grindstone.cli.network.Server
+java -cp "%CLI_JAR%;%CORE_JAR%" io.github.tiagofar78.grindstone.cli.playground.network.Server
 pause

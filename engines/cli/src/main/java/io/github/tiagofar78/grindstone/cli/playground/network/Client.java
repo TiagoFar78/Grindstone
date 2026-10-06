@@ -1,4 +1,4 @@
-package io.github.tiagofar78.grindstone.cli.network;
+package io.github.tiagofar78.grindstone.cli.playground.network;
 
 import java.io.BufferedReader;
 import java.io.IOException;
