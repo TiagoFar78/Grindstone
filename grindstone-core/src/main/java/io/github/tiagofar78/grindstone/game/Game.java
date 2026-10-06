@@ -82,7 +82,7 @@ public abstract class Game<B extends GameBridge, P extends Player<?>, T extends 
     }
 
     public void disable() {
-        // Empty
+        gameEngine.disable(this);
     }
 
     public Phase<? extends Game<B, P, T>> getCurrentPhase() {
