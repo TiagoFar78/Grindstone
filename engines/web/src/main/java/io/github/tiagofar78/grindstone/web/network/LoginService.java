@@ -10,7 +10,6 @@ import java.util.concurrent.ThreadLocalRandom;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import io.github.tiagofar78.grindstone.web.WebPlayer;
 import io.github.tiagofar78.grindstone.web.playground.OutboundMessages;
 import io.github.tiagofar78.grindstone.web.playground.Playground;
 import io.javalin.websocket.WsContext;
