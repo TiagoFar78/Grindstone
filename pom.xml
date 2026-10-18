@@ -13,6 +13,7 @@
         <module>grindstone-core</module>
         <module>grindstone-matchmaking</module>
         <module>engines/cli</module>
+        <module>engines/web</module>
         <module>engines/bukkit</module>
     </modules>
 
