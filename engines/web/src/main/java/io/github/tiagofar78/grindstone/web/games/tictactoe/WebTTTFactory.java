@@ -32,7 +32,7 @@ public class WebTTTFactory {
         List<WebPlayer> t2 = teams.get(1);
         TTTPlayer p1 = new TTTPlayer(t1.getFirst(), UUID.randomUUID(), 0);
         TTTPlayer p2 = new TTTPlayer(t2.getFirst(), UUID.randomUUID(), 1);
-        return new WebTicTacToe(deps, new WebTTTBridge(), t1, p1, t2, p2);
+        return new WebTicTacToe(deps, new WebTTTBridge(), p1, p2);
     }
 
     private static String checkTeams(List<List<WebPlayer>> teams) {
