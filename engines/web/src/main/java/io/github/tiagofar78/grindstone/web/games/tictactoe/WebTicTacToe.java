@@ -1,7 +1,5 @@
 package io.github.tiagofar78.grindstone.web.games.tictactoe;
 
-import java.util.List;
-
 import com.fasterxml.jackson.databind.JsonNode;
 
 import io.github.tiagofar78.grindstone.game.GameDependencies;
