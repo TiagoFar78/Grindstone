@@ -53,7 +53,7 @@
                             <transformers>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>io.github.tiagofar78.grindstone.web.playground.network.WebServer</mainClass>
+                                    <mainClass>io.github.tiagofar78.grindstone.web.network.WebServer</mainClass>
                                 </transformer>
                             </transformers>
                             <filters>

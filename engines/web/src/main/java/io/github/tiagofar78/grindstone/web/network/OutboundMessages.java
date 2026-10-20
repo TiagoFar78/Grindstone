@@ -1,4 +1,4 @@
-package io.github.tiagofar78.grindstone.web.playground;
+package io.github.tiagofar78.grindstone.web.network;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -9,8 +9,8 @@ import io.github.tiagofar78.grindstone.game.Rejoinable;
 import io.github.tiagofar78.grindstone.web.PlayerState;
 import io.github.tiagofar78.grindstone.web.WebGame;
 import io.github.tiagofar78.grindstone.web.WebPlayer;
-import io.github.tiagofar78.grindstone.web.network.LoginService;
-import io.github.tiagofar78.grindstone.web.network.WebServer;
+import io.github.tiagofar78.grindstone.web.playground.AvailableGame;
+import io.github.tiagofar78.grindstone.web.playground.GameSession;
 
 public class OutboundMessages {
 
@@ -95,7 +95,12 @@ public class OutboundMessages {
     }
 
     private static boolean canRejoin(WebPlayer viewer) {
-        WebGame game = viewer.getCurrentGame().getGame();
+        GameSession session = viewer.getCurrentGame();
+        if (session == null) {
+            return false;
+        }
+
+        WebGame game = session.getGame();
         return game != null && game instanceof Rejoinable;
     }
 

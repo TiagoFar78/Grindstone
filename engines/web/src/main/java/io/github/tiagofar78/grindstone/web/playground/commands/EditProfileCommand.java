@@ -7,7 +7,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import io.github.tiagofar78.grindstone.web.PlayerState;
 import io.github.tiagofar78.grindstone.web.WebPlayer;
 import io.github.tiagofar78.grindstone.web.network.LoginService;
-import io.github.tiagofar78.grindstone.web.playground.OutboundMessages;
+import io.github.tiagofar78.grindstone.web.network.OutboundMessages;
 import io.github.tiagofar78.grindstone.web.playground.Playground;
 
 public class EditProfileCommand implements PlaygroundCommand {

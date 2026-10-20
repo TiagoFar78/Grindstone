@@ -186,7 +186,7 @@ function renderLobby(msg) {
     const byTeam = new Map();
     picks.forEach((team, pos) => {
         if (!byTeam.has(team)) byTeam.set(team, []);
-        byTeam.get(team).push(pos);
+        byTeam.get(team).push(pos - 1);
     });
     const keys = [...byTeam.keys()].sort((a, b) => a - b);
     const nameOf = (pos) => msg.online[pos - 1]?.name ?? "?";
