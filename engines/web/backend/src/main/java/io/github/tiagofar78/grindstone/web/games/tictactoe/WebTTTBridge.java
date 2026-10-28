@@ -1,40 +1,28 @@
 package io.github.tiagofar78.grindstone.web.games.tictactoe;
 
-import java.util.Map;
-
 import io.github.tiagofar78.grindstone.game.Game;
-import io.github.tiagofar78.grindstone.game.MessagesChannel;
 import io.github.tiagofar78.grindstone.games.tictactoe.TTTBridge;
 import io.github.tiagofar78.grindstone.games.tictactoe.TTTPlayer;
 import io.github.tiagofar78.grindstone.games.tictactoe.TicTacToe;
 import io.github.tiagofar78.grindstone.web.WebGame;
+import io.github.tiagofar78.grindstone.web.WebPlayer;
 import io.github.tiagofar78.grindstone.web.network.WebServer;
+import io.github.tiagofar78.grindstone.web.network.messages.Outbound;
+import io.github.tiagofar78.grindstone.web.network.messages.WebMessage;
 
 public class WebTTTBridge implements TTTBridge {
 
     @Override
     public void updateGrid(TicTacToe game, int row, int col, int playerIndex) {
-        String message = WebServer.toJson(
-                Map.of(
-                        "type",
-                        "board",
-                        "board",
-                        game.getBoard(),
-                        "row",
-                        row,
-                        "col",
-                        col,
-                        "playerIndex",
-                        playerIndex
-                )
-        );
+        TTTUpdateGridMessage boardUpdate = new TTTUpdateGridMessage(row, col, playerIndex);
+        WebMessage message = new Outbound.GameUpdate(boardUpdate);
 
         for (TTTPlayer player : game.getLobby().getPlayers()) {
-            player.sendMessage(message, MessagesChannel.CHAT);
+            ((WebPlayer) player.getEngine()).sendMessage(message);
         }
 
         for (TTTPlayer player : game.getLobby().getSpectators()) {
-            player.sendMessage(message, MessagesChannel.CHAT);
+            ((WebPlayer) player.getEngine()).sendMessage(message);
         }
     }
 

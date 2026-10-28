@@ -28,10 +28,14 @@ public class WebTTTFactory {
 
     private static WebGame create(List<List<WebPlayer>> teams) {
         GameDependencies deps = new GameDependencies(WebServices.scheduler);
-        List<WebPlayer> t1 = teams.get(0);
-        List<WebPlayer> t2 = teams.get(1);
-        TTTPlayer p1 = new TTTPlayer(t1.getFirst(), UUID.randomUUID(), 0);
-        TTTPlayer p2 = new TTTPlayer(t2.getFirst(), UUID.randomUUID(), 1);
+        WebPlayer wp1 = teams.get(0).getFirst();
+        WebPlayer wp2 = teams.get(1).getFirst();
+        TTTPlayer p1 = new TTTPlayer(wp1, UUID.randomUUID(), 0);
+        TTTPlayer p2 = new TTTPlayer(wp2, UUID.randomUUID(), 1);
+
+        wp1.setCorePlayer(p1); // This part is done here just because it is easier. It would be preferable
+        wp2.setCorePlayer(p2); // to be done inside StartGameCommand, but that would be much harder.
+
         return new WebTicTacToe(deps, new WebTTTBridge(), p1, p2);
     }
 

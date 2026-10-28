@@ -1,11 +1,11 @@
 package io.github.tiagofar78.grindstone.web;
 
-import java.util.Map;
-
 import io.github.tiagofar78.grindstone.enginebridge.player.Messager;
 import io.github.tiagofar78.grindstone.game.MessagesChannel;
 import io.github.tiagofar78.grindstone.game.Player;
-import io.github.tiagofar78.grindstone.web.network.WebServer;
+import io.github.tiagofar78.grindstone.web.network.JsonFormatter;
+import io.github.tiagofar78.grindstone.web.network.messages.Outbound;
+import io.github.tiagofar78.grindstone.web.network.messages.WebMessage;
 import io.github.tiagofar78.grindstone.web.playground.GameSession;
 import io.javalin.websocket.WsContext;
 
@@ -86,14 +86,22 @@ public class WebPlayer implements Messager {
 
     @Override
     public void sendMessage(String message, MessagesChannel channel) {
-        String json = message.startsWith("{") ? message : WebServer.toJson(Map.of("type", "chat", "text", message));
+        String json = message.startsWith("{") ? message : JsonFormatter.toJson(toOutboundMessage(message, channel));
         synchronized (ctx) {
             ctx.send(json);
         }
     }
 
-    public void sendMessage(String message) {
-        sendMessage(message, MessagesChannel.CHAT);
+    private Outbound toOutboundMessage(String msg, MessagesChannel channel) {
+        if (channel == MessagesChannel.ACTION_BAR) {
+            return new Outbound.Error(msg);
+        }
+
+        return new Outbound.Chat(msg);
+    }
+
+    public void sendMessage(WebMessage message) {
+        sendMessage(JsonFormatter.toJson(message), MessagesChannel.CHAT);
     }
 
 }

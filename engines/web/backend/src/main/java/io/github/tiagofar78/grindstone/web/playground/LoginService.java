@@ -9,7 +9,8 @@ import java.util.concurrent.ThreadLocalRandom;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
-import io.github.tiagofar78.grindstone.web.network.OutboundMessages;
+import io.github.tiagofar78.grindstone.web.network.JsonFormatter;
+import io.github.tiagofar78.grindstone.web.network.messages.Outbound;
 import io.javalin.websocket.WsContext;
 
 public class LoginService {
@@ -58,22 +59,16 @@ public class LoginService {
 
     public void onConnect(String sessionId, WsContext ctx) {
         pendingSessions.add(sessionId);
-        ctx.send(OutboundMessages.buildLoginPage(null));
     }
 
     public void process(String sessionId, WsContext ctx, JsonNode node) {
         if (!node.path("type").asText("").equals("profile")) {
-            ctx.send(OutboundMessages.buildLoginPage(null));
             return;
         }
 
         String name = node.path("name").asText("").trim();
         if (name.isEmpty() || name.length() > MAX_NAME_LENGTH) {
-            ctx.send(
-                    OutboundMessages.buildLoginPage(
-                            "Nickname must have between 1 and " + MAX_NAME_LENGTH + " characters."
-                    )
-            );
+            ctx.send(JsonFormatter.toJson(new Outbound.Error("Nickname must have between 1 and " + MAX_NAME_LENGTH + " characters.")));
             return;
         }
 
@@ -86,7 +81,7 @@ public class LoginService {
 
         String error = playground.join(name, emoji, ctx);
         if (error != null) {
-            ctx.send(OutboundMessages.buildLoginPage(error));
+            ctx.send(JsonFormatter.toJson(new Outbound.Error(error)));
             return;
         }
 

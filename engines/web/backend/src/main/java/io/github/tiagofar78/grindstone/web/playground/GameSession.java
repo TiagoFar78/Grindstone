@@ -14,7 +14,7 @@ public class GameSession {
     private final WebGame game;
     private final List<List<WebPlayer>> initialTeams;
     private final Set<WebPlayer> onlinePlayers;
-    private boolean isAlive;
+    private boolean isRunning;
 
     public GameSession(int id, WebGame game, List<List<WebPlayer>> teams) {
         this.id = id;
@@ -24,7 +24,7 @@ public class GameSession {
         for (List<WebPlayer> team : teams) {
             onlinePlayers.addAll(team);
         }
-        this.isAlive = true;
+        this.isRunning = true;
     }
 
     public int getId() {
@@ -43,22 +43,36 @@ public class GameSession {
         return new HashSet<>(onlinePlayers);
     }
 
+    public boolean canReconnect(WebPlayer p) {
+        return game instanceof Rejoinable && wasPlaying(p) && !onlinePlayers.contains(p) && isRunning;
+    }
+
+    private boolean wasPlaying(WebPlayer p) {
+        for (List<WebPlayer> team : initialTeams) {
+            if (team.contains(p)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public void playerLeft(WebPlayer p) {
         onlinePlayers.remove(p);
         game.disconnect(p);
     }
 
     public void playerReconnected(WebPlayer p) {
+        if (!canReconnect(p)) {
+            return;
+        }
+
         onlinePlayers.add(p);
         ((Rejoinable) game).playerRejoin(p.getCorePlayer());
     }
 
-    public boolean isAlive() {
-        return isAlive;
-    }
-
     public void disable() {
-        isAlive = false;
+        isRunning = false;
     }
 
 }

@@ -17,6 +17,11 @@ public abstract class Player<B extends Messager> {
         this.uuid = uuid;
     }
 
+    @Deprecated // This method must only be used inside game engines. Never in the game core logic.
+    public B getEngine() {
+        return playerEngine;
+    }
+
     public UUID getUUID() {
         return uuid;
     }

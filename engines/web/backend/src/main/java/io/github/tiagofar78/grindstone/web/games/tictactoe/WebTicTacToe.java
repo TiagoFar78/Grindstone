@@ -8,12 +8,13 @@ import io.github.tiagofar78.grindstone.games.tictactoe.TTTPlayer;
 import io.github.tiagofar78.grindstone.games.tictactoe.TicTacToe;
 import io.github.tiagofar78.grindstone.web.WebGame;
 import io.github.tiagofar78.grindstone.web.WebPlayer;
+import io.github.tiagofar78.grindstone.web.playground.Playground;
 import io.github.tiagofar78.grindstone.web.playground.commands.Commands;
 import io.github.tiagofar78.grindstone.web.playground.commands.GameCommand;
 
 public class WebTicTacToe extends TicTacToe implements WebGame {
 
-    private final Commands<GameCommand<TicTacToe, TTTPlayer>> commands = new Commands<>();
+    private final Commands<GameCommand<TicTacToe, TTTPlayer, ?>> commands = new Commands<>();
 
     public WebTicTacToe(GameDependencies dependencies, TTTBridge bridge, TTTPlayer p1, TTTPlayer p2) {
         super(dependencies, bridge, p1, p2);
@@ -26,14 +27,8 @@ public class WebTicTacToe extends TicTacToe implements WebGame {
     }
 
     @Override
-    public boolean executeCommand(String cmdLabel, WebPlayer player, JsonNode node) {
-        GameCommand<TicTacToe,TTTPlayer> cmd = commands.find(cmdLabel);
-        if (cmd == null) {
-            return false;
-        }
-
-        cmd.execute(this, (TTTPlayer) player.getCorePlayer(), node);
-        return true;
+    public boolean executeCommand(String cmdLabel, Playground playground, WebPlayer player, JsonNode node) {
+        return commands.execute(cmdLabel, playground, player, node);
     }
 
     @Override

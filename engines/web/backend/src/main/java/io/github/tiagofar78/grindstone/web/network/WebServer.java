@@ -3,9 +3,7 @@ package io.github.tiagofar78.grindstone.web.network;
 import java.time.Duration;
 import java.util.Map;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.github.tiagofar78.grindstone.web.playground.LoginService;
 import io.github.tiagofar78.grindstone.web.playground.Playground;
@@ -14,7 +12,6 @@ import io.javalin.Javalin;
 public class WebServer {
 
     private static final int PORT = 8080;
-    private static final ObjectMapper MAPPER = new ObjectMapper();
 
     public static final Playground playground = new Playground();
     private static final LoginService loginService = new LoginService(playground);
@@ -32,7 +29,7 @@ public class WebServer {
             });
 
             ws.onMessage(ctx -> {
-                JsonNode message = toJsonNode(ctx.message());
+                JsonNode message = JsonFormatter.toJsonNode(ctx.message());
                 if (message == null) {
                     ctx.send(Map.of("type", "error", "error", "Invalid JSON format. Report this to an administrator."));
                     return;
@@ -63,25 +60,6 @@ public class WebServer {
 
         app.start(PORT);
         System.out.println("Server started on http://localhost:" + PORT);
-    }
-
-    // ################################################# Helpers ##################################################
-
-    private static JsonNode toJsonNode(String raw) {
-        try {
-            return MAPPER.readTree(raw);
-        }
-        catch (JsonProcessingException e) {
-            return null;
-        }
-    }
-
-    public static String toJson(Object payload) {
-        try {
-            return MAPPER.writeValueAsString(payload);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
     }
 
 }
