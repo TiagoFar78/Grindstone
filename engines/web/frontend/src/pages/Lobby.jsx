@@ -1,6 +1,9 @@
 import { useState } from "react";
 import Logo from "../components/Logo";
 import Panel from "../components/Panel";
+import { emojiOf } from "../emojis";
+
+const inGame = (p) => p.gameSessionId != null && p.gameSessionId >= 0;
 
 function Teams({ teams }) {
     return (
@@ -24,7 +27,7 @@ export default function Lobby({ msg, send }) {
     // ignore picks of players that are now in a game
     const picks = {};
     msg.online.forEach((p, i) => {
-        if (!p.game && rawPicks[i + 1]) picks[i + 1] = rawPicks[i + 1];
+        if (!inGame(p) && rawPicks[i + 1]) picks[i + 1] = rawPicks[i + 1];
     });
 
     const togglePick = (pos, team) =>
@@ -53,7 +56,7 @@ export default function Lobby({ msg, send }) {
                 <Logo />
                 {me && (
                     <div className="user-chip">
-                        <span className="emoji">{me.emoji}</span>
+                        <span className="emoji">{emojiOf(me.emoji)}</span>
                         {me.name}
                     </div>
                 )}
@@ -88,17 +91,17 @@ export default function Lobby({ msg, send }) {
                     <p className="hint">Players on the same team share a number.</p>
                     {msg.online.map((p, i) => {
                         const pos = i + 1;
-                        const busy = !!p.game;
+                        const busy = inGame(p);
                         return (
                             <div key={p.name} className={"player" + (busy ? " busy" : "")}>
                                 <span className="pos">{pos}</span>
-                                <span className="emoji">{p.emoji}</span>
+                                <span className="emoji">{emojiOf(p.emoji)}</span>
                                 <span className="pname">
                                     {p.name}
                                     {p.you && <span className="you">you</span>}
                                 </span>
                                 {busy ? (
-                                    <span className="badge">In game #{p.game}</span>
+                                    <span className="badge">In game #{p.gameSessionId}</span>
                                 ) : (
                                     <div className="chips">
                                         {[1, 2, 3, 4].map((n) => (
@@ -127,7 +130,13 @@ export default function Lobby({ msg, send }) {
                         <button
                             className="btn"
                             disabled={!teamKeys.length || !game}
-                            onClick={() => send({ type: "start", game, teams: teamKeys.map((k) => byTeam[k]) })}
+                            onClick={() =>
+                                send({
+                                    type: "start",
+                                    gameIndex: msg.games.indexOf(game),
+                                    teams: teamKeys.map((k) => byTeam[k]),
+                                })
+                            }
                         >
                             {game ? "Start " + game : "Start"}
                         </button>

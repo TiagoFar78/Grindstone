@@ -1,61 +1,53 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 
 export function useSocket() {
-    const socketRef = useRef(null);
-    const toastId = useRef(0);
+  const ws = useRef(null);
+  const [status, setStatus] = useState("idle"); // idle | connecting | open | closed
+  const [loginError, setLoginError] = useState(null);
+  const [view, setView] = useState(null); // last lobby / gameStarted message
+  const [toasts, setToasts] = useState([]);
 
-    const [status, setStatus] = useState("connecting"); // connecting | open | closed
-    const [view, setView] = useState(null);             // last nickname / lobby / game message
-    const [board, setBoard] = useState(null);
-    const [chat, setChat] = useState([]);
-    const [toasts, setToasts] = useState([]);
+  function addToast(text) {
+    const id = Date.now() + Math.random();
+    setToasts((t) => [...t, { id, text }]);
+    setTimeout(() => setToasts((t) => t.filter((x) => x.id !== id)), 4000);
+  }
 
-    useEffect(() => {
-        let active = true;
-        const socket = new WebSocket(import.meta.env.VITE_WS_URL);
-        socketRef.current = socket;
+  function connect(name, emoji) {
+    setLoginError(null);
+    setStatus("connecting");
+    const url = `${import.meta.env.VITE_WS_URL}?name=${encodeURIComponent(name)}&emoji=${encodeURIComponent(emoji)}`;
+    const socket = new WebSocket(url);
+    ws.current = socket;
 
-        socket.onopen = () => active && setStatus("open");
-        socket.onclose = () => active && setStatus("closed");
-        socket.onmessage = (event) => {
-            if (!active) return;
-            const msg = JSON.parse(event.data);
-            switch (msg.type) {
-                case "nickname":
-                case "lobby":
-                    setView(msg);
-                    break;
-                case "game":
-                    setView(msg);
-                    setBoard(null);
-                    setChat([]);
-                    break;
-                case "board":
-                    setBoard(msg);
-                    break;
-                case "chat":
-                    setChat((lines) => [...lines, msg.text]);
-                    break;
-                case "error": {
-                    const id = ++toastId.current;
-                    setToasts((t) => [...t, { id, text: msg.text }]);
-                    setTimeout(() => setToasts((t) => t.filter((x) => x.id !== id)), 3500);
-                    break;
-                }
-                default:
-                    console.log(msg);
-            }
-        };
+    socket.onopen = () => setStatus("open");
+    socket.onmessage = (e) => {
+      const msg = JSON.parse(e.data);
+      switch (msg.type) {
+        case "lobby":
+        case "gameStarted":
+          setView(msg);
+          break;
+        case "error":
+          addToast(msg.text);
+          break;
+        default:
+          console.log("unhandled:", msg);
+      }
+    };
+    socket.onclose = (e) => {
+      if (e.code === 4000) {
+        setLoginError(e.reason);
+        setStatus("idle");
+      } else {
+        setStatus("closed");
+      }
+    };
+  }
 
-        return () => {
-            active = false;
-            socket.close();
-        };
-    }, []);
+  function send(msg) {
+    ws.current?.send(JSON.stringify(msg));
+  }
 
-    const send = useCallback((message) => {
-        socketRef.current?.send(JSON.stringify(message));
-    }, []);
-
-    return { status, view, board, chat, toasts, send };
+  return { status, loginError, view, toasts, connect, send };
 }

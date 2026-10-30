@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { LogoMark } from "../components/Logo";
+import { EMOJIS } from "../emojis";
 
 const STORAGE_KEY = "grindstone.profile";
 
@@ -19,18 +20,21 @@ function saveProfile(name, emoji) {
     }
 }
 
-export default function Login({ msg, send }) {
+export default function CreateProfile({ onJoin, error }) {
     const [name, setName] = useState(() => loadProfile().name ?? "");
-    const [emoji, setEmoji] = useState(() => loadProfile().emoji ?? null);
+    const [emoji, setEmoji] = useState(() => {
+        const saved = loadProfile().emoji;
+        return saved in EMOJIS ? saved : null;
+    });
 
     const join = () => {
         const trimmed = name.trim();
+        if (!trimmed) return;
         saveProfile(trimmed, emoji);
-        send({ type: "profile", name: trimmed, emoji });
+        onJoin(trimmed, emoji);
     };
 
-    return (
-        <div className="center">
+    return (<div className="center">
             <div className="hero">
                 <LogoMark />
                 <h1>Grindstone Playground</h1>
@@ -46,18 +50,18 @@ export default function Login({ msg, send }) {
                 />
                 <div className="label">Choose an emoji (or get a random one)</div>
                 <div className="emoji-grid">
-                    {msg.emojis.map((e) => (
+                    {Object.entries(EMOJIS).map(([code, char]) => (
                         <button
-                            key={e}
+                            key={code}
                             type="button"
-                            className={"emoji-option" + (e === emoji ? " selected" : "")}
-                            onClick={() => setEmoji(emoji === e ? null : e)}
+                            className={"emoji-option" + (code === emoji ? " selected" : "")}
+                            onClick={() => setEmoji(emoji === code ? null : code)}
                         >
-                            {e}
+                            {char}
                         </button>
                     ))}
                 </div>
-                <div className="error">{msg.error ?? ""}</div>
+                <div className="error">{error ?? ""}</div>
                 <button className="btn" onClick={join}>Join</button>
             </div>
         </div>

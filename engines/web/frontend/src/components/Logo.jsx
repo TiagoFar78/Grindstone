@@ -1,5 +1,5 @@
 export function LogoMark() {
-    return <img className="logo-mark" src="/favicon.ico" alt="" />;
+    return <img className="logo-mark" src="/../favicon.ico" alt="" />;
 }
 
 export default function Logo() {
