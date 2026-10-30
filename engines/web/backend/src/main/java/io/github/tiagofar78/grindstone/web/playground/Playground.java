@@ -18,7 +18,6 @@ import io.github.tiagofar78.grindstone.web.playground.commands.LeaveCommand;
 import io.github.tiagofar78.grindstone.web.playground.commands.PlaygroundCommand;
 import io.github.tiagofar78.grindstone.web.playground.commands.RejoinCommand;
 import io.github.tiagofar78.grindstone.web.playground.commands.StartGameCommand;
-import io.javalin.websocket.WsContext;
 
 public class Playground {
 
@@ -48,15 +47,15 @@ public class Playground {
 
     // ############################################# Client lifecycle #############################################
 
-    public synchronized String join(String name, String emoji, WsContext ctx) {
-        WebPlayer existing = findByName(name);
+    public synchronized WebPlayer join(WebPlayer player) {
+        WebPlayer existing = findByName(player.getName());
 
         if (existing != null) {
             if (existing.isOnline()) {
-                return "That nickname is already in use.";
+                return null;
             }
-            // Reconnect: reuse the existing player, just update the socket
-            existing.setCtx(ctx);
+
+            existing.updateConnection(player);
             existing.setOnline(true);
 
             if (existing.getState() == PlayerState.IN_GAME && existing.getCurrentGame() != null &&
@@ -66,21 +65,16 @@ public class Playground {
                 existing.setState(PlayerState.IN_LOBBY);
             }
         } else {
-            WebPlayer player = new WebPlayer(name, emoji, ctx);
             player.setOnline(true);
             playerRegistry.add(player);
+            existing = player;
         }
 
         refreshMenus();
-        return null;
+        return existing;
     }
 
-    public synchronized void disconnect(String name) {
-        WebPlayer player = findByName(name);
-        if (player == null) {
-            return;
-        }
-
+    public synchronized void disconnect(WebPlayer player) {
         player.setOnline(false);
         if (player.getState() == PlayerState.IN_GAME) {
             GameSession session = player.getCurrentGame();
@@ -110,12 +104,7 @@ public class Playground {
 
     // ################################################# Messages #################################################
 
-    public synchronized void process(String playerName, JsonNode node) {
-        WebPlayer player = findByName(playerName);
-        if (player == null) {
-            return;
-        }
-
+    public synchronized void process(WebPlayer player, JsonNode node) {
         String cmdLabel = node.path("type").asText("");
         boolean commandFound = commands.execute(cmdLabel, this, player, node);
         if (commandFound) {
@@ -157,22 +146,13 @@ public class Playground {
 
     // ################################################ Public API ################################################
 
-    public String getPlayerName(WsContext ctx) {
-        for (WebPlayer p : playerRegistry) {
-            if (p.getCtx() == ctx) {
-                return p.getName();
-            }
-        }
-        return null;
-    }
-
     public List<WebPlayer> getPlayerRegistry() {
         return List.copyOf(playerRegistry);
     }
 
-    public boolean isNameTaken(WebPlayer p, String name) {
+    public boolean isNameTaken(String name) {
         for (WebPlayer registeredPlayer : playerRegistry) {
-            if (p != registeredPlayer && registeredPlayer.getName().equalsIgnoreCase(name)) {
+            if (registeredPlayer.getName().equalsIgnoreCase(name) && registeredPlayer.isOnline()) {
                 return true;
             }
         }

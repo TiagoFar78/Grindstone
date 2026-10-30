@@ -40,10 +40,6 @@ public class WebPlayer implements Messager {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public String getEmoji() {
         return emoji;
     }
@@ -86,6 +82,10 @@ public class WebPlayer implements Messager {
 
     @Override
     public void sendMessage(String message, MessagesChannel channel) {
+        if (!ctx.session.isOpen()) {
+            return;
+        }
+
         String json = message.startsWith("{") ? message : JsonFormatter.toJson(toOutboundMessage(message, channel));
         synchronized (ctx) {
             ctx.send(json);
@@ -102,6 +102,10 @@ public class WebPlayer implements Messager {
 
     public void sendMessage(WebMessage message) {
         sendMessage(JsonFormatter.toJson(message), MessagesChannel.CHAT);
+    }
+
+    public void updateConnection(WebPlayer player) {
+        this.ctx = player.ctx;
     }
 
 }

@@ -12,6 +12,7 @@ import io.github.tiagofar78.grindstone.web.network.messages.WebMessage;
 
 public class WebTTTBridge implements TTTBridge {
 
+    @SuppressWarnings("deprecation")
     @Override
     public void updateGrid(TicTacToe game, int row, int col, int playerIndex) {
         TTTUpdateGridMessage boardUpdate = new TTTUpdateGridMessage(row, col, playerIndex);

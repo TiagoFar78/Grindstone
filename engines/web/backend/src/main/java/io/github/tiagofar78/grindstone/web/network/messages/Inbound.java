@@ -4,7 +4,7 @@ import java.util.List;
 
 public non-sealed interface Inbound extends WebMessage {
 
-    record EditProfile(String name, String emoji) implements Inbound {}
+    record EditProfile(String emoji) implements Inbound {}
 
     record Start(int gameIndex, List<List<Integer>> teams) implements Inbound {}
 

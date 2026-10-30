@@ -5,16 +5,17 @@ import java.util.Map;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
-import io.github.tiagofar78.grindstone.web.playground.LoginService;
+import io.github.tiagofar78.grindstone.web.WebPlayer;
 import io.github.tiagofar78.grindstone.web.playground.Playground;
+import io.github.tiagofar78.grindstone.web.playground.PlaygroundManager;
 import io.javalin.Javalin;
 
 public class WebServer {
 
     private static final int PORT = 8080;
 
+    public static final PlaygroundManager playgroundManager = new PlaygroundManager();
     public static final Playground playground = new Playground();
-    private static final LoginService loginService = new LoginService(playground);
 
     public static void main(String[] args) {
         Javalin app = Javalin.create(config -> {
@@ -25,37 +26,25 @@ public class WebServer {
 
         app.ws("/ws", ws -> {
             ws.onConnect(ctx -> {
-                loginService.onConnect(ctx.sessionId(), ctx);
+                String playgroundId = null; // Change when multiple playgrounds are expected
+                WebPlayer player = new WebPlayer(ctx.queryParam("name"), ctx.queryParam("emoji"), ctx);
+                String error = playgroundManager.joinPlayground(playgroundId, ctx.sessionId(), player);
+                if (error != null) {
+                    ctx.closeSession(4000, error);
+                }
             });
 
             ws.onMessage(ctx -> {
                 JsonNode message = JsonFormatter.toJsonNode(ctx.message());
                 if (message == null) {
-                    ctx.send(Map.of("type", "error", "error", "Invalid JSON format. Report this to an administrator."));
+                    ctx.send(Map.of("type", "error", "error", "Invalid JSON format."));
                     return;
                 }
 
-                String sessionId = ctx.sessionId();
-                if (!loginService.isLoggedIn(sessionId)) {
-                    loginService.process(sessionId, ctx, message);
-                    return;
-                }
-
-                playground.process(loginService.getLoggedIn(sessionId), message);
+                playgroundManager.receivePlayerMessage(ctx.sessionId(), message);
             });
 
-            ws.onClose(ctx -> {
-                String sessionId = ctx.sessionId();
-                if (!loginService.isLoggedIn(sessionId)) {
-                    loginService.cancel(sessionId);
-                    return;
-                }
-
-                String name = loginService.cancel(sessionId);
-                if (name != null) {
-                    playground.disconnect(name);
-                }
-            });
+            ws.onClose(ctx -> playgroundManager.deleteConnection(ctx.sessionId()));
         });
 
         app.start(PORT);
