@@ -6,7 +6,6 @@ import java.util.Map;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import io.github.tiagofar78.grindstone.web.WebPlayer;
-import io.github.tiagofar78.grindstone.web.playground.Playground;
 import io.github.tiagofar78.grindstone.web.playground.PlaygroundManager;
 import io.javalin.Javalin;
 
@@ -15,7 +14,6 @@ public class WebServer {
     private static final int PORT = 8080;
 
     public static final PlaygroundManager playgroundManager = new PlaygroundManager();
-    public static final Playground playground = new Playground();
 
     public static void main(String[] args) {
         Javalin app = Javalin.create(config -> {

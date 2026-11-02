@@ -18,7 +18,7 @@ function Teams({ teams }) {
     );
 }
 
-export default function Lobby({ msg, send }) {
+export default function Lobby({ playgroundName, msg, send }) {
     const [pickedGame, setPickedGame] = useState(null);
     const [rawPicks, setRawPicks] = useState({}); // 1-based position -> team number
 
@@ -53,7 +53,7 @@ export default function Lobby({ msg, send }) {
     return (
         <div className="shell">
             <div className="topbar">
-                <Logo />
+                <Logo playgroundName={playgroundName} />
                 {me && (
                     <div className="user-chip">
                         <span className="emoji">{emojiOf(me.emoji)}</span>

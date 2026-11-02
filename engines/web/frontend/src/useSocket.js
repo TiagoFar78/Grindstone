@@ -2,7 +2,7 @@ import { useRef, useState } from "react";
 
 export function useSocket() {
   const ws = useRef(null);
-  const [status, setStatus] = useState("idle"); // idle | connecting | open | closed
+  const [status, setStatus] = useState("selectingName"); // selectingName | open | closed
   const [loginError, setLoginError] = useState(null);
   const [view, setView] = useState(null); // last lobby / gameStarted message
   const [toasts, setToasts] = useState([]);
@@ -15,7 +15,6 @@ export function useSocket() {
 
   function connect(name, emoji) {
     setLoginError(null);
-    setStatus("connecting");
     const url = `${import.meta.env.VITE_WS_URL}?name=${encodeURIComponent(name)}&emoji=${encodeURIComponent(emoji)}`;
     const socket = new WebSocket(url);
     ws.current = socket;

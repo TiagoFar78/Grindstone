@@ -29,7 +29,7 @@ public class WebTTTBridge implements TTTBridge {
 
     @Override
     public void disable(Game<?, ?, ?> game) {
-        WebServer.playground.removeGame((WebGame) game);
+        WebServer.playgroundManager.removeGame((WebGame) game);
     }
 
 }

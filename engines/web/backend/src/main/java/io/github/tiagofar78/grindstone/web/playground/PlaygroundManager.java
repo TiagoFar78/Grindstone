@@ -5,6 +5,7 @@ import java.util.Map;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
+import io.github.tiagofar78.grindstone.web.WebGame;
 import io.github.tiagofar78.grindstone.web.WebPlayer;
 
 public class PlaygroundManager {
@@ -15,7 +16,7 @@ public class PlaygroundManager {
 
     private Map<String, ConnectionInfo> connections = new HashMap<>();
 
-    private Playground playground = new Playground(); // This must be changed when more than one playground is required
+    private Playground playground = new Playground("Playground"); // This must be changed when more than one playground is required
 
     public String joinPlayground(String playgroundId, String connectionId, WebPlayer player) {
         String name = player.getName();
@@ -47,6 +48,10 @@ public class PlaygroundManager {
         if (infos != null) {
             infos.playground().disconnect(infos.player());
         }
+    }
+
+    public void removeGame(WebGame g) {
+        playground.removeGame(g); // Remove from all when multiple playgrounds are active
     }
     
 }

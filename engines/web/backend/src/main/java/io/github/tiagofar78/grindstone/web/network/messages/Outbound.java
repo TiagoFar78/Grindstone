@@ -5,6 +5,7 @@ import java.util.List;
 public sealed interface Outbound extends WebMessage {
 
     record Lobby(
+            String playgroundName,
             List<String> games,
             List<RunningGame> running,
             List<OnlinePlayer> online,

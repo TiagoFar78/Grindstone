@@ -23,6 +23,7 @@ public class Playground {
 
     // ################################################## State ###################################################
 
+    private final String name;
     private final List<WebPlayer> playerRegistry = new ArrayList<>();
     private final List<AvailableGame> availableGames = new ArrayList<>();
     private final List<GameSession> runningSessions = new ArrayList<>();
@@ -32,7 +33,8 @@ public class Playground {
 
     // ################################################# Setup ####################################################
 
-    public Playground() {
+    public Playground(String name) {
+        this.name = name;
         commands.register("profile", new EditProfileCommand());
         commands.register("start", new StartGameCommand());
         commands.register("leave", new LeaveCommand());
@@ -139,7 +141,7 @@ public class Playground {
                 }).toList();
 
                 boolean canRejoin = p.getCurrentGame() != null;
-                p.sendMessage(new Outbound.Lobby(gamesNames, runningGames, onlinePlayers, canRejoin));
+                p.sendMessage(new Outbound.Lobby(name, gamesNames, runningGames, onlinePlayers, canRejoin));
             }
         }
     }
