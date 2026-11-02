@@ -20,7 +20,7 @@ function saveProfile(name, emoji) {
     }
 }
 
-export default function CreateProfile({ onJoin, error }) {
+export default function CreateProfile({ onJoin, error, isConnecting }) {
     const [name, setName] = useState(() => loadProfile().name ?? "");
     const [emoji, setEmoji] = useState(() => {
         const saved = loadProfile().emoji;
@@ -62,7 +62,9 @@ export default function CreateProfile({ onJoin, error }) {
                     ))}
                 </div>
                 <div className="error">{error ?? ""}</div>
-                <button className="btn" onClick={join}>Join</button>
+                <button className="btn" onClick={join} disabled={isConnecting}>
+                    {isConnecting ? <span className="spinner" aria-label="Connecting" /> : "Join"}
+                </button>
             </div>
         </div>
     );

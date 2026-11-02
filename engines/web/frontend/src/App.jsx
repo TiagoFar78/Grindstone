@@ -7,9 +7,10 @@ export default function App() {
   const { status, loginError, view, toasts, connect, send } = useSocket();
 
   function page() {
-    if (status === "selectingName") return <CreateProfile onJoin={connect} error={loginError} />;
+    if (status === "selectingName") return <CreateProfile onJoin={connect} error={loginError} isConnecting={false} />;
 
     if (status === "open") {
+      if (view === null) return <CreateProfile onJoin={connect} error={loginError} isConnecting={true} />;
       if (view?.type === "lobby") return <Lobby playgroundName={view.playgroundName} msg={view} send={send} />;
       if (view?.type === "gameStarted") return <p>Game {view.gameId} started (next step).</p>;
 
