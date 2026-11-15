@@ -25,8 +25,7 @@ public class JsonFormatter {
     protected static JsonNode toJsonNode(String raw) {
         try {
             return MAPPER.readTree(raw);
-        }
-        catch (JsonProcessingException e) {
+        } catch (JsonProcessingException e) {
             return null;
         }
     }
@@ -42,5 +41,5 @@ public class JsonFormatter {
         String name = message.getClass().getSimpleName();
         return Character.toLowerCase(name.charAt(0)) + name.substring(1);
     }
-    
+
 }

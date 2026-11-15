@@ -2,10 +2,11 @@ import { useState } from "react";
 import Logo from "../components/Logo";
 import Panel from "../components/Panel";
 import { emojiOf } from "../emojis";
+import type { ClientMessage, LobbyMsg, OnlinePlayer } from "../types";
 
-const inGame = (p) => p.gameSessionId != null && p.gameSessionId >= 0;
+const inGame = (p: OnlinePlayer) => p.gameSessionId != null && p.gameSessionId >= 0;
 
-function Teams({ teams }) {
+function Teams({ teams }: { teams: string[][] }) {
     return (
         <div className="run-teams">
             {teams.map((team, i) => (
@@ -18,19 +19,19 @@ function Teams({ teams }) {
     );
 }
 
-export default function Lobby({ playgroundName, msg, send }) {
-    const [pickedGame, setPickedGame] = useState(null);
-    const [rawPicks, setRawPicks] = useState({}); // 1-based position -> team number
+export default function Lobby({ msg, send }: { msg: LobbyMsg; send: (m: ClientMessage) => void }) {
+    const [pickedGame, setPickedGame] = useState<string | null>(null);
+    const [rawPicks, setRawPicks] = useState<Record<number, number>>({});
 
-    const game = msg.games.includes(pickedGame) ? pickedGame : (msg.games[0] ?? null);
+    const game = msg.games.includes(pickedGame ?? "") ? pickedGame : (msg.games[0] ?? null);
 
     // ignore picks of players that are now in a game
-    const picks = {};
+    const picks: Record<number, number> = {};
     msg.online.forEach((p, i) => {
         if (!inGame(p) && rawPicks[i + 1]) picks[i + 1] = rawPicks[i + 1];
     });
 
-    const togglePick = (pos, team) =>
+    const togglePick = (pos: number, team: number) =>
         setRawPicks((prev) => {
             const next = { ...prev };
             if (next[pos] === team) delete next[pos];
@@ -39,7 +40,7 @@ export default function Lobby({ playgroundName, msg, send }) {
         });
 
     // team number -> list of 0-based indexes
-    const byTeam = {};
+    const byTeam: Record<number, number[]> = {};
     Object.entries(picks).forEach(([pos, team]) => {
         (byTeam[team] ??= []).push(Number(pos) - 1);
     });
@@ -53,7 +54,7 @@ export default function Lobby({ playgroundName, msg, send }) {
     return (
         <div className="shell">
             <div className="topbar">
-                <Logo playgroundName={playgroundName} />
+                <Logo playgroundName={msg.name} />
                 {me && (
                     <div className="user-chip">
                         <span className="emoji">{emojiOf(me.emoji)}</span>
@@ -133,7 +134,7 @@ export default function Lobby({ playgroundName, msg, send }) {
                             onClick={() =>
                                 send({
                                     type: "start",
-                                    gameIndex: msg.games.indexOf(game),
+                                    gameIndex: msg.games.indexOf(game ?? ""),
                                     teams: teamKeys.map((k) => byTeam[k]),
                                 })
                             }

@@ -6,13 +6,14 @@ const STORAGE_KEY = "grindstone.profile";
 
 function loadProfile() {
     try {
-        return JSON.parse(localStorage.getItem(STORAGE_KEY)) ?? {};
+        const raw = localStorage.getItem(STORAGE_KEY);
+        return raw ? JSON.parse(raw) : {};
     } catch {
         return {};
     }
 }
 
-function saveProfile(name, emoji) {
+function saveProfile(name: string, emoji: string) {
     try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify({ name, emoji }));
     } catch {
@@ -20,7 +21,9 @@ function saveProfile(name, emoji) {
     }
 }
 
-export default function CreateProfile({ onJoin, error, isConnecting }) {
+type Props = { onJoin: (name: string, emoji: string) => void; error: string | null; isConnecting: boolean };
+
+export default function CreateProfile({ onJoin, error, isConnecting }: Props) {
     const [name, setName] = useState(() => loadProfile().name ?? "");
     const [emoji, setEmoji] = useState(() => {
         const saved = loadProfile().emoji;

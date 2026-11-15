@@ -1,11 +1,19 @@
 package io.github.tiagofar78.grindstone.game.phases;
 
+import java.time.Duration;
+
 import io.github.tiagofar78.grindstone.game.Game;
 
 public class FinishedPhase<G extends Game<?, ?, ?>> extends Phase<G> {
 
+    private static final int DEFAULT_DURATION_SECONDS = 15;
+
     public FinishedPhase(G game) {
         super(game);
+    }
+
+    public Duration duration() {
+        return Duration.ofSeconds(DEFAULT_DURATION_SECONDS);
     }
 
     @Override
@@ -36,7 +44,8 @@ public class FinishedPhase<G extends Game<?, ?, ?>> extends Phase<G> {
     @Override
     public void start() {
         G game = getGame();
-        game.runGameOver();
+        game.sendGameOverMessages();
         game.archive();
+        game.getDependencies().getSchedulerService().runAfter(duration(), () -> game.startNextPhase());
     }
 }

@@ -48,7 +48,11 @@ public class StartGameCommand implements PlaygroundCommand<Inbound.Start> {
         Set<Integer> invalidIndexes = invalidPlayerIndexes(playersIndexes, registry);
         if (invalidIndexes.size() != 0) {
             String setString = joinIndexes(invalidIndexes);
-            sender.sendMessage(new Outbound.Error("Invalid player indexes: " + setString + ". Choose players with an index in the player list"));
+            sender.sendMessage(
+                    new Outbound.Error(
+                            "Invalid player indexes: " + setString + ". Choose players with an index in the player list"
+                    )
+            );
             return true;
         }
 
@@ -85,43 +89,37 @@ public class StartGameCommand implements PlaygroundCommand<Inbound.Start> {
                 // do that here.
             }
         }
+        session.start();
 
         playground.refreshMenus();
         return true;
     }
 
     private Set<Integer> invalidPlayerIndexes(List<List<Integer>> playersIndexes, List<WebPlayer> registry) {
-        return playersIndexes.stream()
-                .flatMap(List::stream)
-                .filter(i -> i < 0 || i >= registry.size())
-                .collect(Collectors.toCollection(LinkedHashSet::new));
+        return playersIndexes.stream().flatMap(List::stream).filter(i -> i < 0 || i >= registry.size()).collect(
+                Collectors.toCollection(LinkedHashSet::new)
+        );
     }
 
     private Set<Integer> repeatedIndexes(List<List<Integer>> playersIndexes) {
         Set<Integer> seen = new HashSet<>();
-        return playersIndexes.stream()
-                .flatMap(List::stream)
-                .filter(i -> !seen.add(i))
-                .collect(Collectors.toCollection(LinkedHashSet::new));
+        return playersIndexes.stream().flatMap(List::stream).filter(i -> !seen.add(i)).collect(
+                Collectors.toCollection(LinkedHashSet::new)
+        );
     }
 
     private Set<Integer> playersInGame(List<List<Integer>> playersIndexes, List<WebPlayer> registry) {
-        return playersIndexes.stream()
-                .flatMap(List::stream)
-                .filter(i -> registry.get(i).getState() == PlayerState.IN_GAME)
-                .collect(Collectors.toCollection(LinkedHashSet::new));
+        return playersIndexes.stream().flatMap(List::stream).filter(
+                i -> registry.get(i).getState() == PlayerState.IN_GAME
+        ).collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
     private String joinIndexes(Set<Integer> indexes) {
-        return indexes.stream()
-                .map(String::valueOf)
-                .collect(Collectors.joining(", "));
+        return indexes.stream().map(String::valueOf).collect(Collectors.joining(", "));
     }
 
     private String describePlayers(Set<Integer> indexes, List<WebPlayer> registry) {
-        return indexes.stream()
-                .map(i -> i + ". " + registry.get(i).getName())
-                .collect(Collectors.joining(", "));
+        return indexes.stream().map(i -> i + ". " + registry.get(i).getName()).collect(Collectors.joining(", "));
     }
 
 }

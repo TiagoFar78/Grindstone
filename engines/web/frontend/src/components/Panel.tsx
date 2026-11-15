@@ -1,4 +1,4 @@
-export default function Panel({ title, count, children }) {
+export default function Panel({ title, count, children }: { title: string; count?: number; children: React.ReactNode }) {
     return (
         <section className="panel">
             <h2>

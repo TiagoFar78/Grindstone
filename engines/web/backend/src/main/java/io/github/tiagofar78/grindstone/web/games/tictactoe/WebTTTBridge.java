@@ -12,19 +12,45 @@ import io.github.tiagofar78.grindstone.web.network.messages.WebMessage;
 
 public class WebTTTBridge implements TTTBridge {
 
-    @SuppressWarnings("deprecation")
     @Override
     public void updateGrid(TicTacToe game, int row, int col, int playerIndex) {
-        TTTUpdateGridMessage boardUpdate = new TTTUpdateGridMessage(row, col, playerIndex);
-        WebMessage message = new Outbound.GameUpdate(boardUpdate);
+        String gameName = ((WebTicTacToe) game).getName();
+        int[][] board = game.getBoard();
+        String winner = game.getWinner() == null
+                ? null
+                : toWebPlayer(game.getWinner().getMembers().stream().findFirst().get()).getName();
+        String playingName = getWebPlayer(game.getTurn() % 2, game).getName();
 
         for (TTTPlayer player : game.getLobby().getPlayers()) {
-            ((WebPlayer) player.getEngine()).sendMessage(message);
+            boolean isYourTurn = player.getIndex() == game.getTurn() % 2;
+            sendUpdateGridMessage(player, gameName, board, winner, playingName, isYourTurn);
         }
 
         for (TTTPlayer player : game.getLobby().getSpectators()) {
-            ((WebPlayer) player.getEngine()).sendMessage(message);
+            sendUpdateGridMessage(player, gameName, board, winner, playingName, false);
         }
+    }
+
+    private void sendUpdateGridMessage(
+            TTTPlayer player,
+            String gameName,
+            int[][] board,
+            String winner,
+            String playerPlaying,
+            boolean isYourTurn
+    ) {
+        TTTUpdateGridMessage boardUpdate = new TTTUpdateGridMessage(board, winner, playerPlaying, isYourTurn);
+        WebMessage message = new Outbound.GameUpdate(gameName, boardUpdate);
+        toWebPlayer(player).sendMessage(message);
+    }
+
+    private WebPlayer getWebPlayer(int playerIndex, TicTacToe game) {
+        TTTPlayer player = game.getTeams().get(playerIndex).getMembers().stream().findAny().get();
+        return toWebPlayer(player);
+    }
+
+    private WebPlayer toWebPlayer(TTTPlayer player) {
+        return (WebPlayer) player.getEngine();
     }
 
     @Override

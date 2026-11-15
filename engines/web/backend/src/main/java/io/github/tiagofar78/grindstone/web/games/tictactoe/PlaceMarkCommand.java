@@ -8,7 +8,8 @@ import io.github.tiagofar78.grindstone.web.playground.commands.GameCommand;
 
 public class PlaceMarkCommand implements GameCommand<TicTacToe, TTTPlayer, PlaceMarkCommand.PlaceMarkArgs> {
 
-    record PlaceMarkArgs(int row, int col) implements Inbound {}
+    record PlaceMarkArgs(int row, int col) implements Inbound {
+    }
 
     @Override
     public Class<PlaceMarkArgs> inputType() {
@@ -22,7 +23,7 @@ public class PlaceMarkCommand implements GameCommand<TicTacToe, TTTPlayer, Place
             player.sendMessage("Invalid row: " + row, MessagesChannel.ACTION_BAR);
             return true;
         }
-        
+
         int col = data.col();
         if (col < 0 || col >= TicTacToe.BOARD_SIZE) {
             player.sendMessage("Invalid col: " + col, MessagesChannel.ACTION_BAR);

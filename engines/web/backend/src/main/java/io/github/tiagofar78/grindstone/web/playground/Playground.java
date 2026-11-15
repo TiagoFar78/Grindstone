@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
+import io.github.tiagofar78.grindstone.game.Game;
 import io.github.tiagofar78.grindstone.web.PlayerState;
 import io.github.tiagofar78.grindstone.web.WebGame;
 import io.github.tiagofar78.grindstone.web.WebPlayer;
@@ -82,6 +83,13 @@ public class Playground {
             GameSession session = player.getCurrentGame();
             if (session != null) {
                 session.playerLeft(player);
+
+                Game<?, ?, ?> game = (Game<?, ?, ?>) session.getGame();
+                if (game.getCurrentPhase().hasGameEnded()) {
+                    player.setState(PlayerState.IN_LOBBY);
+                    player.setCurrentGame(null);
+                    player.setCorePlayer(null);
+                }
             }
         }
 
@@ -129,7 +137,9 @@ public class Playground {
     public void refreshMenus() {
         List<String> gamesNames = availableGames.stream().map(p -> p.displayName()).toList();
         List<RunningGame> runningGames = runningSessions.stream().map(p -> {
-            List<List<String>> teamsPlayerNames = p.getTeams().stream().map(l -> l.stream().map(wp -> wp.getName()).toList()).toList();
+            List<List<String>> teamsPlayerNames = p.getTeams().stream().map(
+                    l -> l.stream().map(wp -> wp.getName()).toList()
+            ).toList();
             return new Outbound.Lobby.RunningGame(p.getId(), p.getGame().getName(), teamsPlayerNames);
         }).toList();
 

@@ -2,7 +2,7 @@ export function LogoMark() {
     return <img className="logo-mark" src="/../favicon.ico" alt="" />;
 }
 
-export default function Logo({ playgroundName }) {
+export default function Logo({ playgroundName }: { playgroundName: string }) {
     return (
         <div className="logo">
             <LogoMark />

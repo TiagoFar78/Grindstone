@@ -1,4 +1,4 @@
-export const EMOJIS = {
+export const EMOJIS: Record<string, string> = {
     happy: "😀",
     swag: "😎",
     nerd: "🤓",
@@ -25,4 +25,4 @@ export const EMOJIS = {
     soccer: "⚽",
 };
 
-export const emojiOf = (code) => EMOJIS[code] ?? "❓";
+export const emojiOf = (code: string) => EMOJIS[code] ?? "❓";

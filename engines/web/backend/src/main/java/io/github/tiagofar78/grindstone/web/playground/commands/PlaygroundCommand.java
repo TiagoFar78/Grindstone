@@ -20,11 +20,12 @@ public interface PlaygroundCommand<T extends Inbound> {
         try {
             data = JsonFormatter.getMapper().treeToValue(node, inputType());
         } catch (JsonProcessingException | IllegalArgumentException e) {
-            String msg = "Could not create a java object of type " + inputType().getCanonicalName() + " from the json " + node.toString();
+            String msg =
+                    "Could not create a java object of type " + inputType().getCanonicalName() + " from the json " + node.toString();
             player.sendMessage(msg, MessagesChannel.CHAT);
             return false;
         }
-        
+
         return execute(playground, player, data);
     }
 

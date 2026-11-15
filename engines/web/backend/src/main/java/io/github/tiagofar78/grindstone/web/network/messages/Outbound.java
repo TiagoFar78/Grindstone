@@ -12,21 +12,25 @@ public sealed interface Outbound extends WebMessage {
             boolean canRejoin
     ) implements Outbound {
 
-        public record RunningGame(int id, String game, List<List<String>> teams) {}
+        public record RunningGame(int id, String game, List<List<String>> teams) {
+        }
 
         // gameSessionId is null if in lobby
-        public record OnlinePlayer(String name, String emoji, boolean you, Integer gameSessionId) {}
+        public record OnlinePlayer(String name, String emoji, boolean you, Integer gameSessionId) {
+        }
 
     }
 
-    record GameStarted(int gameId) implements Outbound {}
+    record GameUpdate(String game, GameUpdateData update) implements Outbound {
+    }
 
-    record GameUpdate(GameUpdateData update) implements Outbound {}
+    non-sealed interface GameUpdateData extends Outbound {
+    }
 
-    non-sealed interface GameUpdateData extends Outbound {}
+    record Chat(String text) implements Outbound {
+    }
 
-    record Chat(String text) implements Outbound {}
-
-    record Error(String text) implements Outbound {}
+    record Error(String text) implements Outbound {
+    }
 
 }

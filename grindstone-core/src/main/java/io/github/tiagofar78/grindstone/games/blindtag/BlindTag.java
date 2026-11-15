@@ -226,21 +226,6 @@ public abstract class BlindTag extends Game<BTBridge, BTPlayer, Team<BTPlayer>> 
         }
     }
 
-    @Override
-    public void sendGameOverMessages() {
-        List<BTPlayer> winners = computeWinners();
-        for (BTPlayer p : players) {
-            if (winners.contains(p)) {
-                p.sendMessage("BlindTag.victory", MessagesChannel.TITLE);
-            } else {
-                p.sendMessage("BlindTag.defeat", MessagesChannel.TITLE);
-            }
-        }
-
-        onGameSummary(players, winners);
-        onDisplayGuesses(players);
-    }
-
     // >--------------{ Abstract Rendering Hooks }--------------<
 
     public abstract void onTurnStart(BTPlayer current);

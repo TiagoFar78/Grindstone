@@ -9,7 +9,12 @@ import java.util.List;
 
 public class RevealPhase extends FinishedPhase<BlindTag> {
 
-    private static final Duration REVEAL_DURATION = Duration.ofSeconds(30);
+    private static final int REVEAL_DURATION_SECONDS = 30;
+
+    @Override
+    public Duration duration() {
+        return Duration.ofSeconds(REVEAL_DURATION_SECONDS);
+    }
 
     public RevealPhase(BlindTag game) {
         super(game);
@@ -22,9 +27,6 @@ public class RevealPhase extends FinishedPhase<BlindTag> {
 
         game.onRevealPhaseStarted(players);
 
-        game.getDependencies().getSchedulerService().runAfter(REVEAL_DURATION, () -> {
-            game.runGameOver();
-            game.archive();
-        });
+        super.start();
     }
 }

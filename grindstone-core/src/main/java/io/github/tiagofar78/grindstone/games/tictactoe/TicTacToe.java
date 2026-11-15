@@ -15,7 +15,6 @@ public class TicTacToe extends Game<TTTBridge, TTTPlayer, Team<TTTPlayer>> {
 
     private int[][] board;
     private int turn;
-    private int winner = -1;
 
     public TicTacToe(GameDependencies dependencies, TTTBridge bridge, TTTPlayer p1, TTTPlayer p2) {
         Team<TTTPlayer> p1Team = new Team<>(List.of(p1));
@@ -25,6 +24,10 @@ public class TicTacToe extends Game<TTTBridge, TTTPlayer, Team<TTTPlayer>> {
 
     public int[][] getBoard() {
         return board;
+    }
+
+    public int getTurn() {
+        return turn;
     }
 
     protected TTTPlayer getPlayer(int index) {
@@ -37,10 +40,6 @@ public class TicTacToe extends Game<TTTBridge, TTTPlayer, Team<TTTPlayer>> {
 
     private TTTPlayer getOtherPlayer(TTTPlayer p) {
         return getOtherPlayer(p.getIndex());
-    }
-
-    private void setWinner(int playerIndex) {
-        winner = playerIndex;
     }
 
     @Override
@@ -64,22 +63,22 @@ public class TicTacToe extends Game<TTTBridge, TTTPlayer, Team<TTTPlayer>> {
         int playerIndex = player.getIndex();
         int currentPlayer = turn % 2;
         if (playerIndex != currentPlayer) {
-            getPlayer(playerIndex).sendMessage("TurnBasedDuel.not_your_turn", MessagesChannel.CHAT);
+            getPlayer(playerIndex).sendMessage("TurnBasedDuel.not_your_turn", MessagesChannel.SUBTITLE);
             return;
         }
 
         if (getCurrentPhase().isClockStopped()) {
-            getPlayer(playerIndex).sendMessage("game_paused", MessagesChannel.CHAT);
+            getPlayer(playerIndex).sendMessage("game_paused", MessagesChannel.SUBTITLE);
             return;
         }
 
         if (row < 0 || row >= BOARD_SIZE || col < 0 || col >= BOARD_SIZE) {
-            getPlayer(playerIndex).sendMessage("TurnBasedDuel.invalid_position", MessagesChannel.CHAT);
+            getPlayer(playerIndex).sendMessage("TurnBasedDuel.invalid_position", MessagesChannel.SUBTITLE);
             return;
         }
 
         if (board[row][col] != EMPTY) {
-            getPlayer(playerIndex).sendMessage("TurnBasedDuel.position_occupied", MessagesChannel.CHAT);
+            getPlayer(playerIndex).sendMessage("TurnBasedDuel.position_occupied", MessagesChannel.SUBTITLE);
             return;
         }
 
@@ -89,7 +88,7 @@ public class TicTacToe extends Game<TTTBridge, TTTPlayer, Team<TTTPlayer>> {
         gameEngine.updateGrid(this, row, col, playerIndex);
 
         if (hasWon(playerIndex)) {
-            setWinner(playerIndex);
+            setWinner(getTeams().get(playerIndex));
             startNextPhase();
         } else if (isBoardFull()) {
             startNextPhase();
@@ -165,24 +164,12 @@ public class TicTacToe extends Game<TTTBridge, TTTPlayer, Team<TTTPlayer>> {
 
     @Override
     public void sendPlayerLeftMessage(TTTPlayer player) {
-        player.sendMessage("TurnBasedDuel.you_left", MessagesChannel.TITLE);
-        getOtherPlayer(player).sendMessage("TurnBasedDuel.player_left", MessagesChannel.CHAT, player);
-    }
-
-    @Override
-    public void sendGameOverMessages() {
-        if (winner != -1) {
-            getPlayer(winner).sendMessage("TurnBasedDuel.victory", MessagesChannel.TITLE);
-            getOtherPlayer(winner).sendMessage("TurnBasedDuel.defeat", MessagesChannel.TITLE);
-        } else {
-            getPlayer(0).sendMessage("TurnBasedDuel.draw", MessagesChannel.TITLE);
-            getPlayer(1).sendMessage("TurnBasedDuel.draw", MessagesChannel.TITLE);
-        }
+        getOtherPlayer(player).sendMessage("TurnBasedDuel.player_left", MessagesChannel.SUBTITLE, player);
     }
 
     @Override
     public void removePlayerFromGame(TTTPlayer player) {
-        setWinner(getOtherPlayer(player).getIndex());
+        setWinner(getTeams().get(getOtherPlayer(player).getIndex()));
         startNextPhase();
     }
 

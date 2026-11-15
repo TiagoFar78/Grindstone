@@ -17,6 +17,8 @@ public abstract class Game<B extends GameBridge, P extends Player<?>, T extends 
 
     private Phase<? extends Game<B, P, T>> currPhase;
 
+    private T winner;
+
     public Game(GameDependencies dependencies, B bridge, List<T> teams) {
         this.dependencies = dependencies;
         this.gameEngine = bridge;
@@ -36,6 +38,14 @@ public abstract class Game<B extends GameBridge, P extends Player<?>, T extends 
 
     public B getGameEngine() {
         return gameEngine;
+    }
+
+    public T getWinner() {
+        return winner;
+    }
+
+    public void setWinner(T winner) {
+        this.winner = winner;
     }
 
 //  >------------------------{ Lobby }------------------------<
@@ -76,11 +86,6 @@ public abstract class Game<B extends GameBridge, P extends Player<?>, T extends 
 
     public abstract Phase<? extends Game<B, P, T>> getFirstPhase();
 
-    public void runGameOver() {
-        sendGameOverMessages();
-        startNextPhase();
-    }
-
     public void disable() {
         gameEngine.disable(this);
     }
@@ -110,6 +115,22 @@ public abstract class Game<B extends GameBridge, P extends Player<?>, T extends 
 
     public abstract void sendPlayerLeftMessage(P player);
 
-    public abstract void sendGameOverMessages();
+    public void sendGameOverMessages() {
+        Team<?> winner = getWinner();
+        if (winner == null) {
+            for (Team<?> team : getTeams()) {
+                team.getMembers().forEach(p -> p.sendMessage("game.draw", MessagesChannel.TITLE));
+            }
+        } else {
+            winner.getMembers().forEach(p -> p.sendMessage("game.victory", MessagesChannel.TITLE));
+            for (Team<?> team : getTeams()) {
+                if (team != winner) {
+                    team.getMembers().forEach(p -> p.sendMessage("game.game_over", MessagesChannel.TITLE));
+                }
+            }
+        }
+
+        getLobby().getSpectators().forEach(p -> p.sendMessage("game.game_over", MessagesChannel.TITLE));
+    }
 
 }

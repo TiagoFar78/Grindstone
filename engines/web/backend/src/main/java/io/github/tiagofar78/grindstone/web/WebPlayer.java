@@ -86,18 +86,10 @@ public class WebPlayer implements Messager {
             return;
         }
 
-        String json = message.startsWith("{") ? message : JsonFormatter.toJson(toOutboundMessage(message, channel));
+        String json = message.startsWith("{") ? message : JsonFormatter.toJson(new Outbound.Error(message));
         synchronized (ctx) {
             ctx.send(json);
         }
-    }
-
-    private Outbound toOutboundMessage(String msg, MessagesChannel channel) {
-        if (channel == MessagesChannel.ACTION_BAR) {
-            return new Outbound.Error(msg);
-        }
-
-        return new Outbound.Chat(msg);
     }
 
     public void sendMessage(WebMessage message) {

@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import io.github.tiagofar78.grindstone.game.Game;
 import io.github.tiagofar78.grindstone.game.Rejoinable;
 import io.github.tiagofar78.grindstone.web.WebGame;
 import io.github.tiagofar78.grindstone.web.WebPlayer;
@@ -24,7 +25,7 @@ public class GameSession {
         for (List<WebPlayer> team : teams) {
             onlinePlayers.addAll(team);
         }
-        this.isRunning = true;
+        this.isRunning = false;
     }
 
     public int getId() {
@@ -69,6 +70,13 @@ public class GameSession {
 
         onlinePlayers.add(p);
         ((Rejoinable) game).playerRejoin(p.getCorePlayer());
+    }
+
+    public void start() {
+        if (!isRunning) {
+            ((Game<?, ?, ?>) game).start();
+            isRunning = true;
+        }
     }
 
     public void disable() {

@@ -9,10 +9,11 @@ import io.github.tiagofar78.grindstone.web.WebGame;
 import io.github.tiagofar78.grindstone.web.WebPlayer;
 
 public class PlaygroundManager {
-    
+
     private static final int MAX_PLAYER_NAME_LENGTH = 16;
 
-    private record ConnectionInfo(Playground playground, WebPlayer player) {}
+    private record ConnectionInfo(Playground playground, WebPlayer player) {
+    }
 
     private Map<String, ConnectionInfo> connections = new HashMap<>();
 
@@ -53,5 +54,5 @@ public class PlaygroundManager {
     public void removeGame(WebGame g) {
         playground.removeGame(g); // Remove from all when multiple playgrounds are active
     }
-    
+
 }
