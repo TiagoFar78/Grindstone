@@ -7,24 +7,21 @@ import java.util.Set;
 import io.github.tiagofar78.grindstone.game.Game;
 import io.github.tiagofar78.grindstone.game.Rejoinable;
 import io.github.tiagofar78.grindstone.web.WebGame;
-import io.github.tiagofar78.grindstone.web.WebPlayer;
+import io.github.tiagofar78.grindstone.web.player.WebPlayer;
 
 public class GameSession {
 
     private final int id;
     private final WebGame game;
     private final List<List<WebPlayer>> initialTeams;
-    private final Set<WebPlayer> onlinePlayers;
+    private final Set<WebPlayer> playersWhoLeft;
     private boolean isRunning;
 
     public GameSession(int id, WebGame game, List<List<WebPlayer>> teams) {
         this.id = id;
         this.game = game;
         this.initialTeams = List.copyOf(teams);
-        this.onlinePlayers = new HashSet<>();
-        for (List<WebPlayer> team : teams) {
-            onlinePlayers.addAll(team);
-        }
+        this.playersWhoLeft = new HashSet<>();
         this.isRunning = false;
     }
 
@@ -40,12 +37,8 @@ public class GameSession {
         return initialTeams;
     }
 
-    public Set<WebPlayer> getOnlinePlayers() {
-        return new HashSet<>(onlinePlayers);
-    }
-
     public boolean canReconnect(WebPlayer p) {
-        return game instanceof Rejoinable && wasPlaying(p) && !onlinePlayers.contains(p) && isRunning;
+        return game instanceof Rejoinable && wasPlaying(p) && playersWhoLeft.contains(p) && isRunning;
     }
 
     private boolean wasPlaying(WebPlayer p) {
@@ -59,7 +52,7 @@ public class GameSession {
     }
 
     public void playerLeft(WebPlayer p) {
-        onlinePlayers.remove(p);
+        playersWhoLeft.add(p);
         game.disconnect(p);
     }
 
@@ -67,8 +60,7 @@ public class GameSession {
         if (!canReconnect(p)) {
             return;
         }
-
-        onlinePlayers.add(p);
+        playersWhoLeft.remove(p);
         ((Rejoinable) game).playerRejoin(p.getCorePlayer());
     }
 

@@ -6,7 +6,7 @@ import java.util.UUID;
 import io.github.tiagofar78.grindstone.game.GameDependencies;
 import io.github.tiagofar78.grindstone.games.tictactoe.TTTPlayer;
 import io.github.tiagofar78.grindstone.web.WebGame;
-import io.github.tiagofar78.grindstone.web.WebPlayer;
+import io.github.tiagofar78.grindstone.web.player.WebPlayer;
 import io.github.tiagofar78.grindstone.web.playground.AvailableGame;
 import io.github.tiagofar78.grindstone.web.services.WebServices;
 

@@ -5,10 +5,10 @@ import io.github.tiagofar78.grindstone.games.tictactoe.TTTBridge;
 import io.github.tiagofar78.grindstone.games.tictactoe.TTTPlayer;
 import io.github.tiagofar78.grindstone.games.tictactoe.TicTacToe;
 import io.github.tiagofar78.grindstone.web.WebGame;
-import io.github.tiagofar78.grindstone.web.WebPlayer;
 import io.github.tiagofar78.grindstone.web.network.WebServer;
 import io.github.tiagofar78.grindstone.web.network.messages.Outbound;
 import io.github.tiagofar78.grindstone.web.network.messages.WebMessage;
+import io.github.tiagofar78.grindstone.web.player.WebPlayer;
 
 public class WebTTTBridge implements TTTBridge {
 

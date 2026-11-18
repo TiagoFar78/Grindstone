@@ -6,11 +6,10 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import io.github.tiagofar78.grindstone.web.PlayerState;
 import io.github.tiagofar78.grindstone.web.WebGame;
-import io.github.tiagofar78.grindstone.web.WebPlayer;
 import io.github.tiagofar78.grindstone.web.network.messages.Inbound;
 import io.github.tiagofar78.grindstone.web.network.messages.Inbound.Start;
+import io.github.tiagofar78.grindstone.web.player.WebPlayer;
 import io.github.tiagofar78.grindstone.web.network.messages.Outbound;
 import io.github.tiagofar78.grindstone.web.playground.AvailableGame;
 import io.github.tiagofar78.grindstone.web.playground.GameSession;
@@ -82,8 +81,7 @@ public class StartGameCommand implements PlaygroundCommand<Inbound.Start> {
         GameSession session = playground.createSession(newGame, teams);
         for (List<WebPlayer> team : teams) {
             for (WebPlayer p : team) {
-                p.setState(PlayerState.IN_GAME);
-                p.setCurrentGame(session);
+                p.gameStarted(session);
                 // p.setCorePlayer is done inside the type.factory().apply() just because it is easier
                 // if I already had the core player available at this time it would be preferable to
                 // do that here.
@@ -110,7 +108,7 @@ public class StartGameCommand implements PlaygroundCommand<Inbound.Start> {
 
     private Set<Integer> playersInGame(List<List<Integer>> playersIndexes, List<WebPlayer> registry) {
         return playersIndexes.stream().flatMap(List::stream).filter(
-                i -> registry.get(i).getState() == PlayerState.IN_GAME
+                i -> registry.get(i).isInGame()
         ).collect(Collectors.toCollection(LinkedHashSet::new));
     }
 

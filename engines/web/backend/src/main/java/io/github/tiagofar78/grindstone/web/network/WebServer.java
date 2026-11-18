@@ -5,7 +5,7 @@ import java.util.Map;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
-import io.github.tiagofar78.grindstone.web.WebPlayer;
+import io.github.tiagofar78.grindstone.web.player.WebPlayer;
 import io.github.tiagofar78.grindstone.web.playground.PlaygroundManager;
 import io.javalin.Javalin;
 

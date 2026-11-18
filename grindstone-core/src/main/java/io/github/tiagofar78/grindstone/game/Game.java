@@ -100,7 +100,9 @@ public abstract class Game<B extends GameBridge, P extends Player<?>, T extends 
 
     public void startNextPhase(Phase<? extends Game<B, P, T>> phase) {
         currPhase = phase;
-        currPhase.start();
+        if (currPhase != null) {
+            currPhase.start();
+        }
     }
 
 //  >--------------------{ Game Specifics }--------------------<

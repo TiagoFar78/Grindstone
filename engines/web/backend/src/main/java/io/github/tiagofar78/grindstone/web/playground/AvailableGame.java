@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.function.Function;
 
 import io.github.tiagofar78.grindstone.web.WebGame;
-import io.github.tiagofar78.grindstone.web.WebPlayer;
+import io.github.tiagofar78.grindstone.web.player.WebPlayer;
 
 public record AvailableGame(
         String displayName,

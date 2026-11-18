@@ -5,14 +5,12 @@ import java.util.List;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
-import io.github.tiagofar78.grindstone.game.Game;
-import io.github.tiagofar78.grindstone.web.PlayerState;
 import io.github.tiagofar78.grindstone.web.WebGame;
-import io.github.tiagofar78.grindstone.web.WebPlayer;
 import io.github.tiagofar78.grindstone.web.games.tictactoe.WebTTTFactory;
 import io.github.tiagofar78.grindstone.web.network.messages.Outbound;
 import io.github.tiagofar78.grindstone.web.network.messages.Outbound.Lobby.OnlinePlayer;
 import io.github.tiagofar78.grindstone.web.network.messages.Outbound.Lobby.RunningGame;
+import io.github.tiagofar78.grindstone.web.player.WebPlayer;
 import io.github.tiagofar78.grindstone.web.playground.commands.Commands;
 import io.github.tiagofar78.grindstone.web.playground.commands.EditProfileCommand;
 import io.github.tiagofar78.grindstone.web.playground.commands.LeaveCommand;
@@ -52,25 +50,19 @@ public class Playground {
 
     public synchronized WebPlayer join(WebPlayer player) {
         WebPlayer existing = findByName(player.getName());
-
-        if (existing != null) {
-            if (existing.isOnline()) {
-                return null;
-            }
-
-            existing.updateConnection(player);
-            existing.setOnline(true);
-
-            if (existing.getState() == PlayerState.IN_GAME && existing.getCurrentGame() != null &&
-                    existing.getCurrentGame().canReconnect(existing)) {
-                existing.getCurrentGame().playerReconnected(existing);
-            } else {
-                existing.setState(PlayerState.IN_LOBBY);
-            }
-        } else {
-            player.setOnline(true);
+        if (existing == null) {
             playerRegistry.add(player);
             existing = player;
+        } else {
+            existing.connect(player.getCtx());
+        }
+
+        if (existing.isInGame()) {
+            if (existing.getCurrentGame().canReconnect(existing)) {
+                existing.getCurrentGame().playerReconnected(existing);
+            } else {
+                existing.leaveGame();
+            }
         }
 
         refreshMenus();
@@ -78,21 +70,11 @@ public class Playground {
     }
 
     public synchronized void disconnect(WebPlayer player) {
-        player.setOnline(false);
-        if (player.getState() == PlayerState.IN_GAME) {
-            GameSession session = player.getCurrentGame();
-            if (session != null) {
-                session.playerLeft(player);
-
-                Game<?, ?, ?> game = (Game<?, ?, ?>) session.getGame();
-                if (game.getCurrentPhase().hasGameEnded()) {
-                    player.setState(PlayerState.IN_LOBBY);
-                    player.setCurrentGame(null);
-                    player.setCorePlayer(null);
-                }
-            }
+        if (player.isInGame()) {
+            player.getCurrentGame().playerLeft(player);
         }
 
+        player.disconnect();
         refreshMenus();
     }
 
@@ -105,9 +87,7 @@ public class Playground {
         session.disable();
         runningSessions.remove(session);
 
-        for (WebPlayer p : session.getOnlinePlayers()) {
-            p.setState(PlayerState.IN_LOBBY);
-        }
+        session.getTeams().forEach(t -> t.forEach(WebPlayer::gameFinished));
 
         refreshMenus();
     }
@@ -121,13 +101,12 @@ public class Playground {
             return;
         }
 
-        if (player.getState() != PlayerState.IN_GAME) {
+        if (!player.isInGame()) {
             player.sendMessage(new Outbound.Error("Unknown message type"));
             return;
         }
 
-        WebGame game = player.getCurrentGame().getGame();
-        if (!game.executeCommand(cmdLabel, this, player, node)) {
+        if (!player.getCurrentGame().getGame().executeCommand(cmdLabel, this, player, node)) {
             player.sendMessage(new Outbound.Error("Unknown message type"));
         }
     }
@@ -144,13 +123,13 @@ public class Playground {
         }).toList();
 
         for (WebPlayer p : playerRegistry) {
-            if (p.isOnline() && p.getState() == PlayerState.IN_LOBBY) {
+            if (p.isInLobby()) {
                 List<OnlinePlayer> onlinePlayers = playerRegistry.stream().map(wp -> {
-                    int gameSessionId = wp.getCurrentGame() == null ? -1 : wp.getCurrentGame().getId();
+                    int gameSessionId = !wp.isInGame() ? -1 : wp.getCurrentGame().getId();
                     return new OnlinePlayer(wp.getName(), wp.getEmoji(), wp == p, gameSessionId);
                 }).toList();
 
-                boolean canRejoin = p.getCurrentGame() != null;
+                boolean canRejoin = p.canRejoin() && p.getCurrentGame().canReconnect(p);
                 p.sendMessage(new Outbound.Lobby(name, gamesNames, runningGames, onlinePlayers, canRejoin));
             }
         }

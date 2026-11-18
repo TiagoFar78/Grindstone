@@ -2,6 +2,7 @@ package io.github.tiagofar78.grindstone.web;
 
 import com.fasterxml.jackson.databind.JsonNode;
 
+import io.github.tiagofar78.grindstone.web.player.WebPlayer;
 import io.github.tiagofar78.grindstone.web.playground.Playground;
 
 public interface WebGame {

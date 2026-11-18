@@ -4,9 +4,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import io.github.tiagofar78.grindstone.game.MessagesChannel;
-import io.github.tiagofar78.grindstone.web.WebPlayer;
 import io.github.tiagofar78.grindstone.web.network.JsonFormatter;
 import io.github.tiagofar78.grindstone.web.network.messages.Inbound;
+import io.github.tiagofar78.grindstone.web.player.WebPlayer;
 import io.github.tiagofar78.grindstone.web.playground.Playground;
 
 public interface PlaygroundCommand<T extends Inbound> {
