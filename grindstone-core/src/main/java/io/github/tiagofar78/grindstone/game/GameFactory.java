@@ -6,6 +6,6 @@ import java.util.List;
 @FunctionalInterface
 public interface GameFactory {
 
-    Game create(GameMap map, GameSettings settings, List<Collection<String>> parties, boolean keepTeams);
+    Game<?, ?, ?> create(GameMap map, GameSettings settings, List<Collection<String>> parties, boolean keepTeams);
 
 }

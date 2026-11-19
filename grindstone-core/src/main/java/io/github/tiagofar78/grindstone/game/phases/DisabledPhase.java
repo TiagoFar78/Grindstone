@@ -2,14 +2,14 @@ package io.github.tiagofar78.grindstone.game.phases;
 
 import io.github.tiagofar78.grindstone.game.Game;
 
-public class DisabledPhase extends Phase {
+public class DisabledPhase<G extends Game<?, ?, ?>> extends Phase<G> {
 
-    public DisabledPhase(Game game) {
+    public DisabledPhase(G game) {
         super(game);
     }
 
     @Override
-    public Phase next() {
+    public Phase<G> next() {
         return null;
     }
 

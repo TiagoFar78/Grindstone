@@ -2,15 +2,15 @@ package io.github.tiagofar78.grindstone.game.phases;
 
 import io.github.tiagofar78.grindstone.game.Game;
 
-public class LoadingPhase extends Phase {
+public class LoadingPhase<G extends Game<?, ?, ?>> extends Phase<G> {
 
-    public LoadingPhase(Game game) {
+    public LoadingPhase(G game) {
         super(game);
     }
 
     @Override
-    public Phase next() {
-        return new MatchIntroPhase(getGame());
+    public Phase<G> next() {
+        return new MatchIntroPhase<G>(getGame());
     }
 
     @Override

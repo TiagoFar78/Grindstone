@@ -1,0 +1,28 @@
+export const EMOJIS: Record<string, string> = {
+    happy: "😀",
+    swag: "😎",
+    nerd: "🤓",
+    cowboy: "🤠",
+    party: "🥳",
+    robot: "🤖",
+    ghost: "👻",
+    alien: "👽",
+    cat: "🐱",
+    dog: "🐶",
+    fox: "🦊",
+    panda: "🐼",
+    frog: "🐸",
+    monkey: "🐵",
+    unicorn: "🦄",
+    octopus: "🐙",
+    lion: "🦁",
+    tiger: "🐯",
+    penguin: "🐧",
+    owl: "🦉",
+    pizza: "🍕",
+    burger: "🍔",
+    donut: "🍩",
+    soccer: "⚽",
+};
+
+export const emojiOf = (code: string) => EMOJIS[code] ?? "❓";
