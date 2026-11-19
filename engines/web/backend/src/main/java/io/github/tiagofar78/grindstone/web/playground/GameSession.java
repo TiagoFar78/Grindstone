@@ -37,7 +37,7 @@ public class GameSession {
         return initialTeams;
     }
 
-    public boolean canReconnect(WebPlayer p) {
+    public boolean canRejoin(WebPlayer p) {
         return game instanceof Rejoinable && wasPlaying(p) && playersWhoLeft.contains(p) && isRunning;
     }
 
@@ -56,8 +56,8 @@ public class GameSession {
         game.disconnect(p);
     }
 
-    public void playerReconnected(WebPlayer p) {
-        if (!canReconnect(p)) {
+    public void playerRejoined(WebPlayer p) {
+        if (!canRejoin(p)) {
             return;
         }
         playersWhoLeft.remove(p);

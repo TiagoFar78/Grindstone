@@ -58,8 +58,8 @@ public class Playground {
         }
 
         if (existing.isInGame()) {
-            if (existing.getCurrentGame().canReconnect(existing)) {
-                existing.getCurrentGame().playerReconnected(existing);
+            if (existing.getCurrentGame().canRejoin(existing)) {
+                existing.getCurrentGame().playerRejoined(existing);
             } else {
                 existing.leaveGame();
             }
@@ -129,7 +129,7 @@ public class Playground {
                     return new OnlinePlayer(wp.getName(), wp.getEmoji(), wp == p, gameSessionId);
                 }).toList();
 
-                boolean canRejoin = p.canRejoin() && p.getCurrentGame().canReconnect(p);
+                boolean canRejoin = p.canRejoin() && p.getCurrentGame().canRejoin(p);
                 p.sendMessage(new Outbound.Lobby(name, gamesNames, runningGames, onlinePlayers, canRejoin));
             }
         }
