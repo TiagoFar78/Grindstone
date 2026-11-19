@@ -19,7 +19,7 @@ public class WebPlayer implements Messager {
     private String emoji;
     private PlayerState state;
 
-    private GameSession currentGame;
+    private GameSession currentSession;
     private Player<?> corePlayer;
 
     public WebPlayer(String name, String emoji, WsContext ctx) {
@@ -49,8 +49,8 @@ public class WebPlayer implements Messager {
         this.emoji = emoji;
     }
 
-    public GameSession getCurrentGame() {
-        return currentGame;
+    public GameSession getCurrentSession() {
+        return currentSession;
     }
 
     public Player<?> getCorePlayer() {
@@ -100,8 +100,8 @@ public class WebPlayer implements Messager {
         this.state = state.disconnect();
     }
 
-    public void gameStarted(GameSession game) {
-        this.currentGame = game;
+    public void gameStarted(GameSession session) {
+        this.currentSession = session;
         this.state = state.gameStarted();
     }
 

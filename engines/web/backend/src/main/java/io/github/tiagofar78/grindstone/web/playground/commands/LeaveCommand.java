@@ -19,7 +19,7 @@ public class LeaveCommand implements PlaygroundCommand<Inbound.Leave> {
         }
 
         player.leaveGame();
-        player.getCurrentGame().playerLeft(player);
+        player.getCurrentSession().playerLeft(player);
         playground.refreshMenus();
         return true;
     }

@@ -21,7 +21,7 @@ public class RejoinCommand implements PlaygroundCommand<Inbound.Rejoin> {
             return true;
         }
 
-        GameSession lastSession = player.getCurrentGame();
+        GameSession lastSession = player.getCurrentSession();
         if (!lastSession.canRejoin(player)) {
             player.sendMessage(new Outbound.Error("The previous game is not rejoinable."));
             return true;

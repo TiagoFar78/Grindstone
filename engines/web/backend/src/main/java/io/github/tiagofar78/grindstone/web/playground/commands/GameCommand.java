@@ -11,7 +11,7 @@ public interface GameCommand<G extends Game<?, ?, ?>, P extends Player<?>, T ext
     @SuppressWarnings("unchecked")
     @Override
     default boolean execute(Playground playground, WebPlayer player, T data) {
-        return execute((G) player.getCurrentGame().getGame(), (P) player.getCorePlayer(), data);
+        return execute((G) player.getCurrentSession().getGame(), (P) player.getCorePlayer(), data);
     }
 
     boolean execute(G game, P player, T data);

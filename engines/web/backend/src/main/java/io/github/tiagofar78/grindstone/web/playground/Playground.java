@@ -58,8 +58,8 @@ public class Playground {
         }
 
         if (existing.isInGame()) {
-            if (existing.getCurrentGame().canRejoin(existing)) {
-                existing.getCurrentGame().playerRejoined(existing);
+            if (existing.getCurrentSession().canRejoin(existing)) {
+                existing.getCurrentSession().playerRejoined(existing);
             } else {
                 existing.leaveGame();
             }
@@ -71,7 +71,7 @@ public class Playground {
 
     public synchronized void disconnect(WebPlayer player) {
         if (player.isInGame()) {
-            player.getCurrentGame().playerLeft(player);
+            player.getCurrentSession().playerLeft(player);
         }
 
         player.disconnect();
@@ -106,7 +106,7 @@ public class Playground {
             return;
         }
 
-        if (!player.getCurrentGame().getGame().executeCommand(cmdLabel, this, player, node)) {
+        if (!player.getCurrentSession().getGame().executeCommand(cmdLabel, this, player, node)) {
             player.sendMessage(new Outbound.Error("Unknown message type"));
         }
     }
@@ -125,11 +125,11 @@ public class Playground {
         for (WebPlayer p : playerRegistry) {
             if (p.isInLobby()) {
                 List<OnlinePlayer> onlinePlayers = playerRegistry.stream().map(wp -> {
-                    int gameSessionId = !wp.isInGame() ? -1 : wp.getCurrentGame().getId();
+                    int gameSessionId = !wp.isInGame() ? -1 : wp.getCurrentSession().getId();
                     return new OnlinePlayer(wp.getName(), wp.getEmoji(), wp == p, gameSessionId);
                 }).toList();
 
-                boolean canRejoin = p.canRejoin() && p.getCurrentGame().canRejoin(p);
+                boolean canRejoin = p.canRejoin() && p.getCurrentSession().canRejoin(p);
                 p.sendMessage(new Outbound.Lobby(name, gamesNames, runningGames, onlinePlayers, canRejoin));
             }
         }
