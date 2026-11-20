@@ -12,7 +12,6 @@ import io.github.tiagofar78.grindstone.web.network.messages.Outbound.Lobby.Onlin
 import io.github.tiagofar78.grindstone.web.network.messages.Outbound.Lobby.RunningGame;
 import io.github.tiagofar78.grindstone.web.player.WebPlayer;
 import io.github.tiagofar78.grindstone.web.playground.commands.Commands;
-import io.github.tiagofar78.grindstone.web.playground.commands.EditProfileCommand;
 import io.github.tiagofar78.grindstone.web.playground.commands.LeaveCommand;
 import io.github.tiagofar78.grindstone.web.playground.commands.PlaygroundCommand;
 import io.github.tiagofar78.grindstone.web.playground.commands.RejoinCommand;
@@ -34,7 +33,6 @@ public class Playground {
 
     public Playground(String name) {
         this.name = name;
-        commands.register("profile", new EditProfileCommand());
         commands.register("start", new StartGameCommand());
         commands.register("leave", new LeaveCommand());
         commands.register("rejoin", new RejoinCommand());
