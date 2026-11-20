@@ -17,7 +17,7 @@ public class RejoinCommand implements PlaygroundCommand<Inbound.Rejoin> {
     @Override
     public boolean execute(Playground playground, WebPlayer player, Inbound.Rejoin data) {
         if (!player.canRejoin()) {
-            // TODO Send "Already in a game or last game already ended" message
+            player.sendMessage(new Outbound.Error("Already in a game or don't have an ongoing game to rejoin."));
             return true;
         }
 
