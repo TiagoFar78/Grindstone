@@ -21,7 +21,9 @@ public interface PlaygroundCommand<T extends Inbound> {
             data = JsonFormatter.getMapper().treeToValue(node, inputType());
         } catch (JsonProcessingException | IllegalArgumentException e) {
             player.sendMessage("An error has occured. Error id: 0827024171 ", MessagesChannel.CHAT);
-            System.out.println("Error id 0827024171 -> " + player.getName() + " could not create a java object of type " + inputType().getCanonicalName() + " from the json " + node.toString());
+            System.out.println(
+                    "Error id 0827024171 -> " + player.getName() + " could not create a java object of type " + inputType().getCanonicalName() + " from the json " + node.toString()
+            );
             return false;
         }
 
