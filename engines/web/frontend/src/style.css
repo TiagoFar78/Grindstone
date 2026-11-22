@@ -169,18 +169,6 @@ button { font: inherit; }
 .game-wrap { max-width: 520px; margin: 0 auto; padding: 24px; animation: pop 0.3s ease; }
 .game-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
 .game-head h1 { margin: 0; font-size: 22px; }
-.board { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; max-width: 380px; margin: 0 auto 22px; }
-.cell {
-    aspect-ratio: 1; border-radius: 14px; cursor: pointer;
-    border: 1px solid var(--border); background: rgba(255, 255, 255, 0.04);
-    color: var(--text); font-size: clamp(36px, 10vw, 58px); font-weight: 800;
-    transition: background 0.15s, transform 0.15s;
-}
-.cell:hover:not(.filled) { background: rgba(124, 92, 255, 0.18); transform: translateY(-2px); }
-.cell.filled { cursor: default; }
-.cell.x { color: var(--t1); }
-.cell.o { color: var(--t2); }
-.cell.last { box-shadow: 0 0 0 2px var(--accent) inset; }
 
 .chat {
     height: 150px; overflow-y: auto; padding: 12px; border-radius: 12px;

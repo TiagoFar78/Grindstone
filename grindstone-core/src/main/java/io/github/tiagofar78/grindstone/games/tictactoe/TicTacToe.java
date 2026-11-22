@@ -85,12 +85,14 @@ public class TicTacToe extends Game<TTTBridge, TTTPlayer, Team<TTTPlayer>> {
         board[row][col] = playerIndex;
         turn++;
 
+        boolean isWinner = hasWon(playerIndex);
+        if (isWinner) {
+            setWinner(getTeams().get(playerIndex));
+        }
+
         gameEngine.updateGrid(this, row, col, playerIndex);
 
-        if (hasWon(playerIndex)) {
-            setWinner(getTeams().get(playerIndex));
-            startNextPhase();
-        } else if (isBoardFull()) {
+        if (isWinner || isBoardFull()) {
             startNextPhase();
         }
     }
