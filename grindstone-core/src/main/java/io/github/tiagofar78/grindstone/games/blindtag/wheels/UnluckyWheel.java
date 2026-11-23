@@ -38,7 +38,7 @@ public class UnluckyWheel {
                             player.getCurrentCell(),
                             target.getCurrentCell()
                     );
-                    game.onPathReveal(player, path);
+                    game.getGameEngine().onPathReveal(game, player, path);
                 }
             }
             case 4 -> {

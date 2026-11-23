@@ -25,6 +25,6 @@ public class Trap extends Item {
     public void use(BlindTag game, BTPlayer player) {
         placer = player;
         player.getCurrentCell().addTrap(this);
-        game.onTrapPlaced(player, player.getCurrentCell());
+        game.getGameEngine().onTrapPlace(game, player, player.getCurrentCell());
     }
 }

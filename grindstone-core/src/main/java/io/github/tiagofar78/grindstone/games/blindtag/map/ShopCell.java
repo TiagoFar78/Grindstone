@@ -11,6 +11,6 @@ public class ShopCell extends Cell {
 
     @Override
     public void applyEffect(BlindTag game, BTPlayer player) {
-        game.openShop(player);
+        game.getGameEngine().openShop(game, player);
     }
 }

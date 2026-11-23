@@ -11,6 +11,6 @@ public class BlankCell extends Cell {
 
     @Override
     public void applyEffect(BlindTag game, BTPlayer player) {
-        game.onBlankCell(player);
+        game.getGameEngine().onBlankCell(game, player);
     }
 }

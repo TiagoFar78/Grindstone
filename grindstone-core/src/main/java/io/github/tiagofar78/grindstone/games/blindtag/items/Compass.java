@@ -9,6 +9,6 @@ public class Compass extends Item {
     @Override
     public void use(BlindTag game, BTPlayer player) {
         Cell current = player.getCurrentCell();
-        game.onCompassUsed(player, current, current.getArrows().values());
+        game.getGameEngine().onCompassUse(game, player, current, current.getArrows().values());
     }
 }

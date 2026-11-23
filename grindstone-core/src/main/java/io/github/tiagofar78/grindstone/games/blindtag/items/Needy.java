@@ -34,7 +34,7 @@ public class Needy extends Item {
             return;
         }
 
-        game.onNeedyUsed(player);
+        game.getGameEngine().onNeedyUse(game, player);
         Cell destination = reachable.get(random.nextInt(reachable.size()));
         game.moveAndApplyEffects(player, destination);
     }

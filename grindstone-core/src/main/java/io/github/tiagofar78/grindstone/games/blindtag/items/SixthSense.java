@@ -21,7 +21,7 @@ public class SixthSense extends Item {
         }
 
         Direction hint = directionToward(player.getCurrentCell(), target.getCurrentCell());
-        game.onSixthSenseUsed(player, hint);
+        game.getGameEngine().onSixthSenseUse(game, player, hint);
     }
 
     private BTPlayer nearestOtherPlayer(BlindTag game, BTPlayer player) {

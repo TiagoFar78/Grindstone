@@ -30,10 +30,10 @@ public class LuckyWheel {
                 player.addGold(GAIN_GOLD_AMOUNT);
             }
             case 3 -> {
-                game.openShop(player);
+                game.getGameEngine().openShop(game, player);
             }
             case 4 -> {
-                game.onHorseUsed(player);
+                game.getGameEngine().onHorseUse(game, player);
             }
             case 5 -> {
                 UnluckyWheel.spin(game, player);

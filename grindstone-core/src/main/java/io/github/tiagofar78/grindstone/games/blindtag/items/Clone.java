@@ -17,6 +17,6 @@ public class Clone extends Item {
         cloned = player;
         Cell cell = player.getCurrentCell();
         cell.addClone(this);
-        game.onClonePlaced(player, cell);
+        game.getGameEngine().onClonePlace(game, player, cell);
     }
 }

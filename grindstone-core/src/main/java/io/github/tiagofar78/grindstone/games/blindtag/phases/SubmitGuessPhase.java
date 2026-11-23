@@ -17,6 +17,6 @@ public class SubmitGuessPhase extends OngoingPhase<BlindTag> {
 
     @Override
     public void start() {
-        getGame().onSubmitGuessStarted(getGame().getBTPlayers());
+        getGame().getGameEngine().onSubmitGuessPhaseStart(getGame());
     }
 }

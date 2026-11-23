@@ -14,6 +14,6 @@ public class GoldCell extends Cell {
     @Override
     public void applyEffect(BlindTag game, BTPlayer player) {
         player.addGold(GOLD_AMOUNT);
-        game.onGoldGained(player, GOLD_AMOUNT);
+        game.getGameEngine().onGoldGained(game, player, GOLD_AMOUNT);
     }
 }

@@ -4,16 +4,18 @@ import io.github.tiagofar78.grindstone.games.blindtag.BTPlayer;
 import io.github.tiagofar78.grindstone.games.blindtag.BlindTag;
 import io.github.tiagofar78.grindstone.games.blindtag.map.Cell;
 
-import java.util.List;
-
 public class Witch extends Item {
+
+    private BTPlayer target;
+
+    public void setTarget(BTPlayer target) {
+        this.target = target;
+    }
 
     @Override
     public void use(BlindTag game, BTPlayer player) {
-        List<BTPlayer> others = game.getBTPlayers().stream().filter(p -> p != player).toList();
-        BTPlayer target = game.onWitchTargetNeeded(player, others);
-
         if (target == null) {
+            // TODO Send error message to player.
             return;
         }
 

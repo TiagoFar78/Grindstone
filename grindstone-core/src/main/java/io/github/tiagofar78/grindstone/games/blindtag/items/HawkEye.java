@@ -25,7 +25,7 @@ public class HawkEye extends Item {
                 player.getCurrentCell(),
                 target.getCurrentCell()
         );
-        game.onHawkEyeUsed(player, path);
+        game.getGameEngine().onHawkEyeUse(game, player, path);
     }
 
     private BTPlayer nearestOtherPlayer(BlindTag game, BTPlayer player) {

@@ -16,12 +16,11 @@ import io.github.tiagofar78.grindstone.games.blindtag.phases.RevealPhase;
 import io.github.tiagofar78.grindstone.games.blindtag.phases.SubmitGuessPhase;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
-public abstract class BlindTag extends Game<BTBridge, BTPlayer, Team<BTPlayer>> {
+public class BlindTag extends Game<BTBridge, BTPlayer, Team<BTPlayer>> {
 
     public static final int PLAYER_COUNT = 3;
     public static final int WIN_SCORE = 200;
@@ -108,7 +107,7 @@ public abstract class BlindTag extends Game<BTBridge, BTPlayer, Team<BTPlayer>> 
 
     public void startTurns() {
         turnIndex = 0;
-        onTurnStart(players.get(turnIndex));
+        gameEngine.onTurnStart(this, players.get(turnIndex));
     }
 
     public void endTurn() {
@@ -121,7 +120,7 @@ public abstract class BlindTag extends Game<BTBridge, BTPlayer, Team<BTPlayer>> 
                 }
             }
 
-            onRotationEnd();
+            gameEngine.onRotationEnd(this);
 
             if (hasWinner()) {
                 startNextPhase(new SubmitGuessPhase(this));
@@ -129,7 +128,7 @@ public abstract class BlindTag extends Game<BTBridge, BTPlayer, Team<BTPlayer>> 
             }
         }
 
-        onTurnStart(players.get(turnIndex % players.size()));
+        gameEngine.onTurnStart(this, players.get(turnIndex % players.size()));
     }
 
     private boolean hasWinner() {
@@ -181,7 +180,7 @@ public abstract class BlindTag extends Game<BTBridge, BTPlayer, Team<BTPlayer>> 
     public void moveAndApplyEffects(BTPlayer player, Cell destination) {
         player.setCurrentCell(destination);
 
-        destination.triggerTraps(player);
+        destination.triggerTraps(this, player);
         runTagChecks(player, destination);
         destination.applyEffect(this, player);
     }
@@ -211,12 +210,16 @@ public abstract class BlindTag extends Game<BTBridge, BTPlayer, Team<BTPlayer>> 
     private void performTag(BTPlayer currentTagger, BTPlayer newTagger) {
         setTagger(newTagger);
         currentTagger.setCurrentCell(map.getRandomNonTeleportCell(random));
-        onTagEvent(newTagger, currentTagger);
+        gameEngine.onTag(this, newTagger, currentTagger);
     }
 
     // >-------------------{ Messages }-------------------<
 
     @Override
+    public void sendLoadingMessage() {
+        // Empty, it loads instantly, no need to send loading message
+    }
+
     public void sendPlayerLeftMessage(BTPlayer player) {
         player.sendMessage("BlindTag.you_left", MessagesChannel.TITLE);
         for (BTPlayer p : getLobby().getPlayers()) {
@@ -226,51 +229,4 @@ public abstract class BlindTag extends Game<BTBridge, BTPlayer, Team<BTPlayer>> 
         }
     }
 
-    // >--------------{ Abstract Rendering Hooks }--------------<
-
-    public abstract void onTurnStart(BTPlayer current);
-
-    public abstract void onRotationEnd();
-
-    public abstract void onTagEvent(BTPlayer newTagger, BTPlayer teleported);
-
-    public abstract void onTrapTriggered(BTPlayer victim, int trapsCount);
-
-    public abstract void onBlankCell(BTPlayer player);
-
-    public abstract void onGoldGained(BTPlayer player, int amount);
-
-    public abstract void onTeleported(BTPlayer player, Cell destination);
-
-    public abstract void openShop(BTPlayer player);
-
-    public abstract void onPathReveal(BTPlayer player, List<Direction> path);
-
-    public abstract void onCompassUsed(BTPlayer player, Cell current, Collection<Arrow> adjacent);
-
-    public abstract void onHorseUsed(BTPlayer player);
-
-    public abstract void onTrapPlaced(BTPlayer player, Cell cell);
-
-    public abstract void onClonePlaced(BTPlayer player, Cell cell);
-
-    public abstract void onSixthSenseUsed(BTPlayer player, Direction hint);
-
-    public abstract void onHawkEyeUsed(BTPlayer player, List<Direction> path);
-
-    public abstract BTPlayer onWitchTargetNeeded(BTPlayer caster, List<BTPlayer> targets);
-
-    public abstract void onNeedyUsed(BTPlayer player);
-
-    public abstract void onSubmitGuessStarted(List<BTPlayer> players);
-
-    public abstract void onRevealPhaseStarted(List<BTPlayer> players);
-
-    public abstract void onNoMovesAvailable(BTPlayer player);
-
-    public abstract void onUseItemsPhase(BTPlayer player);
-
-    public abstract void onGameSummary(List<BTPlayer> players, List<BTPlayer> winners);
-
-    public abstract void onDisplayGuesses(List<BTPlayer> players);
 }

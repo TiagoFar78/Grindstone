@@ -66,7 +66,8 @@ public abstract class Cell {
         traps.add(trap);
     }
 
-    public void triggerTraps(BTPlayer player) {
+    public void triggerTraps(BlindTag game, BTPlayer player) {
+        List<Trap> triggeredTraps = new ArrayList<>();
         for (int i = traps.size() - 1; i >= 0; i--) {
             Trap trap = traps.get(i);
             if (trap.getPlacer() == player) {
@@ -74,7 +75,11 @@ public abstract class Cell {
             }
 
             trap.trigger(player);
-            traps.remove(i);
+            triggeredTraps.add(traps.remove(i));
+        }
+
+        if (!triggeredTraps.isEmpty()) {
+            game.getGameEngine().onTrapTrigger(game, player, triggeredTraps);
         }
     }
 

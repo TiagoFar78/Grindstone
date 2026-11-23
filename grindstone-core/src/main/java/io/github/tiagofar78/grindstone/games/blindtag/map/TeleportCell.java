@@ -19,7 +19,7 @@ public class TeleportCell extends Cell {
     @Override
     public void applyEffect(BlindTag game, BTPlayer player) {
         Cell destination = game.getMap().getRandomNonTeleportCell(game.getRandom());
-        game.onTeleported(player, destination);
+        game.getGameEngine().onTeleport(game, player, destination);
         game.moveAndApplyEffects(player, destination);
     }
 }
