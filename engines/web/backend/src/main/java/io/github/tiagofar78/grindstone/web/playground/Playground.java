@@ -6,6 +6,7 @@ import java.util.List;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import io.github.tiagofar78.grindstone.web.WebGame;
+import io.github.tiagofar78.grindstone.web.games.blindtag.WebBTFactory;
 import io.github.tiagofar78.grindstone.web.games.tictactoe.WebTTTFactory;
 import io.github.tiagofar78.grindstone.web.network.messages.Outbound;
 import io.github.tiagofar78.grindstone.web.network.messages.Outbound.Lobby.OnlinePlayer;
@@ -38,6 +39,7 @@ public class Playground {
         commands.register("rejoin", new RejoinCommand());
 
         registerGame(WebTTTFactory.get());
+        registerGame(WebBTFactory.get());
     }
 
     private void registerGame(AvailableGame game) {

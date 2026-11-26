@@ -11,7 +11,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
-public abstract class BTPlayer extends Player<Messager> {
+public class BTPlayer extends Player<Messager> {
 
     public static final int MAX_ITEMS = 4;
 

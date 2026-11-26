@@ -1,6 +1,7 @@
 package io.github.tiagofar78.grindstone.game;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -14,15 +15,7 @@ public class Team<T extends Player<?>> {
     }
 
     public Collection<T> getMembers() {
-        return members;
-    }
-
-    public void addMember(T member) {
-        members.add(member);
-    }
-
-    public void removeMember(T member) {
-        members.remove(member);
+        return Collections.unmodifiableCollection(members);
     }
 
     public boolean contains(T member) {
